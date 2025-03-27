@@ -3,36 +3,30 @@ import { FastifyInstance } from "fastify";
 
 export default async function (app: FastifyInstance) {
 	// Get user by ID
-	app.get(
-		"/",
-		createRouteConfig({
-			// ... keep your existing schema config
-		}),
-		async (request, reply) => {
-			const { userId } = request.params as { userId: string };
+	app.get("/", createRouteConfig({}), async (request, reply) => {
+		const { userId } = request.params as { userId: string };
 
-			try {
-				const user = await app.prisma.user.findMany();
+		try {
+			const user = await app.prisma.user.findMany();
 
-				if (!user) {
-					return reply.code(404).send({
-						statusCode: 404,
-						error: "Not SSS",
-						message: "User not ssss",
-					});
-				}
-
-				return user;
-			} catch (error) {
-				app.log.error(error);
-				return reply.code(500).send({
-					statusCode: 500,
-					error: "Internal Server Error",
-					message: "Something went wrong",
+			if (!user) {
+				return reply.code(404).send({
+					statusCode: 404,
+					error: "Not SSS",
+					message: "User not ssss",
 				});
 			}
+
+			return user;
+		} catch (error) {
+			app.log.error(error);
+			return reply.code(500).send({
+				statusCode: 500,
+				error: "Internal Server Error",
+				message: "Something went wrong",
+			});
 		}
-	);
+	});
 	app.get(
 		"/:userId",
 		createRouteConfig({

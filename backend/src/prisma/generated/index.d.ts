@@ -5168,6 +5168,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     token: string | null
+    active: boolean | null
     ownerId: string | null
     prefix: string | null
     createdAt: Date | null
@@ -5179,6 +5180,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     token: string | null
+    active: boolean | null
     ownerId: string | null
     prefix: string | null
     createdAt: Date | null
@@ -5190,6 +5192,7 @@ export namespace Prisma {
     id: number
     name: number
     token: number
+    active: number
     ownerId: number
     prefix: number
     createdAt: number
@@ -5203,6 +5206,7 @@ export namespace Prisma {
     id?: true
     name?: true
     token?: true
+    active?: true
     ownerId?: true
     prefix?: true
     createdAt?: true
@@ -5214,6 +5218,7 @@ export namespace Prisma {
     id?: true
     name?: true
     token?: true
+    active?: true
     ownerId?: true
     prefix?: true
     createdAt?: true
@@ -5225,6 +5230,7 @@ export namespace Prisma {
     id?: true
     name?: true
     token?: true
+    active?: true
     ownerId?: true
     prefix?: true
     createdAt?: true
@@ -5309,6 +5315,7 @@ export namespace Prisma {
     id: string
     name: string
     token: string
+    active: boolean
     ownerId: string
     prefix: string
     createdAt: Date
@@ -5337,6 +5344,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     token?: boolean
+    active?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
@@ -5355,6 +5363,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     token?: boolean
+    active?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
@@ -5368,6 +5377,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     token?: boolean
+    active?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
@@ -5381,6 +5391,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     token?: boolean
+    active?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
@@ -5388,7 +5399,7 @@ export namespace Prisma {
     serverId?: boolean
   }
 
-  export type BotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "token" | "ownerId" | "prefix" | "createdAt" | "updatedAt" | "serverId", ExtArgs["result"]["bot"]>
+  export type BotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "token" | "active" | "ownerId" | "prefix" | "createdAt" | "updatedAt" | "serverId", ExtArgs["result"]["bot"]>
   export type BotInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     server?: boolean | ServerDefaultArgs<ExtArgs>
@@ -5421,6 +5432,7 @@ export namespace Prisma {
       id: string
       name: string
       token: string
+      active: boolean
       ownerId: string
       prefix: string
       createdAt: Date
@@ -5858,6 +5870,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Bot", 'String'>
     readonly name: FieldRef<"Bot", 'String'>
     readonly token: FieldRef<"Bot", 'String'>
+    readonly active: FieldRef<"Bot", 'Boolean'>
     readonly ownerId: FieldRef<"Bot", 'String'>
     readonly prefix: FieldRef<"Bot", 'String'>
     readonly createdAt: FieldRef<"Bot", 'DateTime'>
@@ -12918,6 +12931,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     token: 'token',
+    active: 'active',
     ownerId: 'ownerId',
     prefix: 'prefix',
     createdAt: 'createdAt',
@@ -13298,6 +13312,7 @@ export namespace Prisma {
     id?: StringFilter<"Bot"> | string
     name?: StringFilter<"Bot"> | string
     token?: StringFilter<"Bot"> | string
+    active?: BoolFilter<"Bot"> | boolean
     ownerId?: StringFilter<"Bot"> | string
     prefix?: StringFilter<"Bot"> | string
     createdAt?: DateTimeFilter<"Bot"> | Date | string
@@ -13315,6 +13330,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     token?: SortOrder
+    active?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
@@ -13335,6 +13351,7 @@ export namespace Prisma {
     NOT?: BotWhereInput | BotWhereInput[]
     name?: StringFilter<"Bot"> | string
     token?: StringFilter<"Bot"> | string
+    active?: BoolFilter<"Bot"> | boolean
     ownerId?: StringFilter<"Bot"> | string
     prefix?: StringFilter<"Bot"> | string
     createdAt?: DateTimeFilter<"Bot"> | Date | string
@@ -13352,6 +13369,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     token?: SortOrder
+    active?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
@@ -13369,6 +13387,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Bot"> | string
     name?: StringWithAggregatesFilter<"Bot"> | string
     token?: StringWithAggregatesFilter<"Bot"> | string
+    active?: BoolWithAggregatesFilter<"Bot"> | boolean
     ownerId?: StringWithAggregatesFilter<"Bot"> | string
     prefix?: StringWithAggregatesFilter<"Bot"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Bot"> | Date | string
@@ -13940,6 +13959,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13955,6 +13975,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -13970,6 +13991,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13985,6 +14007,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14000,6 +14023,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -14011,6 +14035,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14020,6 +14045,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14620,6 +14646,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type ServerScalarRelationFilter = {
     is?: ServerWhereInput
     isNot?: ServerWhereInput
@@ -14669,6 +14700,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     token?: SortOrder
+    active?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
@@ -14680,6 +14712,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     token?: SortOrder
+    active?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
@@ -14691,6 +14724,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     token?: SortOrder
+    active?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
@@ -14698,9 +14732,12 @@ export namespace Prisma {
     serverId?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type BotScalarRelationFilter = {
@@ -14759,14 +14796,6 @@ export namespace Prisma {
     botId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type CommandScalarRelationFilter = {
@@ -15229,6 +15258,10 @@ export namespace Prisma {
     connect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type UserUpdateOneRequiredWithoutBotsNestedInput = {
     create?: XOR<UserCreateWithoutBotsInput, UserUncheckedCreateWithoutBotsInput>
     connectOrCreate?: UserCreateOrConnectWithoutBotsInput
@@ -15389,10 +15422,6 @@ export namespace Prisma {
     connectOrCreate?: CommandUsageCreateOrConnectWithoutCommandInput | CommandUsageCreateOrConnectWithoutCommandInput[]
     createMany?: CommandUsageCreateManyCommandInputEnvelope
     connect?: CommandUsageWhereUniqueInput | CommandUsageWhereUniqueInput[]
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type BotUpdateOneRequiredWithoutCommandsNestedInput = {
@@ -15702,6 +15731,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15716,6 +15746,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15812,6 +15843,7 @@ export namespace Prisma {
     id?: StringFilter<"Bot"> | string
     name?: StringFilter<"Bot"> | string
     token?: StringFilter<"Bot"> | string
+    active?: BoolFilter<"Bot"> | boolean
     ownerId?: StringFilter<"Bot"> | string
     prefix?: StringFilter<"Bot"> | string
     createdAt?: DateTimeFilter<"Bot"> | Date | string
@@ -15937,6 +15969,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15951,6 +15984,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -16358,6 +16392,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16372,6 +16407,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -16452,6 +16488,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16466,6 +16503,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16599,6 +16637,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16613,6 +16652,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -16643,6 +16683,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16657,6 +16698,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16671,6 +16713,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16685,6 +16728,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -16715,6 +16759,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16729,6 +16774,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16807,6 +16853,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16821,6 +16868,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -16851,6 +16899,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16865,6 +16914,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16886,6 +16936,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16924,6 +16975,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16938,6 +16990,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16952,6 +17005,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16985,6 +17039,7 @@ export namespace Prisma {
     id?: string
     name: string
     token: string
+    active?: boolean
     ownerId: string
     prefix?: string
     createdAt?: Date | string
@@ -16995,6 +17050,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17009,6 +17065,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17023,6 +17080,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

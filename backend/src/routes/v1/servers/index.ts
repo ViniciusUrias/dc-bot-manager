@@ -9,7 +9,7 @@ export default async function (app: FastifyInstance) {
 		createRouteConfig({
 			tags: ["Servers"],
 			summary: "Create server",
-			security: [{ bearerAuth: [] }], // Requires authentication
+			auth: true, // Requires authentication
 
 			body: {
 				type: "object",

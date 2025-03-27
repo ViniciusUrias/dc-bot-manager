@@ -8,7 +8,7 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		createRouteConfig({
 			tags: ["Bots"],
 			summary: "Get by id",
-			security: [{ bearerAuth: [] }], // Requires authentication
+			auth: true, // Requires authentication
 			params: {
 				type: "object",
 				properties: {
@@ -45,16 +45,41 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 	});
 
 	// POST /bots/:id/activate - Activate bot
-	app.post("/:botId/activate", async (request, reply) => {
-		const { botId } = request.params as { botId: string };
-		// Implement activation logic
-		return { message: "Bot activated successfully" };
-	});
+	app.post(
+		"/:botId/activate",
+		createRouteConfig({
+			tags: ["Bots"],
+			summary: "Activate bot",
+			auth: true, // Requires authentication
+		}),
+		async (request, reply) => {
+			const { botId } = request.params as { botId: string };
+
+			await app.prisma.bot.update({
+				data: { active: true },
+				where: { id: botId },
+			});
+			// Implement activation logic
+			return { message: "Bot activated successfully" };
+		}
+	);
 
 	// POST /bots/:id/deactivate - Deactivate bot
-	app.post("/:botId/deactivate", async (request, reply) => {
-		const { botId } = request.params as { botId: string };
-		// Implement deactivation logic
-		return { message: "Bot deactivated successfully" };
-	});
+	app.post(
+		"/:botId/deactivate",
+		createRouteConfig({
+			tags: ["Bots"],
+			summary: "Deactivate bot",
+			auth: true, // Requires authentication
+		}),
+		async (request, reply) => {
+			const { botId } = request.params as { botId: string };
+
+			await app.prisma.bot.update({
+				data: { active: false },
+				where: { id: botId },
+			});
+			return { message: "Bot deactivated successfully" };
+		}
+	);
 }

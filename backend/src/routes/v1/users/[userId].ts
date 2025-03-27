@@ -2,11 +2,11 @@ import { FastifyInstance } from "fastify";
 import { createRouteConfig } from "../../../utils/route-config";
 
 export default async function (app: FastifyInstance) {
-	// Get user by ID
 	app.get(
 		"/",
 		createRouteConfig({
-			// ... keep your existing schema config
+			tags: ["Users"],
+			summary: "Get all users",
 		}),
 		async (request, reply) => {
 			const { userId } = request.params as { userId: string };
@@ -38,7 +38,7 @@ export default async function (app: FastifyInstance) {
 		createRouteConfig({
 			tags: ["Users"],
 			summary: "Get by id",
-			security: [{ bearerAuth: [] }], // Requires authentication
+			auth: true, // Requires authentication
 			params: {
 				type: "object",
 				properties: {

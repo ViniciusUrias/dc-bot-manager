@@ -146,6 +146,7 @@ exports.Prisma.BotScalarFieldEnum = {
   id: 'id',
   name: 'name',
   token: 'token',
+  active: 'active',
   ownerId: 'ownerId',
   prefix: 'prefix',
   createdAt: 'createdAt',

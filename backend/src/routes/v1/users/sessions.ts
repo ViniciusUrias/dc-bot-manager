@@ -31,7 +31,7 @@ export default async function (app: FastifyInstance) {
 				},
 				...standardResponses,
 			},
-			security: [{ bearerAuth: [] }],
+			auth: true,
 		}),
 		async (request, reply) => {
 			// Implementation
@@ -68,7 +68,7 @@ export default async function (app: FastifyInstance) {
 				},
 				...standardResponses,
 			},
-			security: [{ bearerAuth: [] }],
+			auth: true,
 		}),
 		async (request, reply) => {
 			// Implementation
@@ -95,7 +95,7 @@ export default async function (app: FastifyInstance) {
 				},
 				...standardResponses,
 			},
-			security: [{ bearerAuth: [] }],
+			auth: true,
 		}),
 		async (request, reply) => {
 			// Implementation

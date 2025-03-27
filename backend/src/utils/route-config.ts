@@ -1,5 +1,7 @@
 // src/utils/route-config.ts
 
+import { RouteShorthandOptions } from "fastify";
+
 type RouteConfig = {
 	tags: string[];
 	summary: string;
@@ -8,14 +10,16 @@ type RouteConfig = {
 	params?: any;
 	querystring?: any;
 	headers?: any;
-	response: Record<number, any>;
+	auth?: boolean;
+	response?: Record<number, any>;
 	security?: Array<Record<string, any[]>>;
 };
 
-export function createRouteConfig(config: any) {
+export function createRouteConfig(config: RouteConfig): RouteShorthandOptions {
 	return {
 		schema: {
 			...config,
+			security: config.auth ? [{ bearerAuth: [] }] : config.security ? config.security : null,
 			response: {
 				...config.response,
 				500: {

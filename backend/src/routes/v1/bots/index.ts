@@ -11,7 +11,7 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		createRouteConfig({
 			tags: ["Bots"],
 			summary: "Get all bot",
-			security: [{ bearerAuth: [] }], // Requires authentication
+			auth: true, // Requires authentication
 		}),
 		async (request, reply) => {
 			// Implement logic to list bots
@@ -40,7 +40,7 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		createRouteConfig({
 			tags: ["Bots"],
 			summary: "Create bot",
-			security: [{ bearerAuth: [] }], // Requires authentication
+			auth: true, // Requires authentication
 
 			body: {
 				type: "object",

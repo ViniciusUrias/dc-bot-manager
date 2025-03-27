@@ -49,6 +49,7 @@ model Bot {
   id            String     @id @default(uuid())
   name          String
   token         String
+  active        Boolean    @default(true)
   ownerId       String
   owner         User       @relation(fields: [ownerId], references: [id])
   prefix        String     @default("!")

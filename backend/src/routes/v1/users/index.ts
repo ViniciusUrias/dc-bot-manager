@@ -11,7 +11,8 @@ export default async function (app: FastifyInstance) {
 		createRouteConfig({
 			tags: ["Users"],
 			summary: "User Create",
-			security: [{ bearerAuth: [] }], // Requires authentication
+
+			auth: true, // Requires authentication
 
 			body: {
 				type: "object",
@@ -66,7 +67,7 @@ export default async function (app: FastifyInstance) {
 		createRouteConfig({
 			tags: ["Users"],
 			summary: "Get current user profile",
-			security: [{ bearerAuth: [] }], // Requires authentication
+			auth: true, // Requires authentication
 			response: {
 				200: {
 					description: "Current user details",
