@@ -69,7 +69,7 @@ const main = async () => {
 				},
 			},
 		},
-		hideUntagged: true,
+		hideUntagged: false,
 	});
 	await fastify.register(fastifySwaggerUi, {
 		routePrefix: "/docs",

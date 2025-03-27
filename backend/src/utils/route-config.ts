@@ -1,10 +1,10 @@
 // src/utils/route-config.ts
 
-import { RouteShorthandOptions } from "fastify";
+import { FastifyPluginOptions, RouteShorthandOptions } from "fastify";
 
 type RouteConfig = {
-	tags: string[];
-	summary: string;
+	tags?: string[];
+	summary?: string;
 	description?: string;
 	body?: any;
 	params?: any;
@@ -31,6 +31,22 @@ export function createRouteConfig(config: RouteConfig): RouteShorthandOptions {
 					},
 				},
 			},
+		},
+	};
+}
+export function createRouteConfig2(defaultOptions: RouteConfig, routeSpecificOptions?: RouteConfig) {
+	return {
+		schema: {
+			// Merge default and route-specific options
+			...defaultOptions,
+			...routeSpecificOptions,
+			// Security is handled separately if auth is true
+			...(defaultOptions.auth || routeSpecificOptions?.auth ? { security: [{ bearerAuth: [] }] } : {}),
+		},
+		// You can add other Fastify route options here if needed
+		config: {
+			// Custom properties can go here
+			auth: defaultOptions.auth || routeSpecificOptions?.auth || false,
 		},
 	};
 }
@@ -62,3 +78,10 @@ export const standardResponses = {
 		},
 	},
 };
+
+export function createRoutePlugin(pluginOptions: FastifyPluginOptions & { defaultRouteConfig?: RouteConfig }) {
+	return {
+		defaultRouteConfig: pluginOptions.defaultRouteConfig || {},
+		// You can add other plugin-level utilities here
+	};
+}

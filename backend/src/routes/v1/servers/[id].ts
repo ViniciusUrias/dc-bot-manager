@@ -1,46 +1,27 @@
-import { createRouteConfig } from "@/utils/route-config";
+import { createRouteConfig2 } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 
-export default async function (app: FastifyInstance) {
-	// Get user by ID
-	app.get("/", createRouteConfig({}), async (request, reply) => {
-		const { userId } = request.params as { userId: string };
-
-		try {
-			const user = await app.prisma.user.findMany();
-
-			if (!user) {
-				return reply.code(404).send({
-					statusCode: 404,
-					error: "Not SSS",
-					message: "User not ssss",
-				});
-			}
-
-			return user;
-		} catch (error) {
-			app.log.error(error);
-			return reply.code(500).send({
-				statusCode: 500,
-				error: "Internal Server Error",
-				message: "Something went wrong",
-			});
-		}
-	});
+export default async function (app: FastifyInstance, opts) {
 	app.get(
-		"/:userId",
-		createRouteConfig({
-			// ... keep your existing schema config
+		"/:serverId",
+		createRouteConfig2(opts.defaultConfig, {
+			summary: "Get server by id",
+			params: {
+				type: "object",
+				properties: {
+					serverId: { type: "string" },
+				},
+				required: ["serverId"],
+			},
 		}),
 		async (request, reply) => {
-			const { userId } = request.params as { userId: string };
+			const { serverId } = request.params as { serverId: string };
 
 			try {
-				const user = await app.prisma.user.findUnique({
-					where: { id: userId },
+				const user = await app.prisma.server.findUnique({
+					where: { id: serverId },
 					select: {
 						id: true,
-						email: true,
 						name: true,
 						createdAt: true,
 						updatedAt: true,
@@ -67,26 +48,32 @@ export default async function (app: FastifyInstance) {
 		}
 	);
 
-	// Update user
 	app.put(
-		"/:userId",
-		createRouteConfig({
-			// ... keep your existing schema config
+		"/:serverId",
+		createRouteConfig2(opts.defaultConfig, {
+			summary: "Update server",
+			body: {
+				type: "object",
+				properties: {
+					name: { type: "string" },
+					email: { type: "string", format: "email" },
+				},
+				required: [],
+			},
 		}),
 		async (request, reply) => {
-			const { userId } = request.params as { userId: string };
+			const { serverId } = request.params as { serverId: string };
 			const { name, email } = request.body as { name?: string; email?: string };
 
 			try {
-				const updatedUser = await app.prisma.user.update({
-					where: { id: userId },
+				const updatedUser = await app.prisma.server.update({
+					where: { id: serverId },
 					data: {
 						...(name && { name }), // Only update if provided
 						...(email && { email }), // Only update if provided
 					},
 					select: {
 						id: true,
-						email: true,
 						name: true,
 						createdAt: true,
 						updatedAt: true,
@@ -116,16 +103,28 @@ export default async function (app: FastifyInstance) {
 
 	// Delete user
 	app.delete(
-		"/:userId",
-		createRouteConfig({
-			// ... keep your existing schema config
+		"/:serverId",
+		createRouteConfig2(opts.defaultConfig, {
+			summary: "Delete server",
+			params: {
+				type: "object",
+				properties: {
+					serverId: { type: "string" },
+				},
+				required: ["serverId"],
+			},
+			response: {
+				204: {
+					description: "No Content",
+				},
+			},
 		}),
 		async (request, reply) => {
-			const { userId } = request.params as { userId: string };
+			const { serverId } = request.params as { serverId: string };
 
 			try {
-				await app.prisma.user.delete({
-					where: { id: userId },
+				await app.prisma.server.delete({
+					where: { id: serverId },
 				});
 				return reply.code(204).send();
 			} catch (error) {
