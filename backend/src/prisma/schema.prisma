@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TODO: Create your schema here
+
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  email     String   @unique @default("")
+  password  String   @default("")
+  teamId    Int     // The foreign key to the Teams table, now mandatory
+}
+
+model Teams {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+}
+
+model Collections {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+  name      String
+  teamId    Int     // The foreign key to the Teams table, now mandatory
+  fatherId  Int?    // The foreign key to the Collections table, now optional
+  endpoints Endpoints[]
+
+}
+
+model Endpoints {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime? @updatedAt
+  name          String
+  method        String
+  path          String
+  collectionId  Int     // The foreign key to the Collections table, now mandatory
+  collection    Collections  @relation(fields: [collectionId], references: [id])
+
+}
