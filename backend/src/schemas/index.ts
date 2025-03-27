@@ -36,5 +36,6 @@ export const securitySchemes = {
 		type: "http",
 		scheme: "bearer",
 		bearerFormat: "JWT",
+		description: "Enter JWT token in format: Bearer <token>",
 	},
 };

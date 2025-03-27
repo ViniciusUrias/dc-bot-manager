@@ -13,14 +13,17 @@ datasource db {
 
 
 model User {
-  id            String     @id @default(uuid())
-  email         String     @unique
-  password      String
-  name          String
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  bots          Bot[]
-  sessions      Session[]
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions  Session[]
+  bots      Bot[]
+  servers Server[]
+
+  @@map("users")
 }
 
 model Session {
@@ -32,16 +35,27 @@ model Session {
   createdAt    DateTime   @default(now())
 }
 
+model Server {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Bot Bot[]
+}
+
 model Bot {
   id            String     @id @default(uuid())
   name          String
-  discordId     String     @unique
   token         String
   ownerId       String
   owner         User       @relation(fields: [ownerId], references: [id])
   prefix        String     @default("!")
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  serverId      String
+  server        Server     @relation(fields: [serverId], references: [id])
   commands      Command[]
   events        Event[]
   configurations BotConfig[]

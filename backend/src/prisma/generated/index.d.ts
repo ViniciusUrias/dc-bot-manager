@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
 /**
+ * Model Server
+ * 
+ */
+export type Server = $Result.DefaultSelection<Prisma.$ServerPayload>
+/**
  * Model Bot
  * 
  */
@@ -203,6 +208,16 @@ export class PrismaClient<
     * ```
     */
   get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.server`: Exposes CRUD operations for the **Server** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Servers
+    * const servers = await prisma.server.findMany()
+    * ```
+    */
+  get server(): Prisma.ServerDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.bot`: Exposes CRUD operations for the **Bot** model.
@@ -715,6 +730,7 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Session: 'Session',
+    Server: 'Server',
     Bot: 'Bot',
     Command: 'Command',
     CommandPermission: 'CommandPermission',
@@ -740,7 +756,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "bot" | "command" | "commandPermission" | "event" | "botConfig" | "commandUsage" | "analytics"
+      modelProps: "user" | "session" | "server" | "bot" | "command" | "commandPermission" | "event" | "botConfig" | "commandUsage" | "analytics"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -889,6 +905,80 @@ export namespace Prisma {
           count: {
             args: Prisma.SessionCountArgs<ExtArgs>
             result: $Utils.Optional<SessionCountAggregateOutputType> | number
+          }
+        }
+      }
+      Server: {
+        payload: Prisma.$ServerPayload<ExtArgs>
+        fields: Prisma.ServerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ServerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ServerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          findFirst: {
+            args: Prisma.ServerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ServerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          findMany: {
+            args: Prisma.ServerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>[]
+          }
+          create: {
+            args: Prisma.ServerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          createMany: {
+            args: Prisma.ServerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ServerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>[]
+          }
+          delete: {
+            args: Prisma.ServerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          update: {
+            args: Prisma.ServerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          deleteMany: {
+            args: Prisma.ServerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ServerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ServerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>[]
+          }
+          upsert: {
+            args: Prisma.ServerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerPayload>
+          }
+          aggregate: {
+            args: Prisma.ServerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServer>
+          }
+          groupBy: {
+            args: Prisma.ServerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ServerCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerCountAggregateOutputType> | number
           }
         }
       }
@@ -1500,6 +1590,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     session?: SessionOmit
+    server?: ServerOmit
     bot?: BotOmit
     command?: CommandOmit
     commandPermission?: CommandPermissionOmit
@@ -1601,13 +1692,15 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    bots: number
     sessions: number
+    bots: number
+    servers: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    bots?: boolean | UserCountOutputTypeCountBotsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    bots?: boolean | UserCountOutputTypeCountBotsArgs
+    servers?: boolean | UserCountOutputTypeCountServersArgs
   }
 
   // Custom InputTypes
@@ -1624,6 +1717,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountBotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BotWhereInput
   }
@@ -1631,8 +1731,39 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
+  export type UserCountOutputTypeCountServersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerWhereInput
+  }
+
+
+  /**
+   * Count Type ServerCountOutputType
+   */
+
+  export type ServerCountOutputType = {
+    Bot: number
+  }
+
+  export type ServerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Bot?: boolean | ServerCountOutputTypeCountBotArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerCountOutputType
+     */
+    select?: ServerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ServerCountOutputType without action
+   */
+  export type ServerCountOutputTypeCountBotArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BotWhereInput
   }
 
 
@@ -1881,7 +2012,7 @@ export namespace Prisma {
     id: string
     email: string
     password: string
-    name: string
+    name: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1910,8 +2041,9 @@ export namespace Prisma {
     name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    bots?: boolean | User$botsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    bots?: boolean | User$botsArgs<ExtArgs>
+    servers?: boolean | User$serversArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1944,8 +2076,9 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    bots?: boolean | User$botsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    bots?: boolean | User$botsArgs<ExtArgs>
+    servers?: boolean | User$serversArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1954,14 +2087,15 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      bots: Prisma.$BotPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
+      bots: Prisma.$BotPayload<ExtArgs>[]
+      servers: Prisma.$ServerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string
       password: string
-      name: string
+      name: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -2358,8 +2492,9 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    bots<T extends User$botsArgs<ExtArgs> = {}>(args?: Subset<T, User$botsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bots<T extends User$botsArgs<ExtArgs> = {}>(args?: Subset<T, User$botsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    servers<T extends User$serversArgs<ExtArgs> = {}>(args?: Subset<T, User$serversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2783,6 +2918,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.sessions
+   */
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
    * User.bots
    */
   export type User$botsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2807,27 +2966,27 @@ export namespace Prisma {
   }
 
   /**
-   * User.sessions
+   * User.servers
    */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$serversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Session
+     * Select specific fields to fetch from the Server
      */
-    select?: SessionSelect<ExtArgs> | null
+    select?: ServerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Session
+     * Omit specific fields from the Server
      */
-    omit?: SessionOmit<ExtArgs> | null
+    omit?: ServerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
+    include?: ServerInclude<ExtArgs> | null
+    where?: ServerWhereInput
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    cursor?: ServerWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
   }
 
   /**
@@ -3908,6 +4067,1094 @@ export namespace Prisma {
 
 
   /**
+   * Model Server
+   */
+
+  export type AggregateServer = {
+    _count: ServerCountAggregateOutputType | null
+    _min: ServerMinAggregateOutputType | null
+    _max: ServerMaxAggregateOutputType | null
+  }
+
+  export type ServerMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    ownerId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ServerMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    ownerId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ServerCountAggregateOutputType = {
+    id: number
+    name: number
+    ownerId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ServerMinAggregateInputType = {
+    id?: true
+    name?: true
+    ownerId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ServerMaxAggregateInputType = {
+    id?: true
+    name?: true
+    ownerId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ServerCountAggregateInputType = {
+    id?: true
+    name?: true
+    ownerId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ServerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Server to aggregate.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Servers
+    **/
+    _count?: true | ServerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerMaxAggregateInputType
+  }
+
+  export type GetServerAggregateType<T extends ServerAggregateArgs> = {
+        [P in keyof T & keyof AggregateServer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServer[P]>
+      : GetScalarType<T[P], AggregateServer[P]>
+  }
+
+
+
+
+  export type ServerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerWhereInput
+    orderBy?: ServerOrderByWithAggregationInput | ServerOrderByWithAggregationInput[]
+    by: ServerScalarFieldEnum[] | ServerScalarFieldEnum
+    having?: ServerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerCountAggregateInputType | true
+    _min?: ServerMinAggregateInputType
+    _max?: ServerMaxAggregateInputType
+  }
+
+  export type ServerGroupByOutputType = {
+    id: string
+    name: string
+    ownerId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ServerCountAggregateOutputType | null
+    _min: ServerMinAggregateOutputType | null
+    _max: ServerMaxAggregateOutputType | null
+  }
+
+  type GetServerGroupByPayload<T extends ServerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    Bot?: boolean | Server$BotArgs<ExtArgs>
+    _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["server"]>
+
+  export type ServerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["server"]>
+
+  export type ServerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["server"]>
+
+  export type ServerSelectScalar = {
+    id?: boolean
+    name?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ServerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["server"]>
+  export type ServerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    Bot?: boolean | Server$BotArgs<ExtArgs>
+    _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ServerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ServerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ServerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Server"
+    objects: {
+      owner: Prisma.$UserPayload<ExtArgs>
+      Bot: Prisma.$BotPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      ownerId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["server"]>
+    composites: {}
+  }
+
+  type ServerGetPayload<S extends boolean | null | undefined | ServerDefaultArgs> = $Result.GetResult<Prisma.$ServerPayload, S>
+
+  type ServerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerCountAggregateInputType | true
+    }
+
+  export interface ServerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Server'], meta: { name: 'Server' } }
+    /**
+     * Find zero or one Server that matches the filter.
+     * @param {ServerFindUniqueArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServerFindUniqueArgs>(args: SelectSubset<T, ServerFindUniqueArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Server that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServerFindUniqueOrThrowArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServerFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Server that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerFindFirstArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServerFindFirstArgs>(args?: SelectSubset<T, ServerFindFirstArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Server that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerFindFirstOrThrowArgs} args - Arguments to find a Server
+     * @example
+     * // Get one Server
+     * const server = await prisma.server.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServerFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Servers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Servers
+     * const servers = await prisma.server.findMany()
+     * 
+     * // Get first 10 Servers
+     * const servers = await prisma.server.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverWithIdOnly = await prisma.server.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServerFindManyArgs>(args?: SelectSubset<T, ServerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Server.
+     * @param {ServerCreateArgs} args - Arguments to create a Server.
+     * @example
+     * // Create one Server
+     * const Server = await prisma.server.create({
+     *   data: {
+     *     // ... data to create a Server
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServerCreateArgs>(args: SelectSubset<T, ServerCreateArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Servers.
+     * @param {ServerCreateManyArgs} args - Arguments to create many Servers.
+     * @example
+     * // Create many Servers
+     * const server = await prisma.server.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServerCreateManyArgs>(args?: SelectSubset<T, ServerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Servers and returns the data saved in the database.
+     * @param {ServerCreateManyAndReturnArgs} args - Arguments to create many Servers.
+     * @example
+     * // Create many Servers
+     * const server = await prisma.server.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Servers and only return the `id`
+     * const serverWithIdOnly = await prisma.server.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ServerCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Server.
+     * @param {ServerDeleteArgs} args - Arguments to delete one Server.
+     * @example
+     * // Delete one Server
+     * const Server = await prisma.server.delete({
+     *   where: {
+     *     // ... filter to delete one Server
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServerDeleteArgs>(args: SelectSubset<T, ServerDeleteArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Server.
+     * @param {ServerUpdateArgs} args - Arguments to update one Server.
+     * @example
+     * // Update one Server
+     * const server = await prisma.server.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServerUpdateArgs>(args: SelectSubset<T, ServerUpdateArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Servers.
+     * @param {ServerDeleteManyArgs} args - Arguments to filter Servers to delete.
+     * @example
+     * // Delete a few Servers
+     * const { count } = await prisma.server.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServerDeleteManyArgs>(args?: SelectSubset<T, ServerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Servers
+     * const server = await prisma.server.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServerUpdateManyArgs>(args: SelectSubset<T, ServerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servers and returns the data updated in the database.
+     * @param {ServerUpdateManyAndReturnArgs} args - Arguments to update many Servers.
+     * @example
+     * // Update many Servers
+     * const server = await prisma.server.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Servers and only return the `id`
+     * const serverWithIdOnly = await prisma.server.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ServerUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Server.
+     * @param {ServerUpsertArgs} args - Arguments to update or create a Server.
+     * @example
+     * // Update or create a Server
+     * const server = await prisma.server.upsert({
+     *   create: {
+     *     // ... data to create a Server
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Server we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServerUpsertArgs>(args: SelectSubset<T, ServerUpsertArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Servers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerCountArgs} args - Arguments to filter Servers to count.
+     * @example
+     * // Count the number of Servers
+     * const count = await prisma.server.count({
+     *   where: {
+     *     // ... the filter for the Servers we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServerCountArgs>(
+      args?: Subset<T, ServerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Server.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerAggregateArgs>(args: Subset<T, ServerAggregateArgs>): Prisma.PrismaPromise<GetServerAggregateType<T>>
+
+    /**
+     * Group by Server.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServerGroupByArgs['orderBy'] }
+        : { orderBy?: ServerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Server model
+   */
+  readonly fields: ServerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Server.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Bot<T extends Server$BotArgs<ExtArgs> = {}>(args?: Subset<T, Server$BotArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Server model
+   */ 
+  interface ServerFieldRefs {
+    readonly id: FieldRef<"Server", 'String'>
+    readonly name: FieldRef<"Server", 'String'>
+    readonly ownerId: FieldRef<"Server", 'String'>
+    readonly createdAt: FieldRef<"Server", 'DateTime'>
+    readonly updatedAt: FieldRef<"Server", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Server findUnique
+   */
+  export type ServerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server findUniqueOrThrow
+   */
+  export type ServerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server findFirst
+   */
+  export type ServerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Servers.
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servers.
+     */
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * Server findFirstOrThrow
+   */
+  export type ServerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Server to fetch.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Servers.
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servers.
+     */
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * Server findMany
+   */
+  export type ServerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter, which Servers to fetch.
+     */
+    where?: ServerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servers to fetch.
+     */
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Servers.
+     */
+    cursor?: ServerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servers.
+     */
+    skip?: number
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * Server create
+   */
+  export type ServerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Server.
+     */
+    data: XOR<ServerCreateInput, ServerUncheckedCreateInput>
+  }
+
+  /**
+   * Server createMany
+   */
+  export type ServerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Servers.
+     */
+    data: ServerCreateManyInput | ServerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Server createManyAndReturn
+   */
+  export type ServerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * The data used to create many Servers.
+     */
+    data: ServerCreateManyInput | ServerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Server update
+   */
+  export type ServerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Server.
+     */
+    data: XOR<ServerUpdateInput, ServerUncheckedUpdateInput>
+    /**
+     * Choose, which Server to update.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server updateMany
+   */
+  export type ServerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Servers.
+     */
+    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyInput>
+    /**
+     * Filter which Servers to update
+     */
+    where?: ServerWhereInput
+    /**
+     * Limit how many Servers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Server updateManyAndReturn
+   */
+  export type ServerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * The data used to update Servers.
+     */
+    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyInput>
+    /**
+     * Filter which Servers to update
+     */
+    where?: ServerWhereInput
+    /**
+     * Limit how many Servers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Server upsert
+   */
+  export type ServerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Server to update in case it exists.
+     */
+    where: ServerWhereUniqueInput
+    /**
+     * In case the Server found by the `where` argument doesn't exist, create a new Server with this data.
+     */
+    create: XOR<ServerCreateInput, ServerUncheckedCreateInput>
+    /**
+     * In case the Server was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServerUpdateInput, ServerUncheckedUpdateInput>
+  }
+
+  /**
+   * Server delete
+   */
+  export type ServerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+    /**
+     * Filter which Server to delete.
+     */
+    where: ServerWhereUniqueInput
+  }
+
+  /**
+   * Server deleteMany
+   */
+  export type ServerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Servers to delete
+     */
+    where?: ServerWhereInput
+    /**
+     * Limit how many Servers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Server.Bot
+   */
+  export type Server$BotArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Bot
+     */
+    select?: BotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Bot
+     */
+    omit?: BotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotInclude<ExtArgs> | null
+    where?: BotWhereInput
+    orderBy?: BotOrderByWithRelationInput | BotOrderByWithRelationInput[]
+    cursor?: BotWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BotScalarFieldEnum | BotScalarFieldEnum[]
+  }
+
+  /**
+   * Server without action
+   */
+  export type ServerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Server
+     */
+    select?: ServerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Server
+     */
+    omit?: ServerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Bot
    */
 
@@ -3920,34 +5167,34 @@ export namespace Prisma {
   export type BotMinAggregateOutputType = {
     id: string | null
     name: string | null
-    discordId: string | null
     token: string | null
     ownerId: string | null
     prefix: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    serverId: string | null
   }
 
   export type BotMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    discordId: string | null
     token: string | null
     ownerId: string | null
     prefix: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    serverId: string | null
   }
 
   export type BotCountAggregateOutputType = {
     id: number
     name: number
-    discordId: number
     token: number
     ownerId: number
     prefix: number
     createdAt: number
     updatedAt: number
+    serverId: number
     _all: number
   }
 
@@ -3955,34 +5202,34 @@ export namespace Prisma {
   export type BotMinAggregateInputType = {
     id?: true
     name?: true
-    discordId?: true
     token?: true
     ownerId?: true
     prefix?: true
     createdAt?: true
     updatedAt?: true
+    serverId?: true
   }
 
   export type BotMaxAggregateInputType = {
     id?: true
     name?: true
-    discordId?: true
     token?: true
     ownerId?: true
     prefix?: true
     createdAt?: true
     updatedAt?: true
+    serverId?: true
   }
 
   export type BotCountAggregateInputType = {
     id?: true
     name?: true
-    discordId?: true
     token?: true
     ownerId?: true
     prefix?: true
     createdAt?: true
     updatedAt?: true
+    serverId?: true
     _all?: true
   }
 
@@ -4061,12 +5308,12 @@ export namespace Prisma {
   export type BotGroupByOutputType = {
     id: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix: string
     createdAt: Date
     updatedAt: Date
+    serverId: string
     _count: BotCountAggregateOutputType | null
     _min: BotMinAggregateOutputType | null
     _max: BotMaxAggregateOutputType | null
@@ -4089,13 +5336,14 @@ export namespace Prisma {
   export type BotSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    discordId?: boolean
     token?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverId?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
+    server?: boolean | ServerDefaultArgs<ExtArgs>
     commands?: boolean | Bot$commandsArgs<ExtArgs>
     events?: boolean | Bot$eventsArgs<ExtArgs>
     configurations?: boolean | Bot$configurationsArgs<ExtArgs>
@@ -4106,41 +5354,44 @@ export namespace Prisma {
   export type BotSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    discordId?: boolean
     token?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverId?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
+    server?: boolean | ServerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bot"]>
 
   export type BotSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    discordId?: boolean
     token?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverId?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
+    server?: boolean | ServerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bot"]>
 
   export type BotSelectScalar = {
     id?: boolean
     name?: boolean
-    discordId?: boolean
     token?: boolean
     ownerId?: boolean
     prefix?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverId?: boolean
   }
 
-  export type BotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "discordId" | "token" | "ownerId" | "prefix" | "createdAt" | "updatedAt", ExtArgs["result"]["bot"]>
+  export type BotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "token" | "ownerId" | "prefix" | "createdAt" | "updatedAt" | "serverId", ExtArgs["result"]["bot"]>
   export type BotInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
+    server?: boolean | ServerDefaultArgs<ExtArgs>
     commands?: boolean | Bot$commandsArgs<ExtArgs>
     events?: boolean | Bot$eventsArgs<ExtArgs>
     configurations?: boolean | Bot$configurationsArgs<ExtArgs>
@@ -4149,15 +5400,18 @@ export namespace Prisma {
   }
   export type BotIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
+    server?: boolean | ServerDefaultArgs<ExtArgs>
   }
   export type BotIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
+    server?: boolean | ServerDefaultArgs<ExtArgs>
   }
 
   export type $BotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Bot"
     objects: {
       owner: Prisma.$UserPayload<ExtArgs>
+      server: Prisma.$ServerPayload<ExtArgs>
       commands: Prisma.$CommandPayload<ExtArgs>[]
       events: Prisma.$EventPayload<ExtArgs>[]
       configurations: Prisma.$BotConfigPayload<ExtArgs>[]
@@ -4166,12 +5420,12 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      discordId: string
       token: string
       ownerId: string
       prefix: string
       createdAt: Date
       updatedAt: Date
+      serverId: string
     }, ExtArgs["result"]["bot"]>
     composites: {}
   }
@@ -4567,6 +5821,7 @@ export namespace Prisma {
   export interface Prisma__BotClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     commands<T extends Bot$commandsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$commandsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends Bot$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     configurations<T extends Bot$configurationsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$configurationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4602,12 +5857,12 @@ export namespace Prisma {
   interface BotFieldRefs {
     readonly id: FieldRef<"Bot", 'String'>
     readonly name: FieldRef<"Bot", 'String'>
-    readonly discordId: FieldRef<"Bot", 'String'>
     readonly token: FieldRef<"Bot", 'String'>
     readonly ownerId: FieldRef<"Bot", 'String'>
     readonly prefix: FieldRef<"Bot", 'String'>
     readonly createdAt: FieldRef<"Bot", 'DateTime'>
     readonly updatedAt: FieldRef<"Bot", 'DateTime'>
+    readonly serverId: FieldRef<"Bot", 'String'>
   }
     
 
@@ -11648,15 +12903,26 @@ export namespace Prisma {
   export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+  export const ServerScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    ownerId: 'ownerId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ServerScalarFieldEnum = (typeof ServerScalarFieldEnum)[keyof typeof ServerScalarFieldEnum]
+
+
   export const BotScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    discordId: 'discordId',
     token: 'token',
     ownerId: 'ownerId',
     prefix: 'prefix',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    serverId: 'serverId'
   };
 
   export type BotScalarFieldEnum = (typeof BotScalarFieldEnum)[keyof typeof BotScalarFieldEnum]
@@ -11758,6 +13024,14 @@ export namespace Prisma {
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
   export const JsonNullValueFilter: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull,
@@ -11845,22 +13119,24 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    name?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    bots?: BotListRelationFilter
     sessions?: SessionListRelationFilter
+    bots?: BotListRelationFilter
+    servers?: ServerListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    bots?: BotOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
+    bots?: BotOrderByRelationAggregateInput
+    servers?: ServerOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -11870,18 +13146,19 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
-    name?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    bots?: BotListRelationFilter
     sessions?: SessionListRelationFilter
+    bots?: BotListRelationFilter
+    servers?: ServerListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -11896,7 +13173,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
-    name?: StringWithAggregatesFilter<"User"> | string
+    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -11956,19 +13233,78 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
   }
 
+  export type ServerWhereInput = {
+    AND?: ServerWhereInput | ServerWhereInput[]
+    OR?: ServerWhereInput[]
+    NOT?: ServerWhereInput | ServerWhereInput[]
+    id?: StringFilter<"Server"> | string
+    name?: StringFilter<"Server"> | string
+    ownerId?: StringFilter<"Server"> | string
+    createdAt?: DateTimeFilter<"Server"> | Date | string
+    updatedAt?: DateTimeFilter<"Server"> | Date | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    Bot?: BotListRelationFilter
+  }
+
+  export type ServerOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    owner?: UserOrderByWithRelationInput
+    Bot?: BotOrderByRelationAggregateInput
+  }
+
+  export type ServerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: ServerWhereInput | ServerWhereInput[]
+    OR?: ServerWhereInput[]
+    NOT?: ServerWhereInput | ServerWhereInput[]
+    ownerId?: StringFilter<"Server"> | string
+    createdAt?: DateTimeFilter<"Server"> | Date | string
+    updatedAt?: DateTimeFilter<"Server"> | Date | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    Bot?: BotListRelationFilter
+  }, "id" | "name">
+
+  export type ServerOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ServerCountOrderByAggregateInput
+    _max?: ServerMaxOrderByAggregateInput
+    _min?: ServerMinOrderByAggregateInput
+  }
+
+  export type ServerScalarWhereWithAggregatesInput = {
+    AND?: ServerScalarWhereWithAggregatesInput | ServerScalarWhereWithAggregatesInput[]
+    OR?: ServerScalarWhereWithAggregatesInput[]
+    NOT?: ServerScalarWhereWithAggregatesInput | ServerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Server"> | string
+    name?: StringWithAggregatesFilter<"Server"> | string
+    ownerId?: StringWithAggregatesFilter<"Server"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Server"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Server"> | Date | string
+  }
+
   export type BotWhereInput = {
     AND?: BotWhereInput | BotWhereInput[]
     OR?: BotWhereInput[]
     NOT?: BotWhereInput | BotWhereInput[]
     id?: StringFilter<"Bot"> | string
     name?: StringFilter<"Bot"> | string
-    discordId?: StringFilter<"Bot"> | string
     token?: StringFilter<"Bot"> | string
     ownerId?: StringFilter<"Bot"> | string
     prefix?: StringFilter<"Bot"> | string
     createdAt?: DateTimeFilter<"Bot"> | Date | string
     updatedAt?: DateTimeFilter<"Bot"> | Date | string
+    serverId?: StringFilter<"Bot"> | string
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     commands?: CommandListRelationFilter
     events?: EventListRelationFilter
     configurations?: BotConfigListRelationFilter
@@ -11978,13 +13314,14 @@ export namespace Prisma {
   export type BotOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    discordId?: SortOrder
     token?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverId?: SortOrder
     owner?: UserOrderByWithRelationInput
+    server?: ServerOrderByWithRelationInput
     commands?: CommandOrderByRelationAggregateInput
     events?: EventOrderByRelationAggregateInput
     configurations?: BotConfigOrderByRelationAggregateInput
@@ -11993,7 +13330,6 @@ export namespace Prisma {
 
   export type BotWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    discordId?: string
     AND?: BotWhereInput | BotWhereInput[]
     OR?: BotWhereInput[]
     NOT?: BotWhereInput | BotWhereInput[]
@@ -12003,22 +13339,24 @@ export namespace Prisma {
     prefix?: StringFilter<"Bot"> | string
     createdAt?: DateTimeFilter<"Bot"> | Date | string
     updatedAt?: DateTimeFilter<"Bot"> | Date | string
+    serverId?: StringFilter<"Bot"> | string
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
     commands?: CommandListRelationFilter
     events?: EventListRelationFilter
     configurations?: BotConfigListRelationFilter
     analytics?: AnalyticsListRelationFilter
-  }, "id" | "discordId">
+  }, "id">
 
   export type BotOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    discordId?: SortOrder
     token?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverId?: SortOrder
     _count?: BotCountOrderByAggregateInput
     _max?: BotMaxOrderByAggregateInput
     _min?: BotMinOrderByAggregateInput
@@ -12030,12 +13368,12 @@ export namespace Prisma {
     NOT?: BotScalarWhereWithAggregatesInput | BotScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Bot"> | string
     name?: StringWithAggregatesFilter<"Bot"> | string
-    discordId?: StringWithAggregatesFilter<"Bot"> | string
     token?: StringWithAggregatesFilter<"Bot"> | string
     ownerId?: StringWithAggregatesFilter<"Bot"> | string
     prefix?: StringWithAggregatesFilter<"Bot"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Bot"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Bot"> | Date | string
+    serverId?: StringWithAggregatesFilter<"Bot"> | string
   }
 
   export type CommandWhereInput = {
@@ -12413,51 +13751,55 @@ export namespace Prisma {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    bots?: BotCreateNestedManyWithoutOwnerInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    bots?: BotCreateNestedManyWithoutOwnerInput
+    servers?: ServerCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
+    servers?: ServerUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    bots?: BotUpdateManyWithoutOwnerNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    bots?: BotUpdateManyWithoutOwnerNestedInput
+    servers?: ServerUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    bots?: BotUncheckedUpdateManyWithoutOwnerNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    bots?: BotUncheckedUpdateManyWithoutOwnerNestedInput
+    servers?: ServerUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12466,7 +13808,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12475,7 +13817,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12535,15 +13877,74 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ServerCreateInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutServersInput
+    Bot?: BotCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateInput = {
+    id?: string
+    name: string
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Bot?: BotUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutServersNestedInput
+    Bot?: BotUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Bot?: BotUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerCreateManyInput = {
+    id?: string
+    name: string
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BotCreateInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
     configurations?: BotConfigCreateNestedManyWithoutBotInput
@@ -12553,12 +13954,12 @@ export namespace Prisma {
   export type BotUncheckedCreateInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverId: string
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
     configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
@@ -12568,12 +13969,12 @@ export namespace Prisma {
   export type BotUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUpdateManyWithoutBotNestedInput
@@ -12583,12 +13984,12 @@ export namespace Prisma {
   export type BotUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
@@ -12598,18 +13999,17 @@ export namespace Prisma {
   export type BotCreateManyInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverId: string
   }
 
   export type BotUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12619,12 +14019,12 @@ export namespace Prisma {
   export type BotUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
   }
 
   export type CommandCreateInput = {
@@ -13029,6 +14429,21 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13040,23 +14455,38 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type BotListRelationFilter = {
-    every?: BotWhereInput
-    some?: BotWhereInput
-    none?: BotWhereInput
-  }
-
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
     none?: SessionWhereInput
   }
 
+  export type BotListRelationFilter = {
+    every?: BotWhereInput
+    some?: BotWhereInput
+    none?: BotWhereInput
+  }
+
+  export type ServerListRelationFilter = {
+    every?: ServerWhereInput
+    some?: ServerWhereInput
+    none?: ServerWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type BotOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type SessionOrderByRelationAggregateInput = {
+  export type ServerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13105,6 +14535,24 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13146,6 +14594,35 @@ export namespace Prisma {
     token?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ServerCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerScalarRelationFilter = {
+    is?: ServerWhereInput
+    isNot?: ServerWhereInput
   }
 
   export type CommandListRelationFilter = {
@@ -13191,34 +14668,34 @@ export namespace Prisma {
   export type BotCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    discordId?: SortOrder
     token?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverId?: SortOrder
   }
 
   export type BotMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    discordId?: SortOrder
     token?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverId?: SortOrder
   }
 
   export type BotMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    discordId?: SortOrder
     token?: SortOrder
     ownerId?: SortOrder
     prefix?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverId?: SortOrder
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -13476,6 +14953,13 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
   export type BotCreateNestedManyWithoutOwnerInput = {
     create?: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput> | BotCreateWithoutOwnerInput[] | BotUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: BotCreateOrConnectWithoutOwnerInput | BotCreateOrConnectWithoutOwnerInput[]
@@ -13483,7 +14967,14 @@ export namespace Prisma {
     connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
   }
 
-  export type SessionCreateNestedManyWithoutUserInput = {
+  export type ServerCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput> | ServerCreateWithoutOwnerInput[] | ServerUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutOwnerInput | ServerCreateOrConnectWithoutOwnerInput[]
+    createMany?: ServerCreateManyOwnerInputEnvelope
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+  }
+
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
@@ -13497,19 +14988,37 @@ export namespace Prisma {
     connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
   }
 
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  export type ServerUncheckedCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput> | ServerCreateWithoutOwnerInput[] | ServerUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutOwnerInput | ServerCreateOrConnectWithoutOwnerInput[]
+    createMany?: ServerCreateManyOwnerInputEnvelope
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type BotUpdateManyWithoutOwnerNestedInput = {
@@ -13526,7 +15035,21 @@ export namespace Prisma {
     deleteMany?: BotScalarWhereInput | BotScalarWhereInput[]
   }
 
-  export type SessionUpdateManyWithoutUserNestedInput = {
+  export type ServerUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput> | ServerCreateWithoutOwnerInput[] | ServerUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutOwnerInput | ServerCreateOrConnectWithoutOwnerInput[]
+    upsert?: ServerUpsertWithWhereUniqueWithoutOwnerInput | ServerUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: ServerCreateManyOwnerInputEnvelope
+    set?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    disconnect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    delete?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    update?: ServerUpdateWithWhereUniqueWithoutOwnerInput | ServerUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: ServerUpdateManyWithWhereWithoutOwnerInput | ServerUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
@@ -13554,18 +15077,18 @@ export namespace Prisma {
     deleteMany?: BotScalarWhereInput | BotScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  export type ServerUncheckedUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput> | ServerCreateWithoutOwnerInput[] | ServerUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutOwnerInput | ServerCreateOrConnectWithoutOwnerInput[]
+    upsert?: ServerUpsertWithWhereUniqueWithoutOwnerInput | ServerUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: ServerCreateManyOwnerInputEnvelope
+    set?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    disconnect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    delete?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    update?: ServerUpdateWithWhereUniqueWithoutOwnerInput | ServerUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: ServerUpdateManyWithWhereWithoutOwnerInput | ServerUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -13582,10 +15105,72 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
+  export type UserCreateNestedOneWithoutServersInput = {
+    create?: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutServersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BotCreateNestedManyWithoutServerInput = {
+    create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
+    createMany?: BotCreateManyServerInputEnvelope
+    connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
+  }
+
+  export type BotUncheckedCreateNestedManyWithoutServerInput = {
+    create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
+    createMany?: BotCreateManyServerInputEnvelope
+    connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutServersNestedInput = {
+    create?: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutServersInput
+    upsert?: UserUpsertWithoutServersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutServersInput, UserUpdateWithoutServersInput>, UserUncheckedUpdateWithoutServersInput>
+  }
+
+  export type BotUpdateManyWithoutServerNestedInput = {
+    create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
+    upsert?: BotUpsertWithWhereUniqueWithoutServerInput | BotUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: BotCreateManyServerInputEnvelope
+    set?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    disconnect?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    delete?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    update?: BotUpdateWithWhereUniqueWithoutServerInput | BotUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: BotUpdateManyWithWhereWithoutServerInput | BotUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: BotScalarWhereInput | BotScalarWhereInput[]
+  }
+
+  export type BotUncheckedUpdateManyWithoutServerNestedInput = {
+    create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
+    upsert?: BotUpsertWithWhereUniqueWithoutServerInput | BotUpsertWithWhereUniqueWithoutServerInput[]
+    createMany?: BotCreateManyServerInputEnvelope
+    set?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    disconnect?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    delete?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
+    update?: BotUpdateWithWhereUniqueWithoutServerInput | BotUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: BotUpdateManyWithWhereWithoutServerInput | BotUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: BotScalarWhereInput | BotScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutBotsInput = {
     create?: XOR<UserCreateWithoutBotsInput, UserUncheckedCreateWithoutBotsInput>
     connectOrCreate?: UserCreateOrConnectWithoutBotsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type ServerCreateNestedOneWithoutBotInput = {
+    create?: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutBotInput
+    connect?: ServerWhereUniqueInput
   }
 
   export type CommandCreateNestedManyWithoutBotInput = {
@@ -13650,6 +15235,14 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutBotsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBotsInput, UserUpdateWithoutBotsInput>, UserUncheckedUpdateWithoutBotsInput>
+  }
+
+  export type ServerUpdateOneRequiredWithoutBotNestedInput = {
+    create?: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutBotInput
+    upsert?: ServerUpsertWithoutBotInput
+    connect?: ServerWhereUniqueInput
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutBotInput, ServerUpdateWithoutBotInput>, ServerUncheckedUpdateWithoutBotInput>
   }
 
   export type CommandUpdateManyWithoutBotNestedInput = {
@@ -13950,6 +15543,20 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13987,6 +15594,34 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -14039,44 +15674,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type BotCreateWithoutOwnerInput = {
-    id?: string
-    name: string
-    discordId: string
-    token: string
-    prefix?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    commands?: CommandCreateNestedManyWithoutBotInput
-    events?: EventCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsCreateNestedManyWithoutBotInput
-  }
-
-  export type BotUncheckedCreateWithoutOwnerInput = {
-    id?: string
-    name: string
-    discordId: string
-    token: string
-    prefix?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
-    events?: EventUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
-  }
-
-  export type BotCreateOrConnectWithoutOwnerInput = {
-    where: BotWhereUniqueInput
-    create: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput>
-  }
-
-  export type BotCreateManyOwnerInputEnvelope = {
-    data: BotCreateManyOwnerInput | BotCreateManyOwnerInput[]
-    skipDuplicates?: boolean
-  }
-
   export type SessionCreateWithoutUserInput = {
     id?: string
     token: string
@@ -14101,34 +15698,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type BotUpsertWithWhereUniqueWithoutOwnerInput = {
+  export type BotCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    token: string
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    server: ServerCreateNestedOneWithoutBotInput
+    commands?: CommandCreateNestedManyWithoutBotInput
+    events?: EventCreateNestedManyWithoutBotInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
+    analytics?: AnalyticsCreateNestedManyWithoutBotInput
+  }
+
+  export type BotUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    token: string
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serverId: string
+    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
+    events?: EventUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
+    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+  }
+
+  export type BotCreateOrConnectWithoutOwnerInput = {
     where: BotWhereUniqueInput
-    update: XOR<BotUpdateWithoutOwnerInput, BotUncheckedUpdateWithoutOwnerInput>
     create: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput>
   }
 
-  export type BotUpdateWithWhereUniqueWithoutOwnerInput = {
-    where: BotWhereUniqueInput
-    data: XOR<BotUpdateWithoutOwnerInput, BotUncheckedUpdateWithoutOwnerInput>
+  export type BotCreateManyOwnerInputEnvelope = {
+    data: BotCreateManyOwnerInput | BotCreateManyOwnerInput[]
+    skipDuplicates?: boolean
   }
 
-  export type BotUpdateManyWithWhereWithoutOwnerInput = {
-    where: BotScalarWhereInput
-    data: XOR<BotUpdateManyMutationInput, BotUncheckedUpdateManyWithoutOwnerInput>
+  export type ServerCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Bot?: BotCreateNestedManyWithoutServerInput
   }
 
-  export type BotScalarWhereInput = {
-    AND?: BotScalarWhereInput | BotScalarWhereInput[]
-    OR?: BotScalarWhereInput[]
-    NOT?: BotScalarWhereInput | BotScalarWhereInput[]
-    id?: StringFilter<"Bot"> | string
-    name?: StringFilter<"Bot"> | string
-    discordId?: StringFilter<"Bot"> | string
-    token?: StringFilter<"Bot"> | string
-    ownerId?: StringFilter<"Bot"> | string
-    prefix?: StringFilter<"Bot"> | string
-    createdAt?: DateTimeFilter<"Bot"> | Date | string
-    updatedAt?: DateTimeFilter<"Bot"> | Date | string
+  export type ServerUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Bot?: BotUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutOwnerInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type ServerCreateManyOwnerInputEnvelope = {
+    data: ServerCreateManyOwnerInput | ServerCreateManyOwnerInput[]
+    skipDuplicates?: boolean
   }
 
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
@@ -14158,24 +15789,83 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Session"> | Date | string
   }
 
+  export type BotUpsertWithWhereUniqueWithoutOwnerInput = {
+    where: BotWhereUniqueInput
+    update: XOR<BotUpdateWithoutOwnerInput, BotUncheckedUpdateWithoutOwnerInput>
+    create: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type BotUpdateWithWhereUniqueWithoutOwnerInput = {
+    where: BotWhereUniqueInput
+    data: XOR<BotUpdateWithoutOwnerInput, BotUncheckedUpdateWithoutOwnerInput>
+  }
+
+  export type BotUpdateManyWithWhereWithoutOwnerInput = {
+    where: BotScalarWhereInput
+    data: XOR<BotUpdateManyMutationInput, BotUncheckedUpdateManyWithoutOwnerInput>
+  }
+
+  export type BotScalarWhereInput = {
+    AND?: BotScalarWhereInput | BotScalarWhereInput[]
+    OR?: BotScalarWhereInput[]
+    NOT?: BotScalarWhereInput | BotScalarWhereInput[]
+    id?: StringFilter<"Bot"> | string
+    name?: StringFilter<"Bot"> | string
+    token?: StringFilter<"Bot"> | string
+    ownerId?: StringFilter<"Bot"> | string
+    prefix?: StringFilter<"Bot"> | string
+    createdAt?: DateTimeFilter<"Bot"> | Date | string
+    updatedAt?: DateTimeFilter<"Bot"> | Date | string
+    serverId?: StringFilter<"Bot"> | string
+  }
+
+  export type ServerUpsertWithWhereUniqueWithoutOwnerInput = {
+    where: ServerWhereUniqueInput
+    update: XOR<ServerUpdateWithoutOwnerInput, ServerUncheckedUpdateWithoutOwnerInput>
+    create: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type ServerUpdateWithWhereUniqueWithoutOwnerInput = {
+    where: ServerWhereUniqueInput
+    data: XOR<ServerUpdateWithoutOwnerInput, ServerUncheckedUpdateWithoutOwnerInput>
+  }
+
+  export type ServerUpdateManyWithWhereWithoutOwnerInput = {
+    where: ServerScalarWhereInput
+    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyWithoutOwnerInput>
+  }
+
+  export type ServerScalarWhereInput = {
+    AND?: ServerScalarWhereInput | ServerScalarWhereInput[]
+    OR?: ServerScalarWhereInput[]
+    NOT?: ServerScalarWhereInput | ServerScalarWhereInput[]
+    id?: StringFilter<"Server"> | string
+    name?: StringFilter<"Server"> | string
+    ownerId?: StringFilter<"Server"> | string
+    createdAt?: DateTimeFilter<"Server"> | Date | string
+    updatedAt?: DateTimeFilter<"Server"> | Date | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bots?: BotCreateNestedManyWithoutOwnerInput
+    servers?: ServerCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
+    servers?: ServerUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -14198,45 +15888,184 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bots?: BotUpdateManyWithoutOwnerNestedInput
+    servers?: ServerUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bots?: BotUncheckedUpdateManyWithoutOwnerNestedInput
+    servers?: ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type UserCreateWithoutServersInput = {
+    id?: string
+    email: string
+    password: string
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    bots?: BotCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserUncheckedCreateWithoutServersInput = {
+    id?: string
+    email: string
+    password: string
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserCreateOrConnectWithoutServersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+  }
+
+  export type BotCreateWithoutServerInput = {
+    id?: string
+    name: string
+    token: string
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutBotsInput
+    commands?: CommandCreateNestedManyWithoutBotInput
+    events?: EventCreateNestedManyWithoutBotInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
+    analytics?: AnalyticsCreateNestedManyWithoutBotInput
+  }
+
+  export type BotUncheckedCreateWithoutServerInput = {
+    id?: string
+    name: string
+    token: string
+    ownerId: string
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
+    events?: EventUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
+    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+  }
+
+  export type BotCreateOrConnectWithoutServerInput = {
+    where: BotWhereUniqueInput
+    create: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput>
+  }
+
+  export type BotCreateManyServerInputEnvelope = {
+    data: BotCreateManyServerInput | BotCreateManyServerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutServersInput = {
+    update: XOR<UserUpdateWithoutServersInput, UserUncheckedUpdateWithoutServersInput>
+    create: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutServersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutServersInput, UserUncheckedUpdateWithoutServersInput>
+  }
+
+  export type UserUpdateWithoutServersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    bots?: BotUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutServersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    bots?: BotUncheckedUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type BotUpsertWithWhereUniqueWithoutServerInput = {
+    where: BotWhereUniqueInput
+    update: XOR<BotUpdateWithoutServerInput, BotUncheckedUpdateWithoutServerInput>
+    create: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput>
+  }
+
+  export type BotUpdateWithWhereUniqueWithoutServerInput = {
+    where: BotWhereUniqueInput
+    data: XOR<BotUpdateWithoutServerInput, BotUncheckedUpdateWithoutServerInput>
+  }
+
+  export type BotUpdateManyWithWhereWithoutServerInput = {
+    where: BotScalarWhereInput
+    data: XOR<BotUpdateManyMutationInput, BotUncheckedUpdateManyWithoutServerInput>
   }
 
   export type UserCreateWithoutBotsInput = {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
+    servers?: ServerCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutBotsInput = {
     id?: string
     email: string
     password: string
-    name: string
+    name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    servers?: ServerUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutBotsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutBotsInput, UserUncheckedCreateWithoutBotsInput>
+  }
+
+  export type ServerCreateWithoutBotInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: UserCreateNestedOneWithoutServersInput
+  }
+
+  export type ServerUncheckedCreateWithoutBotInput = {
+    id?: string
+    name: string
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerCreateOrConnectWithoutBotInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
   }
 
   export type CommandCreateWithoutBotInput = {
@@ -14366,20 +16195,49 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    servers?: ServerUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBotsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    servers?: ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type ServerUpsertWithoutBotInput = {
+    update: XOR<ServerUpdateWithoutBotInput, ServerUncheckedUpdateWithoutBotInput>
+    create: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
+    where?: ServerWhereInput
+  }
+
+  export type ServerUpdateToOneWithWhereWithoutBotInput = {
+    where?: ServerWhereInput
+    data: XOR<ServerUpdateWithoutBotInput, ServerUncheckedUpdateWithoutBotInput>
+  }
+
+  export type ServerUpdateWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutServersNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommandUpsertWithWhereUniqueWithoutBotInput = {
@@ -14499,12 +16357,12 @@ export namespace Prisma {
   export type BotCreateWithoutCommandsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
     configurations?: BotConfigCreateNestedManyWithoutBotInput
     analytics?: AnalyticsCreateNestedManyWithoutBotInput
@@ -14513,12 +16371,12 @@ export namespace Prisma {
   export type BotUncheckedCreateWithoutCommandsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverId: string
     events?: EventUncheckedCreateNestedManyWithoutBotInput
     configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
@@ -14593,12 +16451,12 @@ export namespace Prisma {
   export type BotUpdateWithoutCommandsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUpdateManyWithoutBotNestedInput
@@ -14607,12 +16465,12 @@ export namespace Prisma {
   export type BotUncheckedUpdateWithoutCommandsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
@@ -14740,12 +16598,12 @@ export namespace Prisma {
   export type BotCreateWithoutEventsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     configurations?: BotConfigCreateNestedManyWithoutBotInput
     analytics?: AnalyticsCreateNestedManyWithoutBotInput
@@ -14754,12 +16612,12 @@ export namespace Prisma {
   export type BotUncheckedCreateWithoutEventsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverId: string
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
@@ -14784,12 +16642,12 @@ export namespace Prisma {
   export type BotUpdateWithoutEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUpdateManyWithoutBotNestedInput
@@ -14798,12 +16656,12 @@ export namespace Prisma {
   export type BotUncheckedUpdateWithoutEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
@@ -14812,12 +16670,12 @@ export namespace Prisma {
   export type BotCreateWithoutConfigurationsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
     analytics?: AnalyticsCreateNestedManyWithoutBotInput
@@ -14826,12 +16684,12 @@ export namespace Prisma {
   export type BotUncheckedCreateWithoutConfigurationsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverId: string
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
     analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
@@ -14856,12 +16714,12 @@ export namespace Prisma {
   export type BotUpdateWithoutConfigurationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUpdateManyWithoutBotNestedInput
@@ -14870,12 +16728,12 @@ export namespace Prisma {
   export type BotUncheckedUpdateWithoutConfigurationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
@@ -14948,12 +16806,12 @@ export namespace Prisma {
   export type BotCreateWithoutAnalyticsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
     configurations?: BotConfigCreateNestedManyWithoutBotInput
@@ -14962,12 +16820,12 @@ export namespace Prisma {
   export type BotUncheckedCreateWithoutAnalyticsInput = {
     id?: string
     name: string
-    discordId: string
     token: string
     ownerId: string
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverId: string
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
     configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
@@ -14992,12 +16850,12 @@ export namespace Prisma {
   export type BotUpdateWithoutAnalyticsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUpdateManyWithoutBotNestedInput
@@ -15006,25 +16864,15 @@ export namespace Prisma {
   export type BotUncheckedUpdateWithoutAnalyticsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
     configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
-  }
-
-  export type BotCreateManyOwnerInput = {
-    id?: string
-    name: string
-    discordId: string
-    token: string
-    prefix?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type SessionCreateManyUserInput = {
@@ -15034,42 +16882,21 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type BotUpdateWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    prefix?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    commands?: CommandUpdateManyWithoutBotNestedInput
-    events?: EventUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
+  export type BotCreateManyOwnerInput = {
+    id?: string
+    name: string
+    token: string
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serverId: string
   }
 
-  export type BotUncheckedUpdateWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    prefix?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
-    events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
-  }
-
-  export type BotUncheckedUpdateManyWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    discordId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    prefix?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type ServerCreateManyOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -15091,6 +16918,115 @@ export namespace Prisma {
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    server?: ServerUpdateOneRequiredWithoutBotNestedInput
+    commands?: CommandUpdateManyWithoutBotNestedInput
+    events?: EventUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
+    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
+  }
+
+  export type BotUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
+    events?: EventUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
+    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+  }
+
+  export type BotUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Bot?: BotUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Bot?: BotUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotCreateManyServerInput = {
+    id?: string
+    name: string
+    token: string
+    ownerId: string
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    commands?: CommandUpdateManyWithoutBotNestedInput
+    events?: EventUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
+    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
+  }
+
+  export type BotUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
+    events?: EventUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
+    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+  }
+
+  export type BotUncheckedUpdateManyWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommandCreateManyBotInput = {

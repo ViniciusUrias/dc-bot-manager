@@ -134,15 +134,23 @@ exports.Prisma.SessionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ServerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.BotScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  discordId: 'discordId',
   token: 'token',
   ownerId: 'ownerId',
   prefix: 'prefix',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  serverId: 'serverId'
 };
 
 exports.Prisma.CommandScalarFieldEnum = {
@@ -214,6 +222,11 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
@@ -224,6 +237,7 @@ exports.Prisma.JsonNullValueFilter = {
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
+  Server: 'Server',
   Bot: 'Bot',
   Command: 'Command',
   CommandPermission: 'CommandPermission',

@@ -1,21 +1,35 @@
 // Importing required modules
+import router from "@/routes";
+import { schemas } from "@/schemas";
 import cors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import dotenv from "dotenv";
 import Fastify from "fastify";
+import pino from "pino";
+import authPlugin from "./plugins/auth";
 import prisma from "./prisma/prisma";
-import router from "./routes/index";
-import { schemas, securitySchemes } from "./schemas";
-
 dotenv.config(); // Load environment variables from .env file
+const logger = pino({ transport: { target: "pino-pretty" } });
 
 const fastify = Fastify({
-	logger: true,
+	loggerInstance: logger,
 });
 fastify.addSchema(schemas.User);
+
 fastify.addSchema(schemas.Bot);
 fastify.addSchema(schemas.Error);
+fastify.decorate("prisma", prisma);
+fastify.register(authPlugin);
+fastify.addHook("onClose", async (instance) => {
+	await instance.prisma.$disconnect();
+});
+fastify.addHook("preHandler", function (req, reply, done) {
+	if (req.body) {
+		req.log.info({ body: req.body }, "parsed body");
+	}
+	done();
+});
 fastify.register(fastifySwagger, {
 	openapi: {
 		info: {
@@ -35,8 +49,21 @@ fastify.register(fastifySwagger, {
 				Bot: schemas.Bot,
 				Error: schemas.Error,
 			},
-			...securitySchemes,
+			securitySchemes: {
+				apiKey: {
+					type: "apiKey",
+					name: "apiKey",
+					in: "header",
+				},
+				bearerAuth: {
+					type: "http",
+					scheme: "bearer",
+					bearerFormat: "JWT",
+					description: "Enter JWT token in format: Bearer <token>",
+				},
+			},
 		},
+
 		refResolver: {
 			buildLocalReference(json, baseUri, fragment, i) {
 				return json.$id || `def-${i}`;
@@ -51,9 +78,17 @@ fastify.register(fastifySwaggerUi, {
 		docExpansion: "list",
 		deepLinking: false,
 	},
+	uiHooks: {
+		onRequest: (request, reply, next) => next(),
+		preHandler: (request, reply, next) => next(),
+	},
+	staticCSP: true,
+	transformStaticCSP: (header) => header,
 });
 const port = process.env.PORT || 3000;
-fastify.register(router, { prefix: "/v1", logLevel: "info" });
+fastify.register(router, {
+	prefix: "/v1",
+});
 fastify.register(cors);
 // app.use(router);
 fastify.get("/teste", async (request, reply) => {});
