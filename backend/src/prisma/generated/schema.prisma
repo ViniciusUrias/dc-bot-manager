@@ -11,40 +11,101 @@ datasource db {
 
 // TODO: Create your schema here
 
-model Users {
-  id        Int      @id @default(autoincrement())
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bots      Bot[]
+  sessions  Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Bot {
+  id             String      @id @default(uuid())
+  name           String
+  discordId      String      @unique
+  token          String
+  ownerId        String
+  owner          User        @relation(fields: [ownerId], references: [id])
+  prefix         String      @default("!")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  commands       Command[]
+  events         Event[]
+  configurations BotConfig[]
+  analytics      Analytics[]
+}
+
+model Command {
+  id          String              @id @default(uuid())
+  name        String
+  description String
+  response    String
+  enabled     Boolean             @default(true)
+  botId       String
+  bot         Bot                 @relation(fields: [botId], references: [id])
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  permissions CommandPermission[]
+  usage       CommandUsage[]
+}
+
+model CommandPermission {
+  id        String   @id @default(uuid())
+  commandId String
+  command   Command  @relation(fields: [commandId], references: [id])
+  roleId    String
+  allow     Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  name      String // e.g., "messageCreate", "guildMemberAdd"
+  action    String // JavaScript code to execute
+  enabled   Boolean  @default(true)
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String
-  email     String   @unique @default("")
-  password  String   @default("")
-  teamId    Int // The foreign key to the Teams table, now mandatory
 }
 
-model Teams {
-  id        Int      @id @default(autoincrement())
+model BotConfig {
+  id        String   @id @default(uuid())
+  key       String
+  value     String
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String
 }
 
-model Collections {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime?   @updatedAt
-  name      String
-  teamId    Int // The foreign key to the Teams table, now mandatory
-  fatherId  Int? // The foreign key to the Collections table, now optional
-  endpoints Endpoints[]
+model CommandUsage {
+  id        String   @id @default(uuid())
+  commandId String
+  command   Command  @relation(fields: [commandId], references: [id])
+  userId    String // Discord user ID
+  guildId   String // Discord guild ID
+  channelId String // Discord channel ID
+  timestamp DateTime @default(now())
 }
 
-model Endpoints {
-  id           Int         @id @default(autoincrement())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime?   @updatedAt
-  name         String
-  method       String
-  path         String
-  collectionId Int // The foreign key to the Collections table, now mandatory
-  collection   Collections @relation(fields: [collectionId], references: [id])
+model Analytics {
+  id        String   @id @default(uuid())
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id])
+  eventType String // e.g., "command_executed", "user_joined"
+  data      Json // Additional event data
+  timestamp DateTime @default(now())
 }

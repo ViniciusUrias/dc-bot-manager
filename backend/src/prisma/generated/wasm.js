@@ -89,40 +89,87 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UsersScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  name: 'name',
   email: 'email',
   password: 'password',
-  teamId: 'teamId'
-};
-
-exports.Prisma.TeamsScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  name: 'name'
-};
-
-exports.Prisma.CollectionsScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
   name: 'name',
-  teamId: 'teamId',
-  fatherId: 'fatherId'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.EndpointsScalarFieldEnum = {
+exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BotScalarFieldEnum = {
+  id: 'id',
   name: 'name',
-  method: 'method',
-  path: 'path',
-  collectionId: 'collectionId'
+  discordId: 'discordId',
+  token: 'token',
+  ownerId: 'ownerId',
+  prefix: 'prefix',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommandScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  response: 'response',
+  enabled: 'enabled',
+  botId: 'botId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommandPermissionScalarFieldEnum = {
+  id: 'id',
+  commandId: 'commandId',
+  roleId: 'roleId',
+  allow: 'allow',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EventScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  action: 'action',
+  enabled: 'enabled',
+  botId: 'botId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BotConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  botId: 'botId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommandUsageScalarFieldEnum = {
+  id: 'id',
+  commandId: 'commandId',
+  userId: 'userId',
+  guildId: 'guildId',
+  channelId: 'channelId',
+  timestamp: 'timestamp'
+};
+
+exports.Prisma.AnalyticsScalarFieldEnum = {
+  id: 'id',
+  botId: 'botId',
+  eventType: 'eventType',
+  data: 'data',
+  timestamp: 'timestamp'
 };
 
 exports.Prisma.SortOrder = {
@@ -130,22 +177,32 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 
 exports.Prisma.ModelName = {
-  Users: 'Users',
-  Teams: 'Teams',
-  Collections: 'Collections',
-  Endpoints: 'Endpoints'
+  User: 'User',
+  Session: 'Session',
+  Bot: 'Bot',
+  Command: 'Command',
+  CommandPermission: 'CommandPermission',
+  Event: 'Event',
+  BotConfig: 'BotConfig',
+  CommandUsage: 'CommandUsage',
+  Analytics: 'Analytics'
 };
 /**
  * Create the Client
@@ -158,7 +215,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\vinic\\projects\\discord-bot\\src\\prisma\\generated",
+      "value": "C:\\Users\\vinic\\projects\\discord-bot\\backend\\src\\prisma\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -174,7 +231,7 @@ const config = {
     "previewFeatures": [
       "driverAdapters"
     ],
-    "sourceFilePath": "C:\\Users\\vinic\\projects\\discord-bot\\src\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\vinic\\projects\\discord-bot\\backend\\src\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -188,6 +245,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -196,13 +254,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  previewFeatures = [\"driverAdapters\"]\n  output          = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// TODO: Create your schema here\n\nmodel Users {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  name      String\n  email     String   @unique @default(\"\")\n  password  String   @default(\"\")\n  teamId    Int // The foreign key to the Teams table, now mandatory\n}\n\nmodel Teams {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  name      String\n}\n\nmodel Collections {\n  id        Int         @id @default(autoincrement())\n  createdAt DateTime    @default(now())\n  updatedAt DateTime?   @updatedAt\n  name      String\n  teamId    Int // The foreign key to the Teams table, now mandatory\n  fatherId  Int? // The foreign key to the Collections table, now optional\n  endpoints Endpoints[]\n}\n\nmodel Endpoints {\n  id           Int         @id @default(autoincrement())\n  createdAt    DateTime    @default(now())\n  updatedAt    DateTime?   @updatedAt\n  name         String\n  method       String\n  path         String\n  collectionId Int // The foreign key to the Collections table, now mandatory\n  collection   Collections @relation(fields: [collectionId], references: [id])\n}\n",
-  "inlineSchemaHash": "5e8c525018f94cae3e21813fa4a9f485fad86a2cae1083e4764149e497247594",
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  previewFeatures = [\"driverAdapters\"]\n  output          = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// TODO: Create your schema here\n\nmodel User {\n  id        String    @id @default(uuid())\n  email     String    @unique\n  password  String\n  name      String\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  bots      Bot[]\n  sessions  Session[]\n}\n\nmodel Session {\n  id        String   @id @default(uuid())\n  userId    String\n  user      User     @relation(fields: [userId], references: [id])\n  token     String   @unique\n  expiresAt DateTime\n  createdAt DateTime @default(now())\n}\n\nmodel Bot {\n  id             String      @id @default(uuid())\n  name           String\n  discordId      String      @unique\n  token          String\n  ownerId        String\n  owner          User        @relation(fields: [ownerId], references: [id])\n  prefix         String      @default(\"!\")\n  createdAt      DateTime    @default(now())\n  updatedAt      DateTime    @updatedAt\n  commands       Command[]\n  events         Event[]\n  configurations BotConfig[]\n  analytics      Analytics[]\n}\n\nmodel Command {\n  id          String              @id @default(uuid())\n  name        String\n  description String\n  response    String\n  enabled     Boolean             @default(true)\n  botId       String\n  bot         Bot                 @relation(fields: [botId], references: [id])\n  createdAt   DateTime            @default(now())\n  updatedAt   DateTime            @updatedAt\n  permissions CommandPermission[]\n  usage       CommandUsage[]\n}\n\nmodel CommandPermission {\n  id        String   @id @default(uuid())\n  commandId String\n  command   Command  @relation(fields: [commandId], references: [id])\n  roleId    String\n  allow     Boolean  @default(true)\n  createdAt DateTime @default(now())\n}\n\nmodel Event {\n  id        String   @id @default(uuid())\n  name      String // e.g., \"messageCreate\", \"guildMemberAdd\"\n  action    String // JavaScript code to execute\n  enabled   Boolean  @default(true)\n  botId     String\n  bot       Bot      @relation(fields: [botId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel BotConfig {\n  id        String   @id @default(uuid())\n  key       String\n  value     String\n  botId     String\n  bot       Bot      @relation(fields: [botId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel CommandUsage {\n  id        String   @id @default(uuid())\n  commandId String\n  command   Command  @relation(fields: [commandId], references: [id])\n  userId    String // Discord user ID\n  guildId   String // Discord guild ID\n  channelId String // Discord channel ID\n  timestamp DateTime @default(now())\n}\n\nmodel Analytics {\n  id        String   @id @default(uuid())\n  botId     String\n  bot       Bot      @relation(fields: [botId], references: [id])\n  eventType String // e.g., \"command_executed\", \"user_joined\"\n  data      Json // Additional event data\n  timestamp DateTime @default(now())\n}\n",
+  "inlineSchemaHash": "a1f0b8922d3b5fcc3146b8ca54f02db377a8cf7602fac3367bfa4875ec79c016",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"teamId\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"Teams\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Collections\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"teamId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"fatherId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"endpoints\",\"kind\":\"object\",\"type\":\"Endpoints\",\"relationName\":\"CollectionsToEndpoints\"}],\"dbName\":null},\"Endpoints\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"path\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"collectionId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"collection\",\"kind\":\"object\",\"type\":\"Collections\",\"relationName\":\"CollectionsToEndpoints\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"bots\",\"kind\":\"object\",\"type\":\"Bot\",\"relationName\":\"BotToUser\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Bot\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"discordId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ownerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"owner\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BotToUser\"},{\"name\":\"prefix\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"commands\",\"kind\":\"object\",\"type\":\"Command\",\"relationName\":\"BotToCommand\"},{\"name\":\"events\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"BotToEvent\"},{\"name\":\"configurations\",\"kind\":\"object\",\"type\":\"BotConfig\",\"relationName\":\"BotToBotConfig\"},{\"name\":\"analytics\",\"kind\":\"object\",\"type\":\"Analytics\",\"relationName\":\"AnalyticsToBot\"}],\"dbName\":null},\"Command\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"response\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"botId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bot\",\"kind\":\"object\",\"type\":\"Bot\",\"relationName\":\"BotToCommand\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"permissions\",\"kind\":\"object\",\"type\":\"CommandPermission\",\"relationName\":\"CommandToCommandPermission\"},{\"name\":\"usage\",\"kind\":\"object\",\"type\":\"CommandUsage\",\"relationName\":\"CommandToCommandUsage\"}],\"dbName\":null},\"CommandPermission\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commandId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"command\",\"kind\":\"object\",\"type\":\"Command\",\"relationName\":\"CommandToCommandPermission\"},{\"name\":\"roleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"allow\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Event\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"botId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bot\",\"kind\":\"object\",\"type\":\"Bot\",\"relationName\":\"BotToEvent\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"BotConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"botId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bot\",\"kind\":\"object\",\"type\":\"Bot\",\"relationName\":\"BotToBotConfig\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"CommandUsage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commandId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"command\",\"kind\":\"object\",\"type\":\"Command\",\"relationName\":\"CommandToCommandUsage\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guildId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"channelId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Analytics\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"botId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bot\",\"kind\":\"object\",\"type\":\"Bot\",\"relationName\":\"AnalyticsToBot\"},{\"name\":\"eventType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: () => require('./query_engine_bg.js'),

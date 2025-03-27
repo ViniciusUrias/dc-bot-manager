@@ -117,40 +117,87 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UsersScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  name: 'name',
   email: 'email',
   password: 'password',
-  teamId: 'teamId'
-};
-
-exports.Prisma.TeamsScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  name: 'name'
-};
-
-exports.Prisma.CollectionsScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
   name: 'name',
-  teamId: 'teamId',
-  fatherId: 'fatherId'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.EndpointsScalarFieldEnum = {
+exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BotScalarFieldEnum = {
+  id: 'id',
   name: 'name',
-  method: 'method',
-  path: 'path',
-  collectionId: 'collectionId'
+  discordId: 'discordId',
+  token: 'token',
+  ownerId: 'ownerId',
+  prefix: 'prefix',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommandScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  response: 'response',
+  enabled: 'enabled',
+  botId: 'botId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommandPermissionScalarFieldEnum = {
+  id: 'id',
+  commandId: 'commandId',
+  roleId: 'roleId',
+  allow: 'allow',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EventScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  action: 'action',
+  enabled: 'enabled',
+  botId: 'botId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BotConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  botId: 'botId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommandUsageScalarFieldEnum = {
+  id: 'id',
+  commandId: 'commandId',
+  userId: 'userId',
+  guildId: 'guildId',
+  channelId: 'channelId',
+  timestamp: 'timestamp'
+};
+
+exports.Prisma.AnalyticsScalarFieldEnum = {
+  id: 'id',
+  botId: 'botId',
+  eventType: 'eventType',
+  data: 'data',
+  timestamp: 'timestamp'
 };
 
 exports.Prisma.SortOrder = {
@@ -158,22 +205,32 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 
 exports.Prisma.ModelName = {
-  Users: 'Users',
-  Teams: 'Teams',
-  Collections: 'Collections',
-  Endpoints: 'Endpoints'
+  User: 'User',
+  Session: 'Session',
+  Bot: 'Bot',
+  Command: 'Command',
+  CommandPermission: 'CommandPermission',
+  Event: 'Event',
+  BotConfig: 'BotConfig',
+  CommandUsage: 'CommandUsage',
+  Analytics: 'Analytics'
 };
 
 /**
