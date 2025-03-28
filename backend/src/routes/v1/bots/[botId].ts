@@ -1,14 +1,13 @@
-import { createRouteConfig } from "@/utils/route-config";
-import { FastifyInstance, FastifyPluginOptions } from "fastify";
+import { createRouteConfig2 } from "@/utils/route-config";
+import { FastifyInstance } from "fastify";
 
-export default async function (app: FastifyInstance, _opts: FastifyPluginOptions) {
+export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 	// GET /bots/:id - Get bot details
 	app.get(
 		"/:botId",
-		createRouteConfig({
-			tags: ["Bots"],
+		createRouteConfig2(defaultRouteConfig, {
 			summary: "Get by id",
-			auth: true, // Requires authentication
+
 			params: {
 				type: "object",
 				properties: {
@@ -31,26 +30,60 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 	);
 
 	// PUT /bots/:id - Update bot
-	app.put("/:botId", async (request, reply) => {
-		const { botId } = request.params as { botId: string };
-		// Implement update logic
-		return { message: "Bot updated successfully" };
-	});
+	app.put(
+		"/:botId",
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "Update bot",
+			params: {
+				type: "object",
+				properties: {
+					botId: {
+						type: "string",
+					},
+				},
+			},
+		}),
+		async (request, reply) => {
+			const { botId } = request.params as { botId: string };
+			// Implement update logic
+			return { message: "Bot updated successfully" };
+		}
+	);
 
 	// DELETE /bots/:id - Delete bot
-	app.delete("/:botId", async (request, reply) => {
-		const { botId } = request.params as { botId: string };
-		// Implement delete logic
-		return { message: "Bot deleted successfully" };
-	});
+	app.delete(
+		"/:botId",
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "Delete bot",
+			params: {
+				type: "object",
+				properties: {
+					botId: {
+						type: "string",
+					},
+				},
+			},
+		}),
+		async (request, reply) => {
+			const { botId } = request.params as { botId: string };
+			// Implement delete logic
+			return { message: "Bot deleted successfully" };
+		}
+	);
 
 	// POST /bots/:id/activate - Activate bot
 	app.post(
 		"/:botId/activate",
-		createRouteConfig({
-			tags: ["Bots"],
+		createRouteConfig2(defaultRouteConfig, {
 			summary: "Activate bot",
-			auth: true, // Requires authentication
+			params: {
+				type: "object",
+				properties: {
+					botId: {
+						type: "string",
+					},
+				},
+			},
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };
@@ -67,10 +100,16 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 	// POST /bots/:id/deactivate - Deactivate bot
 	app.post(
 		"/:botId/deactivate",
-		createRouteConfig({
-			tags: ["Bots"],
+		createRouteConfig2(defaultRouteConfig, {
 			summary: "Deactivate bot",
-			auth: true, // Requires authentication
+			params: {
+				type: "object",
+				properties: {
+					botId: {
+						type: "string",
+					},
+				},
+			},
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };

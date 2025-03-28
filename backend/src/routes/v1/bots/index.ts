@@ -1,4 +1,4 @@
-import { createRouteConfig } from "@/utils/route-config";
+import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import botIdRoutes from "./[botId]";
 import commandsRoutes from "./commands";
@@ -6,12 +6,19 @@ import commandsRoutes from "./commands";
 
 export default async function (app: FastifyInstance, _opts: FastifyPluginOptions) {
 	// GET /bots - List all bots
+
+	const { defaultRouteConfig } = createRoutePlugin({
+		..._opts,
+		defaultRouteConfig: {
+			tags: ["Bots"],
+			summary: "Bots routes",
+			auth: true,
+		},
+	});
 	app.get(
 		"/",
-		createRouteConfig({
-			tags: ["Bots"],
+		createRouteConfig2(defaultRouteConfig, {
 			summary: "Get all bot",
-			auth: true, // Requires authentication
 		}),
 		async (request, reply) => {
 			// Implement logic to list bots
@@ -37,10 +44,8 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 	// POST /bots - Create new bot
 	app.post(
 		"/",
-		createRouteConfig({
-			tags: ["Bots"],
+		createRouteConfig2(defaultRouteConfig, {
 			summary: "Create bot",
-			auth: true, // Requires authentication
 
 			body: {
 				type: "object",
@@ -65,7 +70,7 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 	);
 
 	// Register nested routes
-	app.register(botIdRoutes);
-	app.register(commandsRoutes, { prefix: "/:botId/commands" });
+	app.register(botIdRoutes, { defaultRouteConfig });
+	app.register(commandsRoutes, { prefix: "/:botId/commands", defaultRouteConfig });
 	//   app.register(eventsRoutes, { prefix: '/:botId/events' });
 }

@@ -1,18 +1,22 @@
-import { schemas } from "@/schemas";
 import { hashPassword } from "@/utils/auth";
-import { createRouteConfig } from "@/utils/route-config";
+import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 import userIdRoutes from "./[userId]";
 
-export default async function (app: FastifyInstance) {
+export default async function (app: FastifyInstance, opts) {
 	// Register nested routes
+	const { defaultRouteConfig } = createRoutePlugin({
+		...opts,
+		defaultRouteConfig: {
+			tags: ["Users"],
+			summary: "User routes",
+			auth: true,
+		},
+	});
 	app.post(
 		"/",
-		createRouteConfig({
-			tags: ["Users"],
+		createRouteConfig2(defaultRouteConfig, {
 			summary: "User Create",
-
-			auth: true, // Requires authentication
 
 			body: {
 				type: "object",
@@ -64,21 +68,9 @@ export default async function (app: FastifyInstance) {
 	);
 	app.get(
 		"/me",
-		createRouteConfig({
+		createRouteConfig2({
 			tags: ["Users"],
 			summary: "Get current user profile",
-			auth: true, // Requires authentication
-			response: {
-				200: {
-					description: "Current user details",
-					content: {
-						"application/json": {
-							schema: schemas.User,
-						},
-					},
-				},
-				401: { $ref: "Error#" },
-			},
 		}),
 		async (request, reply) => {
 			// request.user is available because of our auth plugin
@@ -97,7 +89,7 @@ export default async function (app: FastifyInstance) {
 			return user;
 		}
 	);
-	app.register(userIdRoutes);
+	app.register(userIdRoutes, { defaultRouteConfig });
 	// app.register(profileRoutes, { prefix: "/me" });
 	// app.register(sessionsRoutes, { prefix: "/sessions" });
 }

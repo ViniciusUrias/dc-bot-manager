@@ -48,11 +48,6 @@ const main = async () => {
 				},
 			],
 			components: {
-				schemas: {
-					User: schemas.User,
-					Bot: schemas.Bot,
-					Error: schemas.Error,
-				},
 				securitySchemes: {
 					bearerAuth: {
 						type: "http",
@@ -89,8 +84,7 @@ const main = async () => {
 		prefix: "/v1",
 	});
 	fastify.register(cors);
-	// app.use(router);
-	fastify.get("/teste", async (request, reply) => {});
+
 	await fastify.ready();
 	fastify.swagger();
 	fastify.listen({ port }, function (err, address) {
