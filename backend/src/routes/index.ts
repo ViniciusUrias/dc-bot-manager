@@ -4,6 +4,7 @@ import V1Router from "./v1";
 // Fastify plugin (equivalent to Express Router)
 export default async function Router(fastify: FastifyInstance, opts: FastifyPluginOptions) {
 	// Sub-routes (prefix them manually or use `fastify.register`)
+
 	fastify.register(V1Router);
 }
 
