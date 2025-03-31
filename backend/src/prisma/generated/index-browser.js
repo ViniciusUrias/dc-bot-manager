@@ -139,7 +139,8 @@ exports.Prisma.ServerScalarFieldEnum = {
   name: 'name',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  serverid: 'serverid'
 };
 
 exports.Prisma.BotScalarFieldEnum = {

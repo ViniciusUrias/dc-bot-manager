@@ -1,4 +1,4 @@
-import { hashPassword } from "@/utils/auth";
+import { createHash } from "@/utils/auth";
 import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 import userIdRoutes from "./[userId]";
@@ -48,7 +48,7 @@ export default async function (app: FastifyInstance, opts) {
 			}
 
 			// Hash password
-			const hashedPassword = await hashPassword(password);
+			const hashedPassword = await createHash(password);
 
 			// Create user
 			const user = await app.prisma.user.create({

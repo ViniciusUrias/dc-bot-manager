@@ -6,7 +6,7 @@ const SALT_ROUNDS = 12;
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = "7d"; // Token expires in 7 days
 console.log("JWT SECRET", JWT_SECRET);
-export async function hashPassword(password: string): Promise<string> {
+export async function createHash(password: string): Promise<string> {
 	return bcrypt.hash(password, SALT_ROUNDS);
 }
 

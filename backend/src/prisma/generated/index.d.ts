@@ -166,6 +166,16 @@ export class PrismaClient<
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
+  /**
+   * Executes a typed SQL query and returns a typed result
+   * @example
+   * ```
+   * import { myQuery } from '@prisma/client/sql'
+   * 
+   * const result = await prisma.$queryRawTyped(myQuery())
+   * ```
+   */
+  $queryRawTyped<T>(typedSql: runtime.TypedSql<unknown[], T>): Prisma.PrismaPromise<T[]>
 
   /**
    * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
@@ -1521,6 +1531,10 @@ export namespace Prisma {
           args: [query: string, ...values: any[]],
           result: any
         }
+        $queryRawTyped: {
+          args: runtime.UnknownTypedSql,
+          result: Prisma.JsonObject
+        }
       }
     }
   }
@@ -1692,15 +1706,15 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    sessions: number
     bots: number
     servers: number
+    sessions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     bots?: boolean | UserCountOutputTypeCountBotsArgs
     servers?: boolean | UserCountOutputTypeCountServersArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   }
 
   // Custom InputTypes
@@ -1717,13 +1731,6 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
   export type UserCountOutputTypeCountBotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BotWhereInput
   }
@@ -1735,17 +1742,24 @@ export namespace Prisma {
     where?: ServerWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+  }
+
 
   /**
    * Count Type ServerCountOutputType
    */
 
   export type ServerCountOutputType = {
-    Bot: number
+    bots: number
   }
 
   export type ServerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Bot?: boolean | ServerCountOutputTypeCountBotArgs
+    bots?: boolean | ServerCountOutputTypeCountBotsArgs
   }
 
   // Custom InputTypes
@@ -1762,7 +1776,7 @@ export namespace Prisma {
   /**
    * ServerCountOutputType without action
    */
-  export type ServerCountOutputTypeCountBotArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ServerCountOutputTypeCountBotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BotWhereInput
   }
 
@@ -1772,17 +1786,17 @@ export namespace Prisma {
    */
 
   export type BotCountOutputType = {
+    analytics: number
+    configurations: number
     commands: number
     events: number
-    configurations: number
-    analytics: number
   }
 
   export type BotCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analytics?: boolean | BotCountOutputTypeCountAnalyticsArgs
+    configurations?: boolean | BotCountOutputTypeCountConfigurationsArgs
     commands?: boolean | BotCountOutputTypeCountCommandsArgs
     events?: boolean | BotCountOutputTypeCountEventsArgs
-    configurations?: boolean | BotCountOutputTypeCountConfigurationsArgs
-    analytics?: boolean | BotCountOutputTypeCountAnalyticsArgs
   }
 
   // Custom InputTypes
@@ -1799,15 +1813,8 @@ export namespace Prisma {
   /**
    * BotCountOutputType without action
    */
-  export type BotCountOutputTypeCountCommandsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CommandWhereInput
-  }
-
-  /**
-   * BotCountOutputType without action
-   */
-  export type BotCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: EventWhereInput
+  export type BotCountOutputTypeCountAnalyticsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalyticsWhereInput
   }
 
   /**
@@ -1820,8 +1827,15 @@ export namespace Prisma {
   /**
    * BotCountOutputType without action
    */
-  export type BotCountOutputTypeCountAnalyticsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AnalyticsWhereInput
+  export type BotCountOutputTypeCountCommandsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommandWhereInput
+  }
+
+  /**
+   * BotCountOutputType without action
+   */
+  export type BotCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventWhereInput
   }
 
 
@@ -2041,9 +2055,9 @@ export namespace Prisma {
     name?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     bots?: boolean | User$botsArgs<ExtArgs>
     servers?: boolean | User$serversArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2076,9 +2090,9 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     bots?: boolean | User$botsArgs<ExtArgs>
     servers?: boolean | User$serversArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2087,9 +2101,9 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
       bots: Prisma.$BotPayload<ExtArgs>[]
       servers: Prisma.$ServerPayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2492,9 +2506,9 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bots<T extends User$botsArgs<ExtArgs> = {}>(args?: Subset<T, User$botsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     servers<T extends User$serversArgs<ExtArgs> = {}>(args?: Subset<T, User$serversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2918,30 +2932,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.sessions
-   */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
    * User.bots
    */
   export type User$botsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2987,6 +2977,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+  }
+
+  /**
+   * User.sessions
+   */
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
   }
 
   /**
@@ -4082,6 +4096,7 @@ export namespace Prisma {
     ownerId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    serverid: string | null
   }
 
   export type ServerMaxAggregateOutputType = {
@@ -4090,6 +4105,7 @@ export namespace Prisma {
     ownerId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    serverid: string | null
   }
 
   export type ServerCountAggregateOutputType = {
@@ -4098,6 +4114,7 @@ export namespace Prisma {
     ownerId: number
     createdAt: number
     updatedAt: number
+    serverid: number
     _all: number
   }
 
@@ -4108,6 +4125,7 @@ export namespace Prisma {
     ownerId?: true
     createdAt?: true
     updatedAt?: true
+    serverid?: true
   }
 
   export type ServerMaxAggregateInputType = {
@@ -4116,6 +4134,7 @@ export namespace Prisma {
     ownerId?: true
     createdAt?: true
     updatedAt?: true
+    serverid?: true
   }
 
   export type ServerCountAggregateInputType = {
@@ -4124,6 +4143,7 @@ export namespace Prisma {
     ownerId?: true
     createdAt?: true
     updatedAt?: true
+    serverid?: true
     _all?: true
   }
 
@@ -4205,6 +4225,7 @@ export namespace Prisma {
     ownerId: string
     createdAt: Date
     updatedAt: Date
+    serverid: string | null
     _count: ServerCountAggregateOutputType | null
     _min: ServerMinAggregateOutputType | null
     _max: ServerMaxAggregateOutputType | null
@@ -4230,8 +4251,9 @@ export namespace Prisma {
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverid?: boolean
+    bots?: boolean | Server$botsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
-    Bot?: boolean | Server$BotArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["server"]>
 
@@ -4241,6 +4263,7 @@ export namespace Prisma {
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverid?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["server"]>
 
@@ -4250,6 +4273,7 @@ export namespace Prisma {
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverid?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["server"]>
 
@@ -4259,12 +4283,13 @@ export namespace Prisma {
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    serverid?: boolean
   }
 
-  export type ServerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["server"]>
+  export type ServerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ownerId" | "createdAt" | "updatedAt" | "serverid", ExtArgs["result"]["server"]>
   export type ServerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bots?: boolean | Server$botsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
-    Bot?: boolean | Server$BotArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ServerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4277,8 +4302,8 @@ export namespace Prisma {
   export type $ServerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Server"
     objects: {
+      bots: Prisma.$BotPayload<ExtArgs>[]
       owner: Prisma.$UserPayload<ExtArgs>
-      Bot: Prisma.$BotPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4286,6 +4311,7 @@ export namespace Prisma {
       ownerId: string
       createdAt: Date
       updatedAt: Date
+      serverid: string | null
     }, ExtArgs["result"]["server"]>
     composites: {}
   }
@@ -4680,8 +4706,8 @@ export namespace Prisma {
    */
   export interface Prisma__ServerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    bots<T extends Server$botsArgs<ExtArgs> = {}>(args?: Subset<T, Server$botsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    Bot<T extends Server$BotArgs<ExtArgs> = {}>(args?: Subset<T, Server$BotArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4716,6 +4742,7 @@ export namespace Prisma {
     readonly ownerId: FieldRef<"Server", 'String'>
     readonly createdAt: FieldRef<"Server", 'DateTime'>
     readonly updatedAt: FieldRef<"Server", 'DateTime'>
+    readonly serverid: FieldRef<"Server", 'String'>
   }
     
 
@@ -5112,9 +5139,9 @@ export namespace Prisma {
   }
 
   /**
-   * Server.Bot
+   * Server.bots
    */
-  export type Server$BotArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Server$botsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Bot
      */
@@ -5350,12 +5377,12 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     serverId?: boolean
+    analytics?: boolean | Bot$analyticsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
     server?: boolean | ServerDefaultArgs<ExtArgs>
+    configurations?: boolean | Bot$configurationsArgs<ExtArgs>
     commands?: boolean | Bot$commandsArgs<ExtArgs>
     events?: boolean | Bot$eventsArgs<ExtArgs>
-    configurations?: boolean | Bot$configurationsArgs<ExtArgs>
-    analytics?: boolean | Bot$analyticsArgs<ExtArgs>
     _count?: boolean | BotCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bot"]>
 
@@ -5401,12 +5428,12 @@ export namespace Prisma {
 
   export type BotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "token" | "active" | "ownerId" | "prefix" | "createdAt" | "updatedAt" | "serverId", ExtArgs["result"]["bot"]>
   export type BotInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    analytics?: boolean | Bot$analyticsArgs<ExtArgs>
     owner?: boolean | UserDefaultArgs<ExtArgs>
     server?: boolean | ServerDefaultArgs<ExtArgs>
+    configurations?: boolean | Bot$configurationsArgs<ExtArgs>
     commands?: boolean | Bot$commandsArgs<ExtArgs>
     events?: boolean | Bot$eventsArgs<ExtArgs>
-    configurations?: boolean | Bot$configurationsArgs<ExtArgs>
-    analytics?: boolean | Bot$analyticsArgs<ExtArgs>
     _count?: boolean | BotCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BotIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5421,12 +5448,12 @@ export namespace Prisma {
   export type $BotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Bot"
     objects: {
+      analytics: Prisma.$AnalyticsPayload<ExtArgs>[]
       owner: Prisma.$UserPayload<ExtArgs>
       server: Prisma.$ServerPayload<ExtArgs>
+      configurations: Prisma.$BotConfigPayload<ExtArgs>[]
       commands: Prisma.$CommandPayload<ExtArgs>[]
       events: Prisma.$EventPayload<ExtArgs>[]
-      configurations: Prisma.$BotConfigPayload<ExtArgs>[]
-      analytics: Prisma.$AnalyticsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5832,12 +5859,12 @@ export namespace Prisma {
    */
   export interface Prisma__BotClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    analytics<T extends Bot$analyticsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$analyticsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalyticsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     server<T extends ServerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServerDefaultArgs<ExtArgs>>): Prisma__ServerClient<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    configurations<T extends Bot$configurationsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$configurationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     commands<T extends Bot$commandsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$commandsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommandPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends Bot$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    configurations<T extends Bot$configurationsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$configurationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BotConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    analytics<T extends Bot$analyticsArgs<ExtArgs> = {}>(args?: Subset<T, Bot$analyticsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalyticsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6272,6 +6299,54 @@ export namespace Prisma {
   }
 
   /**
+   * Bot.analytics
+   */
+  export type Bot$analyticsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Analytics
+     */
+    select?: AnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Analytics
+     */
+    omit?: AnalyticsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnalyticsInclude<ExtArgs> | null
+    where?: AnalyticsWhereInput
+    orderBy?: AnalyticsOrderByWithRelationInput | AnalyticsOrderByWithRelationInput[]
+    cursor?: AnalyticsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnalyticsScalarFieldEnum | AnalyticsScalarFieldEnum[]
+  }
+
+  /**
+   * Bot.configurations
+   */
+  export type Bot$configurationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BotConfig
+     */
+    select?: BotConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BotConfig
+     */
+    omit?: BotConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BotConfigInclude<ExtArgs> | null
+    where?: BotConfigWhereInput
+    orderBy?: BotConfigOrderByWithRelationInput | BotConfigOrderByWithRelationInput[]
+    cursor?: BotConfigWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BotConfigScalarFieldEnum | BotConfigScalarFieldEnum[]
+  }
+
+  /**
    * Bot.commands
    */
   export type Bot$commandsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6317,54 +6392,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
-  }
-
-  /**
-   * Bot.configurations
-   */
-  export type Bot$configurationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BotConfig
-     */
-    select?: BotConfigSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BotConfig
-     */
-    omit?: BotConfigOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BotConfigInclude<ExtArgs> | null
-    where?: BotConfigWhereInput
-    orderBy?: BotConfigOrderByWithRelationInput | BotConfigOrderByWithRelationInput[]
-    cursor?: BotConfigWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: BotConfigScalarFieldEnum | BotConfigScalarFieldEnum[]
-  }
-
-  /**
-   * Bot.analytics
-   */
-  export type Bot$analyticsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Analytics
-     */
-    select?: AnalyticsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Analytics
-     */
-    omit?: AnalyticsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AnalyticsInclude<ExtArgs> | null
-    where?: AnalyticsWhereInput
-    orderBy?: AnalyticsOrderByWithRelationInput | AnalyticsOrderByWithRelationInput[]
-    cursor?: AnalyticsWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AnalyticsScalarFieldEnum | AnalyticsScalarFieldEnum[]
   }
 
   /**
@@ -12921,7 +12948,8 @@ export namespace Prisma {
     name: 'name',
     ownerId: 'ownerId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    serverid: 'serverid'
   };
 
   export type ServerScalarFieldEnum = (typeof ServerScalarFieldEnum)[keyof typeof ServerScalarFieldEnum]
@@ -13136,9 +13164,9 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    sessions?: SessionListRelationFilter
     bots?: BotListRelationFilter
     servers?: ServerListRelationFilter
+    sessions?: SessionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13148,9 +13176,9 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    sessions?: SessionOrderByRelationAggregateInput
     bots?: BotOrderByRelationAggregateInput
     servers?: ServerOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13163,9 +13191,9 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    sessions?: SessionListRelationFilter
     bots?: BotListRelationFilter
     servers?: ServerListRelationFilter
+    sessions?: SessionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -13256,8 +13284,9 @@ export namespace Prisma {
     ownerId?: StringFilter<"Server"> | string
     createdAt?: DateTimeFilter<"Server"> | Date | string
     updatedAt?: DateTimeFilter<"Server"> | Date | string
+    serverid?: StringNullableFilter<"Server"> | string | null
+    bots?: BotListRelationFilter
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
-    Bot?: BotListRelationFilter
   }
 
   export type ServerOrderByWithRelationInput = {
@@ -13266,22 +13295,24 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverid?: SortOrderInput | SortOrder
+    bots?: BotOrderByRelationAggregateInput
     owner?: UserOrderByWithRelationInput
-    Bot?: BotOrderByRelationAggregateInput
   }
 
   export type ServerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     name?: string
+    serverid?: string
     AND?: ServerWhereInput | ServerWhereInput[]
     OR?: ServerWhereInput[]
     NOT?: ServerWhereInput | ServerWhereInput[]
     ownerId?: StringFilter<"Server"> | string
     createdAt?: DateTimeFilter<"Server"> | Date | string
     updatedAt?: DateTimeFilter<"Server"> | Date | string
+    bots?: BotListRelationFilter
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
-    Bot?: BotListRelationFilter
-  }, "id" | "name">
+  }, "id" | "name" | "serverid">
 
   export type ServerOrderByWithAggregationInput = {
     id?: SortOrder
@@ -13289,6 +13320,7 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverid?: SortOrderInput | SortOrder
     _count?: ServerCountOrderByAggregateInput
     _max?: ServerMaxOrderByAggregateInput
     _min?: ServerMinOrderByAggregateInput
@@ -13303,6 +13335,7 @@ export namespace Prisma {
     ownerId?: StringWithAggregatesFilter<"Server"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Server"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Server"> | Date | string
+    serverid?: StringNullableWithAggregatesFilter<"Server"> | string | null
   }
 
   export type BotWhereInput = {
@@ -13318,12 +13351,12 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Bot"> | Date | string
     updatedAt?: DateTimeFilter<"Bot"> | Date | string
     serverId?: StringFilter<"Bot"> | string
+    analytics?: AnalyticsListRelationFilter
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    configurations?: BotConfigListRelationFilter
     commands?: CommandListRelationFilter
     events?: EventListRelationFilter
-    configurations?: BotConfigListRelationFilter
-    analytics?: AnalyticsListRelationFilter
   }
 
   export type BotOrderByWithRelationInput = {
@@ -13336,12 +13369,12 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     serverId?: SortOrder
+    analytics?: AnalyticsOrderByRelationAggregateInput
     owner?: UserOrderByWithRelationInput
     server?: ServerOrderByWithRelationInput
+    configurations?: BotConfigOrderByRelationAggregateInput
     commands?: CommandOrderByRelationAggregateInput
     events?: EventOrderByRelationAggregateInput
-    configurations?: BotConfigOrderByRelationAggregateInput
-    analytics?: AnalyticsOrderByRelationAggregateInput
   }
 
   export type BotWhereUniqueInput = Prisma.AtLeast<{
@@ -13357,12 +13390,12 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Bot"> | Date | string
     updatedAt?: DateTimeFilter<"Bot"> | Date | string
     serverId?: StringFilter<"Bot"> | string
+    analytics?: AnalyticsListRelationFilter
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     server?: XOR<ServerScalarRelationFilter, ServerWhereInput>
+    configurations?: BotConfigListRelationFilter
     commands?: CommandListRelationFilter
     events?: EventListRelationFilter
-    configurations?: BotConfigListRelationFilter
-    analytics?: AnalyticsListRelationFilter
   }, "id">
 
   export type BotOrderByWithAggregationInput = {
@@ -13773,9 +13806,9 @@ export namespace Prisma {
     name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionCreateNestedManyWithoutUserInput
     bots?: BotCreateNestedManyWithoutOwnerInput
     servers?: ServerCreateNestedManyWithoutOwnerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -13785,9 +13818,9 @@ export namespace Prisma {
     name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
     servers?: ServerUncheckedCreateNestedManyWithoutOwnerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -13797,9 +13830,9 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     bots?: BotUpdateManyWithoutOwnerNestedInput
     servers?: ServerUpdateManyWithoutOwnerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -13809,9 +13842,9 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     bots?: BotUncheckedUpdateManyWithoutOwnerNestedInput
     servers?: ServerUncheckedUpdateManyWithoutOwnerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13901,8 +13934,9 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverid?: string | null
+    bots?: BotCreateNestedManyWithoutServerInput
     owner: UserCreateNestedOneWithoutServersInput
-    Bot?: BotCreateNestedManyWithoutServerInput
   }
 
   export type ServerUncheckedCreateInput = {
@@ -13911,7 +13945,8 @@ export namespace Prisma {
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    Bot?: BotUncheckedCreateNestedManyWithoutServerInput
+    serverid?: string | null
+    bots?: BotUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerUpdateInput = {
@@ -13919,8 +13954,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
+    bots?: BotUpdateManyWithoutServerNestedInput
     owner?: UserUpdateOneRequiredWithoutServersNestedInput
-    Bot?: BotUpdateManyWithoutServerNestedInput
   }
 
   export type ServerUncheckedUpdateInput = {
@@ -13929,7 +13965,8 @@ export namespace Prisma {
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Bot?: BotUncheckedUpdateManyWithoutServerNestedInput
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
+    bots?: BotUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type ServerCreateManyInput = {
@@ -13938,6 +13975,7 @@ export namespace Prisma {
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverid?: string | null
   }
 
   export type ServerUpdateManyMutationInput = {
@@ -13945,6 +13983,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ServerUncheckedUpdateManyInput = {
@@ -13953,6 +13992,7 @@ export namespace Prisma {
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BotCreateInput = {
@@ -13963,12 +14003,12 @@ export namespace Prisma {
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    analytics?: AnalyticsCreateNestedManyWithoutBotInput
     owner: UserCreateNestedOneWithoutBotsInput
-    server: ServerCreateNestedOneWithoutBotInput
+    server: ServerCreateNestedOneWithoutBotsInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsCreateNestedManyWithoutBotInput
   }
 
   export type BotUncheckedCreateInput = {
@@ -13981,10 +14021,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     serverId: string
+    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
   }
 
   export type BotUpdateInput = {
@@ -13995,12 +14035,12 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
-    server?: ServerUpdateOneRequiredWithoutBotNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotsNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateInput = {
@@ -14013,10 +14053,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serverId?: StringFieldUpdateOperationsInput | string
+    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
   }
 
   export type BotCreateManyInput = {
@@ -14481,12 +14521,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
-  }
-
   export type BotListRelationFilter = {
     every?: BotWhereInput
     some?: BotWhereInput
@@ -14499,13 +14533,15 @@ export namespace Prisma {
     none?: ServerWhereInput
   }
 
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
-  }
-
-  export type SessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type BotOrderByRelationAggregateInput = {
@@ -14513,6 +14549,10 @@ export namespace Prisma {
   }
 
   export type ServerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14628,6 +14668,7 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverid?: SortOrder
   }
 
   export type ServerMaxOrderByAggregateInput = {
@@ -14636,6 +14677,7 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverid?: SortOrder
   }
 
   export type ServerMinOrderByAggregateInput = {
@@ -14644,6 +14686,7 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    serverid?: SortOrder
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -14651,9 +14694,21 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type AnalyticsListRelationFilter = {
+    every?: AnalyticsWhereInput
+    some?: AnalyticsWhereInput
+    none?: AnalyticsWhereInput
+  }
+
   export type ServerScalarRelationFilter = {
     is?: ServerWhereInput
     isNot?: ServerWhereInput
+  }
+
+  export type BotConfigListRelationFilter = {
+    every?: BotConfigWhereInput
+    some?: BotConfigWhereInput
+    none?: BotConfigWhereInput
   }
 
   export type CommandListRelationFilter = {
@@ -14668,23 +14723,7 @@ export namespace Prisma {
     none?: EventWhereInput
   }
 
-  export type BotConfigListRelationFilter = {
-    every?: BotConfigWhereInput
-    some?: BotConfigWhereInput
-    none?: BotConfigWhereInput
-  }
-
-  export type AnalyticsListRelationFilter = {
-    every?: AnalyticsWhereInput
-    some?: AnalyticsWhereInput
-    none?: AnalyticsWhereInput
-  }
-
-  export type CommandOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type EventOrderByRelationAggregateInput = {
+  export type AnalyticsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14692,7 +14731,11 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type AnalyticsOrderByRelationAggregateInput = {
+  export type CommandOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14982,13 +15025,6 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
-  export type SessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
   export type BotCreateNestedManyWithoutOwnerInput = {
     create?: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput> | BotCreateWithoutOwnerInput[] | BotUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: BotCreateOrConnectWithoutOwnerInput | BotCreateOrConnectWithoutOwnerInput[]
@@ -15003,7 +15039,7 @@ export namespace Prisma {
     connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
   }
 
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+  export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
@@ -15024,6 +15060,13 @@ export namespace Prisma {
     connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
   }
 
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -15034,20 +15077,6 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type SessionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type BotUpdateManyWithoutOwnerNestedInput = {
@@ -15078,7 +15107,7 @@ export namespace Prisma {
     deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+  export type SessionUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
@@ -15120,6 +15149,20 @@ export namespace Prisma {
     deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
   }
 
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutSessionsInput = {
     create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
@@ -15134,12 +15177,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type UserCreateNestedOneWithoutServersInput = {
-    create?: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutServersInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type BotCreateNestedManyWithoutServerInput = {
     create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
     connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
@@ -15147,19 +15184,17 @@ export namespace Prisma {
     connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
   }
 
+  export type UserCreateNestedOneWithoutServersInput = {
+    create?: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutServersInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type BotUncheckedCreateNestedManyWithoutServerInput = {
     create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
     connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
     createMany?: BotCreateManyServerInputEnvelope
     connect?: BotWhereUniqueInput | BotWhereUniqueInput[]
-  }
-
-  export type UserUpdateOneRequiredWithoutServersNestedInput = {
-    create?: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
-    connectOrCreate?: UserCreateOrConnectWithoutServersInput
-    upsert?: UserUpsertWithoutServersInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutServersInput, UserUpdateWithoutServersInput>, UserUncheckedUpdateWithoutServersInput>
   }
 
   export type BotUpdateManyWithoutServerNestedInput = {
@@ -15176,6 +15211,14 @@ export namespace Prisma {
     deleteMany?: BotScalarWhereInput | BotScalarWhereInput[]
   }
 
+  export type UserUpdateOneRequiredWithoutServersNestedInput = {
+    create?: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutServersInput
+    upsert?: UserUpsertWithoutServersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutServersInput, UserUpdateWithoutServersInput>, UserUncheckedUpdateWithoutServersInput>
+  }
+
   export type BotUncheckedUpdateManyWithoutServerNestedInput = {
     create?: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput> | BotCreateWithoutServerInput[] | BotUncheckedCreateWithoutServerInput[]
     connectOrCreate?: BotCreateOrConnectWithoutServerInput | BotCreateOrConnectWithoutServerInput[]
@@ -15190,16 +15233,30 @@ export namespace Prisma {
     deleteMany?: BotScalarWhereInput | BotScalarWhereInput[]
   }
 
+  export type AnalyticsCreateNestedManyWithoutBotInput = {
+    create?: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput> | AnalyticsCreateWithoutBotInput[] | AnalyticsUncheckedCreateWithoutBotInput[]
+    connectOrCreate?: AnalyticsCreateOrConnectWithoutBotInput | AnalyticsCreateOrConnectWithoutBotInput[]
+    createMany?: AnalyticsCreateManyBotInputEnvelope
+    connect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
+  }
+
   export type UserCreateNestedOneWithoutBotsInput = {
     create?: XOR<UserCreateWithoutBotsInput, UserUncheckedCreateWithoutBotsInput>
     connectOrCreate?: UserCreateOrConnectWithoutBotsInput
     connect?: UserWhereUniqueInput
   }
 
-  export type ServerCreateNestedOneWithoutBotInput = {
-    create?: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
-    connectOrCreate?: ServerCreateOrConnectWithoutBotInput
+  export type ServerCreateNestedOneWithoutBotsInput = {
+    create?: XOR<ServerCreateWithoutBotsInput, ServerUncheckedCreateWithoutBotsInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutBotsInput
     connect?: ServerWhereUniqueInput
+  }
+
+  export type BotConfigCreateNestedManyWithoutBotInput = {
+    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
+    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
+    createMany?: BotConfigCreateManyBotInputEnvelope
+    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
   }
 
   export type CommandCreateNestedManyWithoutBotInput = {
@@ -15216,18 +15273,18 @@ export namespace Prisma {
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
   }
 
-  export type BotConfigCreateNestedManyWithoutBotInput = {
-    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
-    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
-    createMany?: BotConfigCreateManyBotInputEnvelope
-    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-  }
-
-  export type AnalyticsCreateNestedManyWithoutBotInput = {
+  export type AnalyticsUncheckedCreateNestedManyWithoutBotInput = {
     create?: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput> | AnalyticsCreateWithoutBotInput[] | AnalyticsUncheckedCreateWithoutBotInput[]
     connectOrCreate?: AnalyticsCreateOrConnectWithoutBotInput | AnalyticsCreateOrConnectWithoutBotInput[]
     createMany?: AnalyticsCreateManyBotInputEnvelope
     connect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
+  }
+
+  export type BotConfigUncheckedCreateNestedManyWithoutBotInput = {
+    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
+    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
+    createMany?: BotConfigCreateManyBotInputEnvelope
+    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
   }
 
   export type CommandUncheckedCreateNestedManyWithoutBotInput = {
@@ -15244,22 +15301,22 @@ export namespace Prisma {
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
   }
 
-  export type BotConfigUncheckedCreateNestedManyWithoutBotInput = {
-    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
-    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
-    createMany?: BotConfigCreateManyBotInputEnvelope
-    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-  }
-
-  export type AnalyticsUncheckedCreateNestedManyWithoutBotInput = {
-    create?: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput> | AnalyticsCreateWithoutBotInput[] | AnalyticsUncheckedCreateWithoutBotInput[]
-    connectOrCreate?: AnalyticsCreateOrConnectWithoutBotInput | AnalyticsCreateOrConnectWithoutBotInput[]
-    createMany?: AnalyticsCreateManyBotInputEnvelope
-    connect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
-  }
-
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type AnalyticsUpdateManyWithoutBotNestedInput = {
+    create?: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput> | AnalyticsCreateWithoutBotInput[] | AnalyticsUncheckedCreateWithoutBotInput[]
+    connectOrCreate?: AnalyticsCreateOrConnectWithoutBotInput | AnalyticsCreateOrConnectWithoutBotInput[]
+    upsert?: AnalyticsUpsertWithWhereUniqueWithoutBotInput | AnalyticsUpsertWithWhereUniqueWithoutBotInput[]
+    createMany?: AnalyticsCreateManyBotInputEnvelope
+    set?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
+    disconnect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
+    delete?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
+    connect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
+    update?: AnalyticsUpdateWithWhereUniqueWithoutBotInput | AnalyticsUpdateWithWhereUniqueWithoutBotInput[]
+    updateMany?: AnalyticsUpdateManyWithWhereWithoutBotInput | AnalyticsUpdateManyWithWhereWithoutBotInput[]
+    deleteMany?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
   }
 
   export type UserUpdateOneRequiredWithoutBotsNestedInput = {
@@ -15270,12 +15327,26 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBotsInput, UserUpdateWithoutBotsInput>, UserUncheckedUpdateWithoutBotsInput>
   }
 
-  export type ServerUpdateOneRequiredWithoutBotNestedInput = {
-    create?: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
-    connectOrCreate?: ServerCreateOrConnectWithoutBotInput
-    upsert?: ServerUpsertWithoutBotInput
+  export type ServerUpdateOneRequiredWithoutBotsNestedInput = {
+    create?: XOR<ServerCreateWithoutBotsInput, ServerUncheckedCreateWithoutBotsInput>
+    connectOrCreate?: ServerCreateOrConnectWithoutBotsInput
+    upsert?: ServerUpsertWithoutBotsInput
     connect?: ServerWhereUniqueInput
-    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutBotInput, ServerUpdateWithoutBotInput>, ServerUncheckedUpdateWithoutBotInput>
+    update?: XOR<XOR<ServerUpdateToOneWithWhereWithoutBotsInput, ServerUpdateWithoutBotsInput>, ServerUncheckedUpdateWithoutBotsInput>
+  }
+
+  export type BotConfigUpdateManyWithoutBotNestedInput = {
+    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
+    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
+    upsert?: BotConfigUpsertWithWhereUniqueWithoutBotInput | BotConfigUpsertWithWhereUniqueWithoutBotInput[]
+    createMany?: BotConfigCreateManyBotInputEnvelope
+    set?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    disconnect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    delete?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    update?: BotConfigUpdateWithWhereUniqueWithoutBotInput | BotConfigUpdateWithWhereUniqueWithoutBotInput[]
+    updateMany?: BotConfigUpdateManyWithWhereWithoutBotInput | BotConfigUpdateManyWithWhereWithoutBotInput[]
+    deleteMany?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
   }
 
   export type CommandUpdateManyWithoutBotNestedInput = {
@@ -15306,21 +15377,7 @@ export namespace Prisma {
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
   }
 
-  export type BotConfigUpdateManyWithoutBotNestedInput = {
-    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
-    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
-    upsert?: BotConfigUpsertWithWhereUniqueWithoutBotInput | BotConfigUpsertWithWhereUniqueWithoutBotInput[]
-    createMany?: BotConfigCreateManyBotInputEnvelope
-    set?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    disconnect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    delete?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    update?: BotConfigUpdateWithWhereUniqueWithoutBotInput | BotConfigUpdateWithWhereUniqueWithoutBotInput[]
-    updateMany?: BotConfigUpdateManyWithWhereWithoutBotInput | BotConfigUpdateManyWithWhereWithoutBotInput[]
-    deleteMany?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
-  }
-
-  export type AnalyticsUpdateManyWithoutBotNestedInput = {
+  export type AnalyticsUncheckedUpdateManyWithoutBotNestedInput = {
     create?: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput> | AnalyticsCreateWithoutBotInput[] | AnalyticsUncheckedCreateWithoutBotInput[]
     connectOrCreate?: AnalyticsCreateOrConnectWithoutBotInput | AnalyticsCreateOrConnectWithoutBotInput[]
     upsert?: AnalyticsUpsertWithWhereUniqueWithoutBotInput | AnalyticsUpsertWithWhereUniqueWithoutBotInput[]
@@ -15332,6 +15389,20 @@ export namespace Prisma {
     update?: AnalyticsUpdateWithWhereUniqueWithoutBotInput | AnalyticsUpdateWithWhereUniqueWithoutBotInput[]
     updateMany?: AnalyticsUpdateManyWithWhereWithoutBotInput | AnalyticsUpdateManyWithWhereWithoutBotInput[]
     deleteMany?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
+  }
+
+  export type BotConfigUncheckedUpdateManyWithoutBotNestedInput = {
+    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
+    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
+    upsert?: BotConfigUpsertWithWhereUniqueWithoutBotInput | BotConfigUpsertWithWhereUniqueWithoutBotInput[]
+    createMany?: BotConfigCreateManyBotInputEnvelope
+    set?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    disconnect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    delete?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
+    update?: BotConfigUpdateWithWhereUniqueWithoutBotInput | BotConfigUpdateWithWhereUniqueWithoutBotInput[]
+    updateMany?: BotConfigUpdateManyWithWhereWithoutBotInput | BotConfigUpdateManyWithWhereWithoutBotInput[]
+    deleteMany?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
   }
 
   export type CommandUncheckedUpdateManyWithoutBotNestedInput = {
@@ -15360,34 +15431,6 @@ export namespace Prisma {
     update?: EventUpdateWithWhereUniqueWithoutBotInput | EventUpdateWithWhereUniqueWithoutBotInput[]
     updateMany?: EventUpdateManyWithWhereWithoutBotInput | EventUpdateManyWithWhereWithoutBotInput[]
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
-  }
-
-  export type BotConfigUncheckedUpdateManyWithoutBotNestedInput = {
-    create?: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput> | BotConfigCreateWithoutBotInput[] | BotConfigUncheckedCreateWithoutBotInput[]
-    connectOrCreate?: BotConfigCreateOrConnectWithoutBotInput | BotConfigCreateOrConnectWithoutBotInput[]
-    upsert?: BotConfigUpsertWithWhereUniqueWithoutBotInput | BotConfigUpsertWithWhereUniqueWithoutBotInput[]
-    createMany?: BotConfigCreateManyBotInputEnvelope
-    set?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    disconnect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    delete?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    connect?: BotConfigWhereUniqueInput | BotConfigWhereUniqueInput[]
-    update?: BotConfigUpdateWithWhereUniqueWithoutBotInput | BotConfigUpdateWithWhereUniqueWithoutBotInput[]
-    updateMany?: BotConfigUpdateManyWithWhereWithoutBotInput | BotConfigUpdateManyWithWhereWithoutBotInput[]
-    deleteMany?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
-  }
-
-  export type AnalyticsUncheckedUpdateManyWithoutBotNestedInput = {
-    create?: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput> | AnalyticsCreateWithoutBotInput[] | AnalyticsUncheckedCreateWithoutBotInput[]
-    connectOrCreate?: AnalyticsCreateOrConnectWithoutBotInput | AnalyticsCreateOrConnectWithoutBotInput[]
-    upsert?: AnalyticsUpsertWithWhereUniqueWithoutBotInput | AnalyticsUpsertWithWhereUniqueWithoutBotInput[]
-    createMany?: AnalyticsCreateManyBotInputEnvelope
-    set?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
-    disconnect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
-    delete?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
-    connect?: AnalyticsWhereUniqueInput | AnalyticsWhereUniqueInput[]
-    update?: AnalyticsUpdateWithWhereUniqueWithoutBotInput | AnalyticsUpdateWithWhereUniqueWithoutBotInput[]
-    updateMany?: AnalyticsUpdateManyWithWhereWithoutBotInput | AnalyticsUpdateManyWithWhereWithoutBotInput[]
-    deleteMany?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
   }
 
   export type BotCreateNestedOneWithoutCommandsInput = {
@@ -15703,6 +15746,74 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type BotCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    token: string
+    active?: boolean
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    analytics?: AnalyticsCreateNestedManyWithoutBotInput
+    server: ServerCreateNestedOneWithoutBotsInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
+    commands?: CommandCreateNestedManyWithoutBotInput
+    events?: EventCreateNestedManyWithoutBotInput
+  }
+
+  export type BotUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    token: string
+    active?: boolean
+    prefix?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serverId: string
+    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
+    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
+    events?: EventUncheckedCreateNestedManyWithoutBotInput
+  }
+
+  export type BotCreateOrConnectWithoutOwnerInput = {
+    where: BotWhereUniqueInput
+    create: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type BotCreateManyOwnerInputEnvelope = {
+    data: BotCreateManyOwnerInput | BotCreateManyOwnerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ServerCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serverid?: string | null
+    bots?: BotCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serverid?: string | null
+    bots?: BotUncheckedCreateNestedManyWithoutServerInput
+  }
+
+  export type ServerCreateOrConnectWithoutOwnerInput = {
+    where: ServerWhereUniqueInput
+    create: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type ServerCreateManyOwnerInputEnvelope = {
+    data: ServerCreateManyOwnerInput | ServerCreateManyOwnerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionCreateWithoutUserInput = {
     id?: string
     token: string
@@ -15725,99 +15836,6 @@ export namespace Prisma {
   export type SessionCreateManyUserInputEnvelope = {
     data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
     skipDuplicates?: boolean
-  }
-
-  export type BotCreateWithoutOwnerInput = {
-    id?: string
-    name: string
-    token: string
-    active?: boolean
-    prefix?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    server: ServerCreateNestedOneWithoutBotInput
-    commands?: CommandCreateNestedManyWithoutBotInput
-    events?: EventCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsCreateNestedManyWithoutBotInput
-  }
-
-  export type BotUncheckedCreateWithoutOwnerInput = {
-    id?: string
-    name: string
-    token: string
-    active?: boolean
-    prefix?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    serverId: string
-    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
-    events?: EventUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
-  }
-
-  export type BotCreateOrConnectWithoutOwnerInput = {
-    where: BotWhereUniqueInput
-    create: XOR<BotCreateWithoutOwnerInput, BotUncheckedCreateWithoutOwnerInput>
-  }
-
-  export type BotCreateManyOwnerInputEnvelope = {
-    data: BotCreateManyOwnerInput | BotCreateManyOwnerInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ServerCreateWithoutOwnerInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    Bot?: BotCreateNestedManyWithoutServerInput
-  }
-
-  export type ServerUncheckedCreateWithoutOwnerInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    Bot?: BotUncheckedCreateNestedManyWithoutServerInput
-  }
-
-  export type ServerCreateOrConnectWithoutOwnerInput = {
-    where: ServerWhereUniqueInput
-    create: XOR<ServerCreateWithoutOwnerInput, ServerUncheckedCreateWithoutOwnerInput>
-  }
-
-  export type ServerCreateManyOwnerInputEnvelope = {
-    data: ServerCreateManyOwnerInput | ServerCreateManyOwnerInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: StringFilter<"Session"> | string
-    userId?: StringFilter<"Session"> | string
-    token?: StringFilter<"Session"> | string
-    expiresAt?: DateTimeFilter<"Session"> | Date | string
-    createdAt?: DateTimeFilter<"Session"> | Date | string
   }
 
   export type BotUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -15876,6 +15894,34 @@ export namespace Prisma {
     ownerId?: StringFilter<"Server"> | string
     createdAt?: DateTimeFilter<"Server"> | Date | string
     updatedAt?: DateTimeFilter<"Server"> | Date | string
+    serverid?: StringNullableFilter<"Server"> | string | null
+  }
+
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: StringFilter<"Session"> | string
+    userId?: StringFilter<"Session"> | string
+    token?: StringFilter<"Session"> | string
+    expiresAt?: DateTimeFilter<"Session"> | Date | string
+    createdAt?: DateTimeFilter<"Session"> | Date | string
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -15938,33 +15984,6 @@ export namespace Prisma {
     servers?: ServerUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
-  export type UserCreateWithoutServersInput = {
-    id?: string
-    email: string
-    password: string
-    name?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    bots?: BotCreateNestedManyWithoutOwnerInput
-  }
-
-  export type UserUncheckedCreateWithoutServersInput = {
-    id?: string
-    email: string
-    password: string
-    name?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
-  }
-
-  export type UserCreateOrConnectWithoutServersInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
-  }
-
   export type BotCreateWithoutServerInput = {
     id?: string
     name: string
@@ -15973,11 +15992,11 @@ export namespace Prisma {
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    analytics?: AnalyticsCreateNestedManyWithoutBotInput
     owner: UserCreateNestedOneWithoutBotsInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsCreateNestedManyWithoutBotInput
   }
 
   export type BotUncheckedCreateWithoutServerInput = {
@@ -15989,10 +16008,10 @@ export namespace Prisma {
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
   }
 
   export type BotCreateOrConnectWithoutServerInput = {
@@ -16003,6 +16022,49 @@ export namespace Prisma {
   export type BotCreateManyServerInputEnvelope = {
     data: BotCreateManyServerInput | BotCreateManyServerInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutServersInput = {
+    id?: string
+    email: string
+    password: string
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bots?: BotCreateNestedManyWithoutOwnerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutServersInput = {
+    id?: string
+    email: string
+    password: string
+    name?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bots?: BotUncheckedCreateNestedManyWithoutOwnerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutServersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutServersInput, UserUncheckedCreateWithoutServersInput>
+  }
+
+  export type BotUpsertWithWhereUniqueWithoutServerInput = {
+    where: BotWhereUniqueInput
+    update: XOR<BotUpdateWithoutServerInput, BotUncheckedUpdateWithoutServerInput>
+    create: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput>
+  }
+
+  export type BotUpdateWithWhereUniqueWithoutServerInput = {
+    where: BotWhereUniqueInput
+    data: XOR<BotUpdateWithoutServerInput, BotUncheckedUpdateWithoutServerInput>
+  }
+
+  export type BotUpdateManyWithWhereWithoutServerInput = {
+    where: BotScalarWhereInput
+    data: XOR<BotUpdateManyMutationInput, BotUncheckedUpdateManyWithoutServerInput>
   }
 
   export type UserUpsertWithoutServersInput = {
@@ -16023,8 +16085,8 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     bots?: BotUpdateManyWithoutOwnerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutServersInput = {
@@ -16034,24 +16096,32 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     bots?: BotUncheckedUpdateManyWithoutOwnerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type BotUpsertWithWhereUniqueWithoutServerInput = {
-    where: BotWhereUniqueInput
-    update: XOR<BotUpdateWithoutServerInput, BotUncheckedUpdateWithoutServerInput>
-    create: XOR<BotCreateWithoutServerInput, BotUncheckedCreateWithoutServerInput>
+  export type AnalyticsCreateWithoutBotInput = {
+    id?: string
+    eventType: string
+    data: JsonNullValueInput | InputJsonValue
+    timestamp?: Date | string
   }
 
-  export type BotUpdateWithWhereUniqueWithoutServerInput = {
-    where: BotWhereUniqueInput
-    data: XOR<BotUpdateWithoutServerInput, BotUncheckedUpdateWithoutServerInput>
+  export type AnalyticsUncheckedCreateWithoutBotInput = {
+    id?: string
+    eventType: string
+    data: JsonNullValueInput | InputJsonValue
+    timestamp?: Date | string
   }
 
-  export type BotUpdateManyWithWhereWithoutServerInput = {
-    where: BotScalarWhereInput
-    data: XOR<BotUpdateManyMutationInput, BotUncheckedUpdateManyWithoutServerInput>
+  export type AnalyticsCreateOrConnectWithoutBotInput = {
+    where: AnalyticsWhereUniqueInput
+    create: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput>
+  }
+
+  export type AnalyticsCreateManyBotInputEnvelope = {
+    data: AnalyticsCreateManyBotInput | AnalyticsCreateManyBotInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserCreateWithoutBotsInput = {
@@ -16061,8 +16131,8 @@ export namespace Prisma {
     name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionCreateNestedManyWithoutUserInput
     servers?: ServerCreateNestedManyWithoutOwnerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutBotsInput = {
@@ -16072,8 +16142,8 @@ export namespace Prisma {
     name?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     servers?: ServerUncheckedCreateNestedManyWithoutOwnerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutBotsInput = {
@@ -16081,25 +16151,53 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutBotsInput, UserUncheckedCreateWithoutBotsInput>
   }
 
-  export type ServerCreateWithoutBotInput = {
+  export type ServerCreateWithoutBotsInput = {
     id?: string
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverid?: string | null
     owner: UserCreateNestedOneWithoutServersInput
   }
 
-  export type ServerUncheckedCreateWithoutBotInput = {
+  export type ServerUncheckedCreateWithoutBotsInput = {
     id?: string
     name: string
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverid?: string | null
   }
 
-  export type ServerCreateOrConnectWithoutBotInput = {
+  export type ServerCreateOrConnectWithoutBotsInput = {
     where: ServerWhereUniqueInput
-    create: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
+    create: XOR<ServerCreateWithoutBotsInput, ServerUncheckedCreateWithoutBotsInput>
+  }
+
+  export type BotConfigCreateWithoutBotInput = {
+    id?: string
+    key: string
+    value: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotConfigUncheckedCreateWithoutBotInput = {
+    id?: string
+    key: string
+    value: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BotConfigCreateOrConnectWithoutBotInput = {
+    where: BotConfigWhereUniqueInput
+    create: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput>
+  }
+
+  export type BotConfigCreateManyBotInputEnvelope = {
+    data: BotConfigCreateManyBotInput | BotConfigCreateManyBotInput[]
+    skipDuplicates?: boolean
   }
 
   export type CommandCreateWithoutBotInput = {
@@ -16164,54 +16262,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type BotConfigCreateWithoutBotInput = {
-    id?: string
-    key: string
-    value: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type BotConfigUncheckedCreateWithoutBotInput = {
-    id?: string
-    key: string
-    value: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type BotConfigCreateOrConnectWithoutBotInput = {
-    where: BotConfigWhereUniqueInput
-    create: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput>
-  }
-
-  export type BotConfigCreateManyBotInputEnvelope = {
-    data: BotConfigCreateManyBotInput | BotConfigCreateManyBotInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type AnalyticsCreateWithoutBotInput = {
-    id?: string
-    eventType: string
-    data: JsonNullValueInput | InputJsonValue
-    timestamp?: Date | string
-  }
-
-  export type AnalyticsUncheckedCreateWithoutBotInput = {
-    id?: string
-    eventType: string
-    data: JsonNullValueInput | InputJsonValue
-    timestamp?: Date | string
-  }
-
-  export type AnalyticsCreateOrConnectWithoutBotInput = {
+  export type AnalyticsUpsertWithWhereUniqueWithoutBotInput = {
     where: AnalyticsWhereUniqueInput
+    update: XOR<AnalyticsUpdateWithoutBotInput, AnalyticsUncheckedUpdateWithoutBotInput>
     create: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput>
   }
 
-  export type AnalyticsCreateManyBotInputEnvelope = {
-    data: AnalyticsCreateManyBotInput | AnalyticsCreateManyBotInput[]
-    skipDuplicates?: boolean
+  export type AnalyticsUpdateWithWhereUniqueWithoutBotInput = {
+    where: AnalyticsWhereUniqueInput
+    data: XOR<AnalyticsUpdateWithoutBotInput, AnalyticsUncheckedUpdateWithoutBotInput>
+  }
+
+  export type AnalyticsUpdateManyWithWhereWithoutBotInput = {
+    where: AnalyticsScalarWhereInput
+    data: XOR<AnalyticsUpdateManyMutationInput, AnalyticsUncheckedUpdateManyWithoutBotInput>
+  }
+
+  export type AnalyticsScalarWhereInput = {
+    AND?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
+    OR?: AnalyticsScalarWhereInput[]
+    NOT?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
+    id?: StringFilter<"Analytics"> | string
+    botId?: StringFilter<"Analytics"> | string
+    eventType?: StringFilter<"Analytics"> | string
+    data?: JsonFilter<"Analytics">
+    timestamp?: DateTimeFilter<"Analytics"> | Date | string
   }
 
   export type UserUpsertWithoutBotsInput = {
@@ -16232,8 +16307,8 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     servers?: ServerUpdateManyWithoutOwnerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBotsInput = {
@@ -16243,35 +16318,65 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     servers?: ServerUncheckedUpdateManyWithoutOwnerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type ServerUpsertWithoutBotInput = {
-    update: XOR<ServerUpdateWithoutBotInput, ServerUncheckedUpdateWithoutBotInput>
-    create: XOR<ServerCreateWithoutBotInput, ServerUncheckedCreateWithoutBotInput>
+  export type ServerUpsertWithoutBotsInput = {
+    update: XOR<ServerUpdateWithoutBotsInput, ServerUncheckedUpdateWithoutBotsInput>
+    create: XOR<ServerCreateWithoutBotsInput, ServerUncheckedCreateWithoutBotsInput>
     where?: ServerWhereInput
   }
 
-  export type ServerUpdateToOneWithWhereWithoutBotInput = {
+  export type ServerUpdateToOneWithWhereWithoutBotsInput = {
     where?: ServerWhereInput
-    data: XOR<ServerUpdateWithoutBotInput, ServerUncheckedUpdateWithoutBotInput>
+    data: XOR<ServerUpdateWithoutBotsInput, ServerUncheckedUpdateWithoutBotsInput>
   }
 
-  export type ServerUpdateWithoutBotInput = {
+  export type ServerUpdateWithoutBotsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
     owner?: UserUpdateOneRequiredWithoutServersNestedInput
   }
 
-  export type ServerUncheckedUpdateWithoutBotInput = {
+  export type ServerUncheckedUpdateWithoutBotsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type BotConfigUpsertWithWhereUniqueWithoutBotInput = {
+    where: BotConfigWhereUniqueInput
+    update: XOR<BotConfigUpdateWithoutBotInput, BotConfigUncheckedUpdateWithoutBotInput>
+    create: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput>
+  }
+
+  export type BotConfigUpdateWithWhereUniqueWithoutBotInput = {
+    where: BotConfigWhereUniqueInput
+    data: XOR<BotConfigUpdateWithoutBotInput, BotConfigUncheckedUpdateWithoutBotInput>
+  }
+
+  export type BotConfigUpdateManyWithWhereWithoutBotInput = {
+    where: BotConfigScalarWhereInput
+    data: XOR<BotConfigUpdateManyMutationInput, BotConfigUncheckedUpdateManyWithoutBotInput>
+  }
+
+  export type BotConfigScalarWhereInput = {
+    AND?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
+    OR?: BotConfigScalarWhereInput[]
+    NOT?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
+    id?: StringFilter<"BotConfig"> | string
+    key?: StringFilter<"BotConfig"> | string
+    value?: StringFilter<"BotConfig"> | string
+    botId?: StringFilter<"BotConfig"> | string
+    createdAt?: DateTimeFilter<"BotConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"BotConfig"> | Date | string
   }
 
   export type CommandUpsertWithWhereUniqueWithoutBotInput = {
@@ -16333,61 +16438,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Event"> | Date | string
   }
 
-  export type BotConfigUpsertWithWhereUniqueWithoutBotInput = {
-    where: BotConfigWhereUniqueInput
-    update: XOR<BotConfigUpdateWithoutBotInput, BotConfigUncheckedUpdateWithoutBotInput>
-    create: XOR<BotConfigCreateWithoutBotInput, BotConfigUncheckedCreateWithoutBotInput>
-  }
-
-  export type BotConfigUpdateWithWhereUniqueWithoutBotInput = {
-    where: BotConfigWhereUniqueInput
-    data: XOR<BotConfigUpdateWithoutBotInput, BotConfigUncheckedUpdateWithoutBotInput>
-  }
-
-  export type BotConfigUpdateManyWithWhereWithoutBotInput = {
-    where: BotConfigScalarWhereInput
-    data: XOR<BotConfigUpdateManyMutationInput, BotConfigUncheckedUpdateManyWithoutBotInput>
-  }
-
-  export type BotConfigScalarWhereInput = {
-    AND?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
-    OR?: BotConfigScalarWhereInput[]
-    NOT?: BotConfigScalarWhereInput | BotConfigScalarWhereInput[]
-    id?: StringFilter<"BotConfig"> | string
-    key?: StringFilter<"BotConfig"> | string
-    value?: StringFilter<"BotConfig"> | string
-    botId?: StringFilter<"BotConfig"> | string
-    createdAt?: DateTimeFilter<"BotConfig"> | Date | string
-    updatedAt?: DateTimeFilter<"BotConfig"> | Date | string
-  }
-
-  export type AnalyticsUpsertWithWhereUniqueWithoutBotInput = {
-    where: AnalyticsWhereUniqueInput
-    update: XOR<AnalyticsUpdateWithoutBotInput, AnalyticsUncheckedUpdateWithoutBotInput>
-    create: XOR<AnalyticsCreateWithoutBotInput, AnalyticsUncheckedCreateWithoutBotInput>
-  }
-
-  export type AnalyticsUpdateWithWhereUniqueWithoutBotInput = {
-    where: AnalyticsWhereUniqueInput
-    data: XOR<AnalyticsUpdateWithoutBotInput, AnalyticsUncheckedUpdateWithoutBotInput>
-  }
-
-  export type AnalyticsUpdateManyWithWhereWithoutBotInput = {
-    where: AnalyticsScalarWhereInput
-    data: XOR<AnalyticsUpdateManyMutationInput, AnalyticsUncheckedUpdateManyWithoutBotInput>
-  }
-
-  export type AnalyticsScalarWhereInput = {
-    AND?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
-    OR?: AnalyticsScalarWhereInput[]
-    NOT?: AnalyticsScalarWhereInput | AnalyticsScalarWhereInput[]
-    id?: StringFilter<"Analytics"> | string
-    botId?: StringFilter<"Analytics"> | string
-    eventType?: StringFilter<"Analytics"> | string
-    data?: JsonFilter<"Analytics">
-    timestamp?: DateTimeFilter<"Analytics"> | Date | string
-  }
-
   export type BotCreateWithoutCommandsInput = {
     id?: string
     name: string
@@ -16396,11 +16446,11 @@ export namespace Prisma {
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutBotsInput
-    server: ServerCreateNestedOneWithoutBotInput
-    events?: EventCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
     analytics?: AnalyticsCreateNestedManyWithoutBotInput
+    owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotsInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
+    events?: EventCreateNestedManyWithoutBotInput
   }
 
   export type BotUncheckedCreateWithoutCommandsInput = {
@@ -16413,9 +16463,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     serverId: string
-    events?: EventUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
+    events?: EventUncheckedCreateNestedManyWithoutBotInput
   }
 
   export type BotCreateOrConnectWithoutCommandsInput = {
@@ -16492,11 +16542,11 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutBotsNestedInput
-    server?: ServerUpdateOneRequiredWithoutBotNestedInput
-    events?: EventUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUpdateManyWithoutBotNestedInput
+    owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotsNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
+    events?: EventUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateWithoutCommandsInput = {
@@ -16509,9 +16559,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serverId?: StringFieldUpdateOperationsInput | string
-    events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
+    events?: EventUncheckedUpdateManyWithoutBotNestedInput
   }
 
   export type CommandPermissionUpsertWithWhereUniqueWithoutCommandInput = {
@@ -16641,11 +16691,11 @@ export namespace Prisma {
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutBotsInput
-    server: ServerCreateNestedOneWithoutBotInput
-    commands?: CommandCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
     analytics?: AnalyticsCreateNestedManyWithoutBotInput
+    owner: UserCreateNestedOneWithoutBotsInput
+    server: ServerCreateNestedOneWithoutBotsInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
+    commands?: CommandCreateNestedManyWithoutBotInput
   }
 
   export type BotUncheckedCreateWithoutEventsInput = {
@@ -16658,9 +16708,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     serverId: string
-    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
+    commands?: CommandUncheckedCreateNestedManyWithoutBotInput
   }
 
   export type BotCreateOrConnectWithoutEventsInput = {
@@ -16687,11 +16737,11 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutBotsNestedInput
-    server?: ServerUpdateOneRequiredWithoutBotNestedInput
-    commands?: CommandUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUpdateManyWithoutBotNestedInput
+    owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotsNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
+    commands?: CommandUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateWithoutEventsInput = {
@@ -16704,9 +16754,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serverId?: StringFieldUpdateOperationsInput | string
-    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
+    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
   }
 
   export type BotCreateWithoutConfigurationsInput = {
@@ -16717,11 +16767,11 @@ export namespace Prisma {
     prefix?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    analytics?: AnalyticsCreateNestedManyWithoutBotInput
     owner: UserCreateNestedOneWithoutBotsInput
-    server: ServerCreateNestedOneWithoutBotInput
+    server: ServerCreateNestedOneWithoutBotsInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsCreateNestedManyWithoutBotInput
   }
 
   export type BotUncheckedCreateWithoutConfigurationsInput = {
@@ -16734,9 +16784,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     serverId: string
+    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
-    analytics?: AnalyticsUncheckedCreateNestedManyWithoutBotInput
   }
 
   export type BotCreateOrConnectWithoutConfigurationsInput = {
@@ -16763,11 +16813,11 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
-    server?: ServerUpdateOneRequiredWithoutBotNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotsNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateWithoutConfigurationsInput = {
@@ -16780,9 +16830,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serverId?: StringFieldUpdateOperationsInput | string
+    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
   }
 
   export type CommandCreateWithoutUsageInput = {
@@ -16858,10 +16908,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutBotsInput
-    server: ServerCreateNestedOneWithoutBotInput
+    server: ServerCreateNestedOneWithoutBotsInput
+    configurations?: BotConfigCreateNestedManyWithoutBotInput
     commands?: CommandCreateNestedManyWithoutBotInput
     events?: EventCreateNestedManyWithoutBotInput
-    configurations?: BotConfigCreateNestedManyWithoutBotInput
   }
 
   export type BotUncheckedCreateWithoutAnalyticsInput = {
@@ -16874,9 +16924,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     serverId: string
+    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
     commands?: CommandUncheckedCreateNestedManyWithoutBotInput
     events?: EventUncheckedCreateNestedManyWithoutBotInput
-    configurations?: BotConfigUncheckedCreateNestedManyWithoutBotInput
   }
 
   export type BotCreateOrConnectWithoutAnalyticsInput = {
@@ -16904,10 +16954,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
-    server?: ServerUpdateOneRequiredWithoutBotNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotsNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateWithoutAnalyticsInput = {
@@ -16920,16 +16970,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serverId?: StringFieldUpdateOperationsInput | string
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
-  }
-
-  export type SessionCreateManyUserInput = {
-    id?: string
-    token: string
-    expiresAt: Date | string
-    createdAt?: Date | string
   }
 
   export type BotCreateManyOwnerInput = {
@@ -16948,6 +16991,81 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    serverid?: string | null
+  }
+
+  export type SessionCreateManyUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type BotUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
+    server?: ServerUpdateOneRequiredWithoutBotsNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
+    commands?: CommandUpdateManyWithoutBotNestedInput
+    events?: EventUpdateManyWithoutBotNestedInput
+  }
+
+  export type BotUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
+    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
+    events?: EventUncheckedUpdateManyWithoutBotNestedInput
+  }
+
+  export type BotUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    prefix?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
+    bots?: BotUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
+    bots?: BotUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverid?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -16971,70 +17089,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type BotUpdateWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    active?: BoolFieldUpdateOperationsInput | boolean
-    prefix?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    server?: ServerUpdateOneRequiredWithoutBotNestedInput
-    commands?: CommandUpdateManyWithoutBotNestedInput
-    events?: EventUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
-  }
-
-  export type BotUncheckedUpdateWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    active?: BoolFieldUpdateOperationsInput | boolean
-    prefix?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    serverId?: StringFieldUpdateOperationsInput | string
-    commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
-    events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
-  }
-
-  export type BotUncheckedUpdateManyWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    active?: BoolFieldUpdateOperationsInput | boolean
-    prefix?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    serverId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type ServerUpdateWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Bot?: BotUpdateManyWithoutServerNestedInput
-  }
-
-  export type ServerUncheckedUpdateWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Bot?: BotUncheckedUpdateManyWithoutServerNestedInput
-  }
-
-  export type ServerUncheckedUpdateManyWithoutOwnerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type BotCreateManyServerInput = {
     id?: string
     name: string
@@ -17054,11 +17108,11 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
     owner?: UserUpdateOneRequiredWithoutBotsNestedInput
+    configurations?: BotConfigUpdateManyWithoutBotNestedInput
     commands?: CommandUpdateManyWithoutBotNestedInput
     events?: EventUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateWithoutServerInput = {
@@ -17070,10 +17124,10 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
+    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
     commands?: CommandUncheckedUpdateManyWithoutBotNestedInput
     events?: EventUncheckedUpdateManyWithoutBotNestedInput
-    configurations?: BotConfigUncheckedUpdateManyWithoutBotNestedInput
-    analytics?: AnalyticsUncheckedUpdateManyWithoutBotNestedInput
   }
 
   export type BotUncheckedUpdateManyWithoutServerInput = {
@@ -17085,6 +17139,21 @@ export namespace Prisma {
     prefix?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalyticsCreateManyBotInput = {
+    id?: string
+    eventType: string
+    data: JsonNullValueInput | InputJsonValue
+    timestamp?: Date | string
+  }
+
+  export type BotConfigCreateManyBotInput = {
+    id?: string
+    key: string
+    value: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CommandCreateManyBotInput = {
@@ -17106,19 +17175,49 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type BotConfigCreateManyBotInput = {
-    id?: string
-    key: string
-    value: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+  export type AnalyticsUpdateWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AnalyticsCreateManyBotInput = {
-    id?: string
-    eventType: string
-    data: JsonNullValueInput | InputJsonValue
-    timestamp?: Date | string
+  export type AnalyticsUncheckedUpdateWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalyticsUncheckedUpdateManyWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotConfigUpdateWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotConfigUncheckedUpdateWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BotConfigUncheckedUpdateManyWithoutBotInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommandUpdateWithoutBotInput = {
@@ -17180,51 +17279,6 @@ export namespace Prisma {
     enabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type BotConfigUpdateWithoutBotInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
-    value?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type BotConfigUncheckedUpdateWithoutBotInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
-    value?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type BotConfigUncheckedUpdateManyWithoutBotInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
-    value?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AnalyticsUpdateWithoutBotInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    eventType?: StringFieldUpdateOperationsInput | string
-    data?: JsonNullValueInput | InputJsonValue
-    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AnalyticsUncheckedUpdateWithoutBotInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    eventType?: StringFieldUpdateOperationsInput | string
-    data?: JsonNullValueInput | InputJsonValue
-    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AnalyticsUncheckedUpdateManyWithoutBotInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    eventType?: StringFieldUpdateOperationsInput | string
-    data?: JsonNullValueInput | InputJsonValue
-    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommandPermissionCreateManyCommandInput = {

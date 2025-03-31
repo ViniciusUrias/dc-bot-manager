@@ -1,4 +1,4 @@
-import { hashPassword } from "../utils/auth";
+import { createHash } from "../utils/auth";
 import { PrismaClient } from "./generated";
 const prisma = new PrismaClient();
 async function main() {
@@ -8,7 +8,7 @@ async function main() {
 		create: {
 			email: "alice@prisma.io",
 			name: "Alice",
-			password: await hashPassword("12345678"),
+			password: await createHash("12345678"),
 		},
 	});
 	const bob = await prisma.user.upsert({
@@ -17,7 +17,7 @@ async function main() {
 		create: {
 			email: "bob@prisma.io",
 			name: "Bob",
-			password: await hashPassword("12345678"),
+			password: await createHash("12345678"),
 		},
 	});
 	console.log({ alice, bob });

@@ -98,6 +98,7 @@ const main = async () => {
 };
 
 main();
+
 // Graceful shutdown
 process.on("SIGINT", async () => {
 	await prisma.$disconnect();
