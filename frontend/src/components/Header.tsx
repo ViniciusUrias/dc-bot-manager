@@ -31,6 +31,9 @@ export default function Header() {
 						>
 							Home
 						</NavLink>
+						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/servers">
+							My servers
+						</NavLink>
 						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/profile">
 							My Profile
 						</NavLink>
@@ -48,7 +51,9 @@ export default function Header() {
 				>
 					Home
 				</NavLink>
-
+				<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/servers">
+					My servers
+				</NavLink>
 				<NavLink end viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/profile">
 					My Profile
 				</NavLink>

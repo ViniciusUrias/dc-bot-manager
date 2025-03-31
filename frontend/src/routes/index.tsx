@@ -1,8 +1,12 @@
 import AuthLayout from "@/layouts/auth";
 import MainLayout from "@/layouts/main";
 import LoginPage from "@/pages/auth/login";
+import BotDetails from "@/pages/bots/details";
+import NewBot from "@/pages/bots/newbot";
 import NotFound from "@/pages/errors/NotFound";
 import HomePage from "@/pages/home";
+import ServersPage from "@/pages/servers";
+import ServerDetails from "@/pages/servers/details";
 import { createBrowserRouter, RouterProvider } from "react-router";
 const router = createBrowserRouter([
 	{
@@ -23,12 +27,17 @@ const router = createBrowserRouter([
 					{ index: true, element: <HomePage /> }, // Matches "/users"
 
 					{
-						path: ":userId/albums",
+						path: "servers",
 						children: [
-							{ index: true, element: <HomePage /> }, // Matches "/users/:userId/albums"
-							{ path: ":albumId/photos", element: <HomePage /> }, // Matches "/users/:userId/albums/:albumId/photos"
+							{ index: true, element: <ServersPage /> }, // Matches "/users/:userId/albums"
+							{
+								path: ":serverId",
+								element: <ServerDetails />,
+							},
 						],
 					},
+					{ path: "servers/:serverId/bots/:botId", element: <BotDetails /> },
+					{ path: "servers/:serverId/bots/new", element: <NewBot /> },
 				],
 			},
 		],

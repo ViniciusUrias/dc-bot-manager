@@ -41,6 +41,8 @@ export default async function (app: FastifyInstance, opts) {
 				const user = await app.prisma.server.findUnique({
 					where: { id: serverId },
 					select: {
+						bots: true,
+						serverid: true,
 						id: true,
 						name: true,
 						createdAt: true,

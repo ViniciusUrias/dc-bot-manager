@@ -1,4 +1,7 @@
 const ENDPOINTS = {
+	AUTH: {
+		LOGIN: "/login",
+	},
 	USERS: {
 		GET: "/users",
 		POST: "/users",

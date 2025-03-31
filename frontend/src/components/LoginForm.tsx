@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { handleAuthenticate } from "@/api/services/auth";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,7 @@ import { useNavigate } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 const formSchema = z.object({
-	username: z.string().min(2, {
+	email: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
 	password: z.string().min(2, {
@@ -24,14 +25,15 @@ export default function LoginForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			username: "Bret",
-			password: "1234",
+			email: "alice@prisma.io",
+			password: "12345678",
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		signIn({ ...values });
+		const response = await handleAuthenticate(values);
+		signIn({ ...values, ...response });
 		navigate("/users");
 	}
 	return (
@@ -46,7 +48,7 @@ export default function LoginForm() {
 						<div className={"flex flex-col gap-6"}>
 							<FormField
 								control={form.control}
-								name="username"
+								name="email"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>Username</FormLabel>

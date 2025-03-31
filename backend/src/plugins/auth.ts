@@ -14,7 +14,7 @@ const authPlugin: FastifyPluginAsync = async (app) => {
 	// Decorate Fastify with authenticate function
 	app.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
 		const authHeader = request.headers.authorization;
-
+		console.log(request.headers);
 		if (!authHeader) {
 			return reply.code(401).send({
 				statusCode: 401,

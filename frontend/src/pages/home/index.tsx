@@ -1,12 +1,14 @@
+import AlbumList from "@/components/AlbumList";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useAuth";
 import useUsers from "@/hooks/useUsers";
 
 export default function HomePage() {
 	const { data: users, isError, isLoading, error, refetch } = useUsers();
+	const user = useAuth();
 	console.log(users);
-
 	if (isLoading) {
 		return (
 			<div className="masonry-grid ">
@@ -28,7 +30,8 @@ export default function HomePage() {
 	}
 	return (
 		<ScrollArea className="w-full h-[75vh]  p-2 rounded-md border">
-			<div>oi</div>
+			<div>oi {user?.name}</div>
+			<AlbumList />
 		</ScrollArea>
 	);
 }

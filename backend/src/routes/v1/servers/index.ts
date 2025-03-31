@@ -17,6 +17,7 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 
 		try {
 			const user = await app.prisma.server.findMany({
+				where: { ownerId: userId },
 				select: {
 					name: true,
 					id: true,

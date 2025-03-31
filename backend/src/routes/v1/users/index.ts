@@ -68,22 +68,18 @@ export default async function (app: FastifyInstance, opts) {
 	);
 	app.get(
 		"/me",
-		createRouteConfig2({
+		createRouteConfig2(opts, {
 			tags: ["Users"],
 			summary: "Get current user profile",
+			auth: true,
 		}),
 		async (request, reply) => {
 			// request.user is available because of our auth plugin
 			const userId = request.user?.id;
-
+			console.log("USER", request.user);
 			const user = await app.prisma.user.findUnique({
 				where: { id: userId },
-				select: {
-					id: true,
-					email: true,
-					name: true,
-					createdAt: true,
-				},
+				omit: { password: true },
 			});
 
 			return user;
