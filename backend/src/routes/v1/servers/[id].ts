@@ -1,27 +1,7 @@
-import { initiateConnection } from "@/discord";
 import { createRouteConfig2 } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 
 export default async function (app: FastifyInstance, opts) {
-	app.post(
-		"/configure",
-		createRouteConfig2(opts.defaultConfig, {
-			summary: "Initiate server",
-			body: {
-				type: "object",
-				required: ["serverid"],
-				properties: {
-					serverid: { type: "string" },
-				},
-			},
-		}),
-		async (request, reply) => {
-			const { name, serverid } = request.body as { name: string; serverid: string };
-			const { id } = request.user;
-			await initiateConnection({ serverId: serverid, userId: id });
-			return reply.code(200).send({ message: "Server initiated successfully" });
-		}
-	);
 	app.get(
 		"/:serverId",
 		createRouteConfig2(opts.defaultConfig, {

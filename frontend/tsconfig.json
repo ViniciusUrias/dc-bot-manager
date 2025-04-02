@@ -13,7 +13,10 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "@backend-types": [
+        "../backend/node_modules/discord.js"
+      ],
     }
   }
 }

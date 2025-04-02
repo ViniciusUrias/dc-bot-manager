@@ -10,13 +10,27 @@ import { NavLink, useParams } from "react-router";
 export default function ServerDetails() {
 	const { serverId } = useParams();
 
-	const { data } = useQuery({
+	const { data, refetch } = useQuery({
 		queryKey: ["servers", serverId],
 		queryFn: async () => {
 			const response = await axiosInstance.get(`/servers/${serverId}`);
 			return response.data;
 		},
 	});
+	const handleStartBot = async (bot) => {
+		const response = await axiosInstance.post("/bots/start", {
+			botId: bot.id,
+			serverId,
+		});
+		refetch();
+	};
+	const handleStopBot = async (bot) => {
+		const response = await axiosInstance.post("/bots/stop", {
+			botId: bot.id,
+			serverId,
+		});
+		refetch();
+	};
 	return (
 		<div className="flex flex-col gap-4 p-4">
 			<h1 className="text-2xl font-bold">Server Details</h1>
@@ -34,15 +48,10 @@ export default function ServerDetails() {
 					</Button>
 				</NavLink>
 			</div>
-			<ScrollArea className="w-full min-h-[100px] max-h-[75vh]  grid grid-cols-2 p-2 rounded-md border">
-				{data?.bots?.map((bot) => {
-					return (
-						<NavLink
-							key={bot.id}
-							viewTransition
-							className="   transition-all  focus:scale-105  focus:ring-2 "
-							to={`/users/servers/${serverId}/bots/${bot.id}`}
-						>
+			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 rounded-md border">
+				<div className="flex items-center gap-2 w-full">
+					{data?.bots?.map((bot) => {
+						return (
 							<Card className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn")}>
 								<CardHeader className="flex flex-row items-center justify-between ">
 									<CardTitle aria-label={`Album title: ${bot.name}`}>{bot.name}</CardTitle>
@@ -50,15 +59,27 @@ export default function ServerDetails() {
 								<CardContent>
 									<p aria-label={`Description of bot ${bot.name}`}>Prefix: '{bot?.prefix}'</p>
 								</CardContent>
-								<CardFooter>
-									<p aria-label={`Categories of bot ${bot.name}`}>
-										Category: <strong>landscape</strong>
-									</p>
+								<CardFooter className="flex items-center gap-4">
+									<NavLink
+										key={bot.id}
+										viewTransition
+										className="   transition-all  focus:scale-105  focus:ring-2 "
+										to={`/users/servers/${serverId}/bots/${bot.id}`}
+									>
+										Details
+									</NavLink>
+									{bot.active ? (
+										<Button variant="destructive" onClick={() => handleStopBot(bot)}>
+											Stop bot
+										</Button>
+									) : (
+										<Button onClick={() => handleStartBot(bot)}>Start bot</Button>
+									)}
 								</CardFooter>
 							</Card>
-						</NavLink>
-					);
-				})}
+						);
+					})}
+				</div>
 			</ScrollArea>
 		</div>
 	);

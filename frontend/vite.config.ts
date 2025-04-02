@@ -10,6 +10,8 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
+			"@backend-types": path.resolve(__dirname, "../backend/node_modules/discord.js"),
+			path: "rollup-plugin-node-polyfills/polyfills/path",
 		},
 	},
 });

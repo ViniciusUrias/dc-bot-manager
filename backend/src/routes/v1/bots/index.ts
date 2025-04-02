@@ -59,9 +59,17 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		}),
 		async (request, reply) => {
 			// Implement bot creation logic
-			const { serverId, name, prefix } = request.body;
+			const { serverId, name, prefix, botId, token } = request.body;
+			const body = {
+				serverId,
+				name,
+				prefix,
+				id: botId,
+				token,
+				ownerId: request.user.id,
+			};
 			const bot = await app.prisma.bot.create({
-				data: { ...request.body, ownerId: request.user.id },
+				data: body,
 				select: { id: true, name: true, prefix: true, ownerId: true, serverId: true, createdAt: true },
 			});
 

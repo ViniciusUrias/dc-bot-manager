@@ -5,20 +5,19 @@ import cors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import dotenv from "dotenv";
-import Fastify from "fastify";
+import Fastify, { FastifyInstance } from "fastify";
 import pino from "pino";
 import authPlugin from "./plugins/auth";
 import prisma from "./prisma/prisma";
 dotenv.config(); // Load environment variables from .env file
-
+let fastify: FastifyInstance | null = null;
 const main = async () => {
 	const logger = pino({ transport: { target: "pino-pretty" } });
 
-	const fastify = Fastify({
+	fastify = Fastify({
 		loggerInstance: logger,
 	});
 	fastify.addSchema(schemas.User);
-
 	fastify.addSchema(schemas.Bot);
 	fastify.addSchema(schemas.Error);
 	fastify.decorate("prisma", prisma);
@@ -83,7 +82,7 @@ const main = async () => {
 	fastify.register(router, {
 		prefix: "/v1",
 	});
-	fastify.register(cors);
+	fastify.register(cors, { origin: "*", methods: ["GET", "PUT", "POST", "DELETE"] });
 
 	await fastify.ready();
 	fastify.swagger();
@@ -104,3 +103,5 @@ process.on("SIGINT", async () => {
 	await prisma.$disconnect();
 	process.exit(0);
 });
+
+export { fastify };
