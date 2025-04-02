@@ -1,7 +1,7 @@
 // prisma/prisma.js
 
 // Importing the PrismaClient from the Prisma package
-import { PrismaClient } from "./generated";
+import { PrismaClient } from "@prisma/client";
 
 // Initializing the PrismaClient with the database connection URL
 const prisma = new PrismaClient({

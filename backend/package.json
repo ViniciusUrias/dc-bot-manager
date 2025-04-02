@@ -2,17 +2,22 @@
 	"name": "discord-bot",
 	"version": "1.0.0",
 	"description": "",
-	"main": "dist/index.js",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"dev": "tsx watch --env-file=.env src/index.ts",
-		"generate": "npx prisma generate",
-		"migrate": "npx prisma migrate dev",
-		"staging": "cross-env NODE_ENV=staging node index.js"
+		"start": "node -r tsconfig-paths/register -r module-alias/register dist/index.js",
+		"build": "npm run clean && npm run generate && tsc --build --noCheck  && npm run copy-assets",
+		"clean": "rimraf dist",
+		"generate": "prisma generate",
+		"migrate": "prisma migrate dev",
+		"copy-assets": "copyfiles -u 1 \"prisma/**/*\" \"src/**/*.prisma\" dist/",
+		"postinstall": "prisma generate",
+		"staging": "cross-env NODE_ENV=staging node dist/index.js"
 	},
 	"keywords": [],
 	"prisma": {
-		"schema": "src/prisma/schema.prisma",
-		"seed": "ts-node src/prisma/seed.ts"
+		"schema": "src/prisma/schema.prisma"
 	},
 	"author": "",
 	"license": "ISC",
@@ -26,7 +31,8 @@
 		"express": "^4.21.2",
 		"fastify": "^5.2.2",
 		"fs-extra": "^11.3.0",
-		"jsonwebtoken": "^9.0.2"
+		"jsonwebtoken": "^9.0.2",
+		"module-alias": "^2.2.3"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.2",
@@ -36,10 +42,20 @@
 		"@types/jsonwebtoken": "^9.0.9",
 		"@types/node": "^22.13.13",
 		"concurrently": "^9.1.2",
+		"copyfiles": "^2.4.1",
+		"cross-env": "^7.0.3",
 		"nodemon": "^3.1.9",
 		"pino-pretty": "^13.0.0",
 		"prisma": "^6.5.0",
+		"rimraf": "^5.0.5",
 		"ts-node": "^10.9.2",
+		"tsconfig-paths": "^4.2.0",
+		"tsx": "^4.7.1",
 		"typescript": "^5.8.2"
+	},
+	"_moduleAliases": {
+		"@": "./dist",
+		"@commands": "./dist/commands",
+		"@utils": "./dist/utils"
 	}
 }

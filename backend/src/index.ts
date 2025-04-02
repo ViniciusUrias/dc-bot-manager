@@ -1,4 +1,7 @@
 // Importing required modules
+import "module-alias/register";
+import "tsconfig-paths/register";
+
 import router from "@/routes";
 import { schemas } from "@/schemas";
 import cors from "@fastify/cors";
