@@ -1,5 +1,6 @@
 import * as botManager from "@/discord/botManager";
 import { createRouteConfig2 } from "@/utils/route-config";
+import { type Bot } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 
 export default async function (app: FastifyInstance, { defaultRouteConfig }) {
@@ -114,10 +115,52 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 						data: {
 							icon,
 							name,
+							description,
 						},
 					});
 				}
 				return res;
+			} catch (error) {
+				reply.send({ message: error?.message });
+			}
+			// Implement update logic
+		}
+	);
+	app.put(
+		"/:botId/sync",
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "Sync bot info with discord api",
+			params: {
+				type: "object",
+				properties: {
+					botId: {
+						type: "string",
+					},
+				},
+			},
+		}),
+		async (request, reply) => {
+			const { botId } = request.params as { botId: string };
+			const userId = request.user.id;
+			const bot = await app.prisma.bot.findFirst({
+				where: { id: botId, ownerId: userId },
+				select: { token: true },
+			});
+
+			try {
+				const { description, name, tags, id } = await botManager.getBotData(bot.token);
+				const body: Partial<Bot> = {
+					description,
+					name,
+					tags,
+				};
+				if (id) {
+					await app.prisma.bot.update({
+						where: { id: botId, ownerId: userId },
+						data: body,
+					});
+				}
+				return reply.send({ message: "Bot sync with success", body });
 			} catch (error) {
 				reply.send({ message: error?.message });
 			}

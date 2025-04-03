@@ -1,5 +1,6 @@
 // bot-manager.ts
 import { fastify } from "@/index";
+import { RESTGetCurrentApplicationResult } from "discord-api-types/v10";
 import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import EventEmitter from "events";
 import fs from "fs-extra";
@@ -152,6 +153,8 @@ export type BotInfoRequest = {
 export const updateBotInfo = async (data: BotInfoRequest, token: string) => {
 	try {
 		const client = new Client({
+			presence: { status: "invisible" },
+
 			intents: [GatewayIntentBits.Guilds],
 			// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 		});
@@ -160,6 +163,26 @@ export const updateBotInfo = async (data: BotInfoRequest, token: string) => {
 		const rest = new REST().setToken(token);
 
 		const updated = await rest.patch(Routes.currentApplication(), { body: data });
+		await client.destroy();
+		return updated;
+	} catch (error) {
+		throw new Error("Error updating bot");
+	}
+};
+export const getBotData = async (token: string): Promise<RESTGetCurrentApplicationResult> => {
+	try {
+		const client = new Client({
+			presence: { status: "invisible" },
+			intents: [GatewayIntentBits.Guilds],
+			// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+		});
+
+		await client.login(token);
+		const rest = new REST().setToken(token);
+
+		const updated: RESTGetCurrentApplicationResult = await rest.get(Routes.currentApplication());
+		await client.destroy();
+
 		return updated;
 	} catch (error) {
 		throw new Error("Error updating bot");

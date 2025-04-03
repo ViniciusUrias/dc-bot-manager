@@ -9,25 +9,32 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useQuery } from "@tanstack/react-query";
-import { LucidePlus } from "lucide-react";
-import { useState } from "react";
+import { FolderSync, LucidePlus } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useParams } from "react-router";
+
 import { z } from "zod";
 const formSchema = z.object({
 	name: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
-	icon: z.string().min(2, {
+	tags: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
+	icon: z
+		.string()
+		.min(2, {
+			message: "Username must be at least 2 characters.",
+		})
+		.optional()
+		.nullable(),
 	description: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
 });
 export default function BotDetails() {
 	const { botId, serverId } = useParams();
-
 	const { data, refetch, isLoading } = useQuery({
 		queryKey: ["bots", botId],
 		queryFn: async () => {
@@ -36,6 +43,11 @@ export default function BotDetails() {
 			return response.data;
 		},
 	});
+
+	const handleSync = async () => {
+		const response = await axiosInstance.put(`/bots/${botId}/sync`);
+		refetch();
+	};
 	const handleStartBot = async (bot) => {
 		const response = await axiosInstance.post("/bots/start", {
 			botId: bot.id,
@@ -52,12 +64,19 @@ export default function BotDetails() {
 	};
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		defaultValues: {
+		defaultValues: data ?? {
 			description: "",
 			name: "",
 			icon: "",
+			tags: "",
 		},
 	});
+	useEffect(() => {
+		if (data) {
+			setFile(data.icon);
+			form.reset({ description: data?.description, name: data?.name, tags: data?.tags?.join(",") });
+		}
+	}, [data, form]);
 	const [file, setFile] = useState();
 	const transformFileToBase64 = async (ev) => {
 		const base64 = await fileToBase64(ev.files[0]);
@@ -77,7 +96,9 @@ export default function BotDetails() {
 		console.log(file);
 		const response = await axiosInstance.put(`/bots/${botId}`, {
 			...values,
+			tags: values.tags.split(",").map((e) => e),
 			icon: file,
+			bot: { name: values.name, username: values.name },
 		});
 		await refetch();
 	}
@@ -96,15 +117,20 @@ export default function BotDetails() {
 							<p> Prefix: {data?.prefix}</p>
 						</div>
 
-						{data.active ? (
-							<Button className="w-fit" variant="destructive" onClick={() => handleStopBot(data)}>
-								Stop bot
+						<div className="flex items-center gap-2">
+							{data.active ? (
+								<Button className="w-fit" variant="destructive" onClick={() => handleStopBot(data)}>
+									Stop bot
+								</Button>
+							) : (
+								<Button className="w-fit" onClick={() => handleStartBot(data)}>
+									Start bot
+								</Button>
+							)}
+							<Button variant={"success"} onClick={handleSync}>
+								<FolderSync /> Sync bot
 							</Button>
-						) : (
-							<Button className="w-fit" onClick={() => handleStartBot(data)}>
-								Start bot
-							</Button>
-						)}
+						</div>
 					</CardHeader>
 					<CardContent>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -131,6 +157,19 @@ export default function BotDetails() {
 											<FormLabel>Description</FormLabel>
 											<FormControl>
 												<Input type="text" placeholder="Cool bot" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="tags"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Tags</FormLabel>
+											<FormControl>
+												<Input type="text" {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
