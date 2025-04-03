@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSelector } from "@/store";
-import { useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 const formSchema = z.object({
@@ -34,7 +34,7 @@ export default function LoginForm() {
 		console.log(values);
 		const response = await handleAuthenticate(values);
 		signIn({ ...values, ...response });
-		navigate("/users");
+		navigate("/home");
 	}
 	return (
 		<Form {...form}>
@@ -75,6 +75,11 @@ export default function LoginForm() {
 							<Button type="submit">Submit</Button>
 						</div>
 					</form>
+					<div className="mt-2 justify-end justify-self-end">
+						<NavLink className="mt-2" to="/auth/register">
+							<Button variant="ghost">Register now</Button>
+						</NavLink>
+					</div>
 				</CardContent>
 			</Card>
 		</Form>

@@ -27,11 +27,11 @@ export default function Header() {
 							viewTransition
 							className={({ isActive }) => isActiveClassName(isActive)}
 							aria-label="Go to home page"
-							to="/users"
+							to="/home"
 						>
 							Home
 						</NavLink>
-						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/servers">
+						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/home/servers">
 							My servers
 						</NavLink>
 						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/profile">
@@ -47,11 +47,11 @@ export default function Header() {
 					viewTransition
 					className={({ isActive }) => isActiveClassName(isActive)}
 					aria-label="Go to home page"
-					to="/users"
+					to="/home"
 				>
 					Home
 				</NavLink>
-				<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/servers">
+				<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/home/servers">
 					My servers
 				</NavLink>
 				<NavLink end viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/profile">

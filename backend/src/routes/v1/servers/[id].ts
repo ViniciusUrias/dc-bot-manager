@@ -128,7 +128,7 @@ export default async function (app: FastifyInstance, opts) {
 				await app.prisma.server.delete({
 					where: { id: serverId },
 				});
-				return reply.code(204).send();
+				return reply.code(204).send("Server deleted");
 			} catch (error) {
 				if (error.code === "P2025") {
 					// Prisma not found error code

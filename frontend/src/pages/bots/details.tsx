@@ -20,34 +20,48 @@ export default function BotDetails() {
 		}
 	}, [monaco]);
 
-	const { data } = useQuery({
+	const { data, refetch } = useQuery({
 		queryKey: ["bots", botId],
 		queryFn: async () => {
 			const response = await axiosInstance.get(`/bots/${botId}`);
 			return response.data;
 		},
 	});
-	const handleStartBot = async () => {
+	const handleStartBot = async (bot) => {
 		const response = await axiosInstance.post("/bots/start", {
+			botId: bot.id,
 			serverId,
-			botId,
 		});
+		refetch();
+	};
+	const handleStopBot = async (bot) => {
+		const response = await axiosInstance.post("/bots/stop", {
+			botId: bot.id,
+			serverId,
+		});
+		refetch();
 	};
 	return (
 		<div className="flex flex-col gap-4 p-4">
-			<h1 className="text-2xl font-bold">Bot details</h1>
+			<h1 className="text-2xl font-bold">Bot Details</h1>
 			<div className="flex flex-col gap-2">
-				<h2 className="text-xl font-semibold">Bot Name: {data?.name}</h2>
-				<p>Bot Server: {data?.server?.name}</p>
-				<p>Bot ID: {data?.id}</p>
-				<p>Bot Prefix: {data?.prefix}</p>
-				<p>Bot Token: {data?.token}</p>
-				<p>Bot Description: {data?.description}</p>
+				<h2 className="text-xl font-semibold"> Name: {data?.name}</h2>
+				<p> Server: {data?.server?.name}</p>
+				<p> ID: {data?.id}</p>
+				<p> Prefix: {data?.prefix}</p>
 			</div>
-			<Button onClick={handleStartBot}>Start</Button>
+			{data.active ? (
+				<Button className="w-fit" variant="destructive" onClick={() => handleStopBot(data)}>
+					Stop bot
+				</Button>
+			) : (
+				<Button className="w-fit" onClick={() => handleStartBot(data)}>
+					Start bot
+				</Button>
+			)}
 			<div className="flex justify-between gap-2 items-center">
 				<h2 className="text-xl font-semibold">Commands</h2>
-				<NavLink to={`/users/servers/${serverId}/bots/${botId}/commands/new`}>
+				<NavLink to={`/home/servers/${serverId}/bots/${botId}/commands/new`}>
 					<Button variant="outline">
 						<LucidePlus className="h-6 w-6 text-primary" />
 						New
@@ -62,7 +76,7 @@ export default function BotDetails() {
 								key={bot.id}
 								viewTransition
 								className="   transition-all  focus:scale-105  focus:ring-2 "
-								to={`/users/servers/${serverId}/bots/${bot.id}`}
+								to={`/home/servers/${serverId}/bots/${bot.id}`}
 							>
 								<Card className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn")}>
 									<CardHeader className="flex flex-row items-center justify-between ">
@@ -82,10 +96,6 @@ export default function BotDetails() {
 					);
 				})}
 			</ScrollArea>
-
-			<div className="flex justify-between gap-2 items-center">
-				<h2 className="text-xl font-semibold">New command</h2>
-			</div>
 		</div>
 	);
 }

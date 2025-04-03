@@ -1,3 +1,4 @@
+import * as botManager from "@/discord/botManager";
 import * as commandManager from "@/discord/commandManager";
 import { createRouteConfig2 } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
@@ -56,10 +57,10 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 			const { botId } = request.params as { botId: string };
 			const { serverId, command, name } = request.body;
 			const { id } = request.user;
-			// await initiateConnection({ serverId, userId: id });
+			const botInfo = await app.prisma.bot.findFirst({ where: { id: botId }, select: { token: true } });
+			await botManager.startBot({ clientId: botId, id: botId, name, serverId, token: botInfo.token, userId: id });
 			try {
-				const response = await commandManager.registerCommand({ botId, command, name });
-				// const response = await createCommandByBotId({ command, serverId, botId, userId: id, name });
+				const response = await commandManager.registerCommand({ botId, command, name, botInfo });
 
 				if (response) {
 					const exists = await app.prisma.command.findFirst({ where: { name } });
@@ -79,7 +80,7 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 				return { message: "Command created successfully", response };
 			} catch (error) {
 				console.log(error);
-				return { message: "Command error", error };
+				return { message: "Command error", error: error.message };
 			}
 			// Implement command creation logic
 		}

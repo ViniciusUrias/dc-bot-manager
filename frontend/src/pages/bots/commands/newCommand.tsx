@@ -73,7 +73,7 @@ export default function NewCommand() {
 	const handleTestCommand = async () => {
 		console.log("JSSON", JSON.stringify(code));
 		const response = await axiosInstance.post(`/bots/${botId}/commands`, {
-			serverId,
+			serverId: data.server?.serverid,
 			command: JSON.stringify(code),
 			name,
 		});

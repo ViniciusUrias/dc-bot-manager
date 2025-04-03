@@ -2,69 +2,50 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import axiosInstance from "@/api/services/axios";
+import { registerAccount } from "@/api/services/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSelector } from "@/store";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 const formSchema = z.object({
+	email: z.string().min(2, {
+		message: "Username must be at least 2 characters.",
+	}),
 	name: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
-	botId: z.string().min(2, {
-		message: "Username must be at least 2 characters.",
-	}),
-	botToken: z.string().min(2, {
+	password: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
 });
-export default function NewBot() {
+export default function LoginForm() {
 	const navigate = useNavigate();
-	const { serverId } = useParams();
+
 	const signIn = useSelector((s) => s.signIn);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			botId: "",
+			email: "",
+			password: "",
 			name: "",
-			botToken: "",
-		},
-	});
-	const { data: server } = useQuery({
-		queryKey: ["servers", serverId],
-		queryFn: async () => {
-			const response = await axiosInstance.get(`/servers/${serverId}`);
-			return response.data;
 		},
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		const response = await axiosInstance.post(`/bots`, {
-			...values,
+		const response = await registerAccount(values);
 
-			serverId,
-			prefix: "!",
-			token: values.botToken,
-		});
-		navigate(-1);
+		navigate("/auth/sign-in");
 	}
 	return (
 		<Form {...form}>
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl">Bot creation</CardTitle>
-					<CardDescription>
-						Create your bot in{" "}
-						<a className="text-accent-foreground" target="_blank" href={`https://discord.com/developers/applications`}>
-							discord developers platform
-						</a>{" "}
-						and then insert the Application ID and Token
-					</CardDescription>
+					<CardTitle className="text-2xl">Register</CardTitle>
+					<CardDescription>Enter username and password below to create a new account</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -74,9 +55,9 @@ export default function NewBot() {
 								name="name"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Bot name</FormLabel>
+										<FormLabel>Username</FormLabel>
 										<FormControl>
-											<Input placeholder="name" {...field} />
+											<Input placeholder="user" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -84,12 +65,12 @@ export default function NewBot() {
 							/>
 							<FormField
 								control={form.control}
-								name="botId"
+								name="email"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{`Bot ID (General Information Tab > Application ID)`}</FormLabel>
+										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input type="text" placeholder="****" {...field} />
+											<Input placeholder="user@user.com" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -97,12 +78,12 @@ export default function NewBot() {
 							/>
 							<FormField
 								control={form.control}
-								name="botToken"
+								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{`Bot Token (Bot Tab > Generate Token)`}</FormLabel>
+										<FormLabel>Password</FormLabel>
 										<FormControl>
-											<Input type="text" placeholder="****" {...field} />
+											<Input type="password" placeholder="****" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

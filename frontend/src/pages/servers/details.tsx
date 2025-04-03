@@ -41,45 +41,43 @@ export default function ServerDetails() {
 			</div>
 			<div className="flex justify-between gap-2 items-center">
 				<h2 className="text-xl font-semibold">Bots</h2>
-				<NavLink to={`/users/servers/${serverId}/bots/new`}>
+				<NavLink to={`/home/servers/${serverId}/bots/new`}>
 					<Button variant="outline">
 						<LucidePlus className="h-6 w-6 text-primary" />
 						New
 					</Button>
 				</NavLink>
 			</div>
-			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 rounded-md border">
-				<div className="flex items-center gap-2 w-full">
-					{data?.bots?.map((bot) => {
-						return (
-							<Card className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn")}>
-								<CardHeader className="flex flex-row items-center justify-between ">
-									<CardTitle aria-label={`Album title: ${bot.name}`}>{bot.name}</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<p aria-label={`Description of bot ${bot.name}`}>Prefix: '{bot?.prefix}'</p>
-								</CardContent>
-								<CardFooter className="flex items-center gap-4">
-									<NavLink
-										key={bot.id}
-										viewTransition
-										className="   transition-all  focus:scale-105  focus:ring-2 "
-										to={`/users/servers/${serverId}/bots/${bot.id}`}
-									>
-										Details
-									</NavLink>
-									{bot.active ? (
-										<Button variant="destructive" onClick={() => handleStopBot(bot)}>
-											Stop bot
-										</Button>
-									) : (
-										<Button onClick={() => handleStartBot(bot)}>Start bot</Button>
-									)}
-								</CardFooter>
-							</Card>
-						);
-					})}
-				</div>
+			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 gap-4 rounded-md border">
+				{data?.bots?.map((bot) => {
+					return (
+						<Card className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn", "my-2")}>
+							<CardHeader className="flex flex-row items-center justify-between ">
+								<CardTitle aria-label={`Album title: ${bot.name}`}>{bot.name}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<p aria-label={`Description of bot ${bot.name}`}>Prefix: '{bot?.prefix}'</p>
+							</CardContent>
+							<CardFooter className="flex items-center gap-4 justify-self-end">
+								{bot.active ? (
+									<Button variant="destructive" onClick={() => handleStopBot(bot)}>
+										Stop bot
+									</Button>
+								) : (
+									<Button onClick={() => handleStartBot(bot)}>Start bot</Button>
+								)}
+								<NavLink
+									key={bot.id}
+									viewTransition
+									className="   transition-all  focus:scale-105  focus:ring-2 "
+									to={`/home/servers/${serverId}/bots/${bot.id}`}
+								>
+									<Button variant="outline">Details</Button>
+								</NavLink>
+							</CardFooter>
+						</Card>
+					);
+				})}
 			</ScrollArea>
 		</div>
 	);

@@ -30,7 +30,6 @@ export default function HomePage() {
 	}
 	return (
 		<ScrollArea className="w-full h-[75vh]  p-2 rounded-md border">
-			<div>oi {user?.name}</div>
 			<AlbumList />
 		</ScrollArea>
 	);

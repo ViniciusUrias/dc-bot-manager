@@ -7,63 +7,49 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "@/store";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
+	id: z.string().min(2, {
+		message: "Username must be at least 2 characters.",
+	}),
 	name: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
-	botId: z.string().min(2, {
-		message: "Username must be at least 2 characters.",
-	}),
-	botToken: z.string().min(2, {
+	description: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
 });
-export default function NewBot() {
+
+export default function ServerCreate() {
 	const navigate = useNavigate();
-	const { serverId } = useParams();
-	const signIn = useSelector((s) => s.signIn);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			botId: "",
+			id: "",
 			name: "",
-			botToken: "",
+			description: "",
 		},
 	});
-	const { data: server } = useQuery({
-		queryKey: ["servers", serverId],
-		queryFn: async () => {
-			const response = await axiosInstance.get(`/servers/${serverId}`);
-			return response.data;
-		},
-	});
-
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		const response = await axiosInstance.post(`/bots`, {
-			...values,
-
-			serverId,
-			prefix: "!",
-			token: values.botToken,
+		const response = await axiosInstance.post("/servers", {
+			name: values.name,
+			serverid: values.id,
+			description: values.description,
 		});
+
 		navigate(-1);
 	}
 	return (
 		<Form {...form}>
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl">Bot creation</CardTitle>
+					<CardTitle className="text-2xl">New server</CardTitle>
 					<CardDescription>
-						Create your bot in{" "}
-						<a className="text-accent-foreground" target="_blank" href={`https://discord.com/developers/applications`}>
-							discord developers platform
-						</a>{" "}
-						and then insert the Application ID and Token
+						Enter custom server name and get the id from your discord (right click your server, and click 'COPY SERVER
+						ID')
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -74,9 +60,9 @@ export default function NewBot() {
 								name="name"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Bot name</FormLabel>
+										<FormLabel>Server name</FormLabel>
 										<FormControl>
-											<Input placeholder="name" {...field} />
+											<Input placeholder="My cool server" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -84,12 +70,12 @@ export default function NewBot() {
 							/>
 							<FormField
 								control={form.control}
-								name="botId"
+								name="id"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{`Bot ID (General Information Tab > Application ID)`}</FormLabel>
+										<FormLabel>Server ID</FormLabel>
 										<FormControl>
-											<Input type="text" placeholder="****" {...field} />
+											<Input placeholder="ID" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -97,17 +83,18 @@ export default function NewBot() {
 							/>
 							<FormField
 								control={form.control}
-								name="botToken"
+								name="description"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>{`Bot Token (Bot Tab > Generate Token)`}</FormLabel>
+										<FormLabel>Server description</FormLabel>
 										<FormControl>
-											<Input type="text" placeholder="****" {...field} />
+											<Input placeholder="Used for playing valorant" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
+
 							<Button type="submit">Submit</Button>
 						</div>
 					</form>

@@ -27,7 +27,7 @@ export const registerCommand = async ({ botId, name, command }) => {
 
 			throw new Error("Invalid command structure");
 		}
-		client.commands.set(commandImport.data?.name, commandImport);
+		client?.commands?.set(commandImport.data?.name, commandImport);
 		commands.set(commandImport.data?.name, commandImport);
 		const commandData = commandImport.data.toJSON();
 

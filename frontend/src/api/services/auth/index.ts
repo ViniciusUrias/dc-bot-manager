@@ -9,3 +9,11 @@ export const handleAuthenticate = async (body) => {
 		throw new Error("Something went wrong while fetching users");
 	}
 };
+export const registerAccount = async (body) => {
+	try {
+		const response = await axiosInstance.post(ENDPOINTS.AUTH.REGISTER, body);
+		return response.data;
+	} catch (error) {
+		throw new Error("Something went wrong while fetching users");
+	}
+};
