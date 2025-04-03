@@ -13,16 +13,24 @@
 		"migrate": "prisma migrate dev",
 		"copy-assets": "copyfiles -u 1 \"prisma/**/*\" \"src/**/*.prisma\" dist/",
 		"postinstall": "prisma generate",
-		"staging": "cross-env NODE_ENV=staging node dist/index.js"
+		"staging": "cross-env NODE_ENV=staging node dist/index.js",
+		"docker:up": "docker-compose up -d",
+		"docker:down": "docker-compose down",
+		"docker:logs": "docker-compose logs -f",
+		"docker:migrate": "docker-compose exec app npx prisma migrate dev",
+		"docker:studio": "docker-compose exec app npx prisma studio",
+		"docker:test": "docker-compose exec app npm test"
 	},
 	"keywords": [],
 	"prisma": {
-		"schema": "src/prisma/schema.prisma"
+		"schema": "prisma/schema.prisma"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"@fastify/cors": "^11.0.1",
+		"@fastify/swagger": "^9.4.2",
+		"@fastify/swagger-ui": "^5.2.2",
 		"@prisma/client": "^6.5.0",
 		"bcrypt": "^5.1.1",
 		"cors": "^2.8.5",

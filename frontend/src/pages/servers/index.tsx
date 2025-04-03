@@ -1,5 +1,5 @@
-import AlbumList from "@/components/AlbumList";
+import ServerList from "@/components/ServerList";
 
 export default function ServersPage() {
-	return <AlbumList />;
+	return <ServerList />;
 }

@@ -1,4 +1,4 @@
-import AlbumList from "@/components/AlbumList";
+import AlbumList from "@/components/ServerList";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";

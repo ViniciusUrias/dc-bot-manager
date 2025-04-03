@@ -26,7 +26,8 @@
     "src/**/*",
     "./src",
     "prisma/**/*",
-    "**/*.prisma"
+    "**/*.prisma",
+    "prisma"
   ],
   "exclude": [
     "node_modules",

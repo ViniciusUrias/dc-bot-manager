@@ -1,0 +1,39 @@
+FROM node:20-alpine
+
+# Install dependencies for Prisma and native modules
+# RUN apk add --no-cache openssl python3 make g++
+
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package.json package-lock.json ./
+
+COPY . .
+
+# Install all dependencies (including devDependencies)
+RUN npm install
+
+# Create prisma directory in container
+RUN mkdir -p prisma
+
+# Copy Prisma files from src/prisma to container's prisma directory
+COPY prisma/schema.prisma ./prisma/
+COPY prisma/migrations ./prisma/migrations
+
+# COPY prisma/ ./app/prisma/
+
+
+# Verify the files were copied correctly
+RUN ls -la prisma/
+
+# Generate Prisma client (using explicit schema path)
+# RUN npx prisma generate --schema=./prisma/schema.prisma
+
+# Copy all other files
+
+
+# Build the project
+RUN npm run build
+
+EXPOSE 3000
+CMD ["npm", "run", "dev"]

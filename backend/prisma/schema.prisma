@@ -1,0 +1,124 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters", "typedSql"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bots      Bot[]
+  servers   Server[]
+  sessions  Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Server {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  serverid  String?  @unique(map: "server_unique")
+  bots      Bot[]
+  owner     User     @relation(fields: [ownerId], references: [id])
+}
+
+model Bot {
+  id             String      @id @default(uuid())
+  name           String
+  token          String
+  active         Boolean     @default(true)
+  ownerId        String
+  prefix         String      @default("!")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  serverId       String
+  analytics      Analytics[]
+  owner          User        @relation(fields: [ownerId], references: [id])
+  server         Server      @relation(fields: [serverId], references: [id])
+  configurations BotConfig[]
+  commands       Command[]
+  events         Event[]
+}
+
+model Command {
+  id          String              @id @default(uuid())
+  name        String
+  description String
+  response    String
+  enabled     Boolean             @default(true)
+  botId       String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  bot         Bot                 @relation(fields: [botId], references: [id])
+  permissions CommandPermission[]
+  usage       CommandUsage[]
+}
+
+model CommandPermission {
+  id        String   @id @default(uuid())
+  commandId String
+  roleId    String
+  allow     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  command   Command  @relation(fields: [commandId], references: [id])
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  name      String
+  action    String
+  enabled   Boolean  @default(true)
+  botId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bot       Bot      @relation(fields: [botId], references: [id])
+}
+
+model BotConfig {
+  id        String   @id @default(uuid())
+  key       String
+  value     String
+  botId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bot       Bot      @relation(fields: [botId], references: [id])
+}
+
+model CommandUsage {
+  id        String   @id @default(uuid())
+  commandId String
+  userId    String
+  guildId   String
+  channelId String
+  timestamp DateTime @default(now())
+  command   Command  @relation(fields: [commandId], references: [id])
+}
+
+model Analytics {
+  id        String   @id @default(uuid())
+  botId     String
+  eventType String
+  data      Json
+  timestamp DateTime @default(now())
+  bot       Bot      @relation(fields: [botId], references: [id])
+}

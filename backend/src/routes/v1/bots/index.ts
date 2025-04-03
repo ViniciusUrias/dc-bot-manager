@@ -21,7 +21,6 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 			summary: "Get all bot",
 		}),
 		async (request, reply) => {
-			// Implement logic to list bots
 			const bots = await app.prisma.bot.findMany({
 				select: {
 					token: true,
