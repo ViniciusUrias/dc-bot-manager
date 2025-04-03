@@ -100,8 +100,28 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };
+			const userId = request.user.id;
+			const bot = await app.prisma.bot.findFirst({
+				where: { id: botId, ownerId: userId },
+				select: { token: true },
+			});
+			const { icon, name, description } = request.body;
+			try {
+				const res = await botManager.updateBotInfo(request.body, bot.token);
+				if (res) {
+					await app.prisma.bot.update({
+						where: { id: botId, ownerId: userId },
+						data: {
+							icon,
+							name,
+						},
+					});
+				}
+				return res;
+			} catch (error) {
+				reply.send({ message: error?.message });
+			}
 			// Implement update logic
-			return { message: "Bot updated successfully" };
 		}
 	);
 

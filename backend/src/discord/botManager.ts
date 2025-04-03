@@ -1,6 +1,6 @@
 // bot-manager.ts
 import { fastify } from "@/index";
-import { Client, Events, GatewayIntentBits, REST } from "discord.js";
+import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import EventEmitter from "events";
 import fs from "fs-extra";
 import path from "path";
@@ -138,4 +138,30 @@ export const getSavedCommands = (bot: BotState) => {
 			bot.commands.set(commandImport.data?.name, commandImport);
 		}
 	});
+};
+
+export type BotInfoRequest = {
+	description?: string;
+	/**
+	 * data:image/png;base64,...
+	 */
+	icon?: string;
+	name?: string;
+	tags?: string[];
+};
+export const updateBotInfo = async (data: BotInfoRequest, token: string) => {
+	try {
+		const client = new Client({
+			intents: [GatewayIntentBits.Guilds],
+			// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+		});
+
+		await client.login(token);
+		const rest = new REST().setToken(token);
+
+		const updated = await rest.patch(Routes.currentApplication(), { body: data });
+		return updated;
+	} catch (error) {
+		throw new Error("Error updating bot");
+	}
 };

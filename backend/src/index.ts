@@ -19,6 +19,7 @@ const main = async () => {
 
 	fastify = Fastify({
 		loggerInstance: logger,
+		bodyLimit: 1000000000,
 	});
 
 	fastify.addSchema(schemas.User);
