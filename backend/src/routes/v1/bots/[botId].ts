@@ -11,17 +11,17 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 			summary: "Initiate bot",
 			body: {
 				type: "object",
-				required: ["serverId"],
+				required: ["botId"],
 				properties: {
 					serverid: { type: "string" },
 				},
 			},
 		}),
 		async (request, reply) => {
-			const { name, serverId, botId } = request.body;
+			const { botId } = request.body;
 			const { id } = request.user;
 			const bot = await app.prisma.bot.findFirst({ where: { id: botId } });
-			const server = await app.prisma.server.findFirst({ where: { id: serverId } });
+			const server = await app.prisma.server.findFirst({ where: { id: bot.serverId } });
 			// const { client, rest } = await initiateBotConnection({ serverId, userId: id, botInfo: bot });
 			const client = await botManager.startBot({
 				clientId: botId,
@@ -41,7 +41,7 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 			summary: "stop bot",
 			body: {
 				type: "object",
-				required: ["serverId"],
+				required: ["botId"],
 				properties: {
 					serverid: { type: "string" },
 				},

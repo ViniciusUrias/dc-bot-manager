@@ -1,7 +1,6 @@
-import axiosInstance from "@/api/services/axios";
+import { useServers } from "@/hooks/useServers";
 import { cn } from "@/lib/utils";
 import { Album, Albums } from "@/types/album";
-import { useQuery } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { NavLink } from "react-router";
 import { Button } from "./ui/button";
@@ -14,16 +13,10 @@ interface ServerListProps {
 	onEdit?: (album: Album) => void;
 }
 
-export default function ServerList({ onDelete, onEdit }: ServerListProps) {
-	const { data: servers, refetch } = useQuery({
-		queryKey: ["servers"],
-		queryFn: async () => {
-			const response = await axiosInstance.get("/servers");
-			return response.data;
-		},
-	});
-	console.log(servers);
-	if (!servers?.length) {
+export default function ServerList() {
+	const { servers, deleteServer } = useServers({});
+
+	if (!servers?.data?.length) {
 		return (
 			<div>
 				<span>You don't have any servers yet, try creating a new one</span>
@@ -33,10 +26,7 @@ export default function ServerList({ onDelete, onEdit }: ServerListProps) {
 			</div>
 		);
 	}
-	const deleteServer = async (server) => {
-		const response = await axiosInstance.delete(`/servers/${server.id}`);
-		await refetch();
-	};
+
 	return (
 		<ScrollArea className="w-full h-[75vh]  p-2 rounded-lg ">
 			<div className="justify-self-end my-2">
@@ -47,12 +37,12 @@ export default function ServerList({ onDelete, onEdit }: ServerListProps) {
 				</NavLink>
 			</div>
 			<div className="masonry-grid flex gap-2 flex-col">
-				{servers?.map((server) => {
+				{servers?.data?.map((server) => {
 					return (
 						<NavLink
 							key={server.id}
 							viewTransition
-							className="  z-[999999] transition-all  focus:scale-105  focus:ring-2 "
+							className="  z-[999999] transition-all  "
 							to={`/home/servers/${server.id}`}
 							state={{ server }}
 						>

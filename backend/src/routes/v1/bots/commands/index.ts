@@ -55,12 +55,25 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };
-			const { serverId, command, name } = request.body;
+			const { command, name } = request.body;
 			const { id } = request.user;
-			const botInfo = await app.prisma.bot.findFirst({ where: { id: botId }, select: { token: true } });
-			await botManager.startBot({ clientId: botId, id: botId, name, serverId, token: botInfo.token, userId: id });
+			const botInfo = await app.prisma.bot.findFirst({
+				where: { id: botId },
+				select: { token: true, server: { select: { serverid: true } } },
+			});
+			const client = await botManager.startBot(
+				{
+					clientId: botId,
+					id: botId,
+					name,
+					serverId: botInfo.server.serverid,
+					token: botInfo.token,
+					userId: id,
+				},
+				{ presence: { status: "invisible" } }
+			);
 			try {
-				const response = await commandManager.registerCommand({ botId, command, name, botInfo });
+				const response = await commandManager.registerCommand({ botId, command, name, botInfo, userId: id });
 
 				if (response) {
 					const exists = await app.prisma.command.findFirst({ where: { name } });
@@ -71,22 +84,25 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 						data: {
 							name,
 							enabled: true,
-							description: "",
+							description: response.description,
 							response: "",
 							botId,
 						},
 					});
 				}
+				await client.destroy();
 				return { message: "Command created successfully", response };
 			} catch (error) {
 				console.log(error);
+				await client.destroy();
+
 				return { message: "Command error", error: error.message };
 			}
 			// Implement command creation logic
 		}
 	);
 
-	app.put(
+	app.delete(
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Delete commands command",
@@ -108,15 +124,19 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };
-			const { serverId } = request.body;
-
+			const bot = await app.prisma.bot.findFirst({ where: { id: botId }, select: { server: true, token: true } });
 			const { id } = request.user;
 			// await initiateConnection({ serverId, userId: id });
 			try {
-				const response = await commandManager.deleteCommands({ serverId, botId, userId: id });
+				const response = await commandManager.deleteCommands({
+					serverId: bot.server.serverid,
+					botId,
+					userId: id,
+					botToken: bot.token,
+				});
 
 				if (response) {
-					await app.prisma.command.updateMany({ where: { botId }, data: { enabled: false } });
+					await app.prisma.command.deleteMany({ where: { botId } });
 				}
 				return { message: "Commands disabled", response };
 			} catch (error) {

@@ -31,6 +31,9 @@ export default function ServerDetails() {
 		});
 		refetch();
 	};
+	const handleDeleteCommands = async (botId) => {
+		const response = await axiosInstance.delete(`/bots/${botId}/commands`);
+	};
 	return (
 		<div className="flex flex-col gap-4 p-4">
 			<h1 className="text-2xl font-bold">Server Details</h1>
@@ -69,11 +72,14 @@ export default function ServerDetails() {
 								<NavLink
 									key={bot.id}
 									viewTransition
-									className="   transition-all  focus:scale-105  focus:ring-2 "
+									className="  transition-all  focus:scale-105  focus:ring-2 "
 									to={`/home/servers/${serverId}/bots/${bot.id}`}
 								>
 									<Button variant="outline">Details</Button>
 								</NavLink>
+								<Button variant="destructive" onClick={() => handleDeleteCommands(bot.id)}>
+									Delete commands
+								</Button>
 							</CardFooter>
 						</Card>
 					);

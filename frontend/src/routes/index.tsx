@@ -2,6 +2,7 @@ import AuthLayout from "@/layouts/auth";
 import MainLayout from "@/layouts/main";
 import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
+import CommandDetails from "@/pages/bots/commands/details";
 import NewCommand from "@/pages/bots/commands/newCommand";
 import BotDetails from "@/pages/bots/details";
 import NewBot from "@/pages/bots/newbot";
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
 					{ path: "servers/:serverId/bots/:botId", element: <BotDetails /> },
 					{ path: "servers/:serverId/bots/new", element: <NewBot /> },
 					{ path: "servers/:serverId/bots/:botId/commands/new", element: <NewCommand /> },
+					{ path: "servers/:serverId/bots/:botId/commands/:commandName", element: <CommandDetails /> },
 				],
 			},
 		],

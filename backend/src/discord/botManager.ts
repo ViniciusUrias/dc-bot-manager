@@ -1,7 +1,7 @@
 // bot-manager.ts
 import { fastify } from "@/index";
 import { RESTGetCurrentApplicationResult } from "discord-api-types/v10";
-import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
+import { Client, ClientOptions, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import EventEmitter from "events";
 import fs from "fs-extra";
 import path from "path";
@@ -35,13 +35,14 @@ ev.on("botLeaved", (bot) => {
 
 const activeBots: Map<string, BotState> = new Map();
 
-export const startBot = async (config: BotConfig): Promise<Client> => {
+export const startBot = async (config: BotConfig, clientConfig?: Partial<ClientOptions>): Promise<Client> => {
 	if (activeBots.has(config.id)) {
 		return activeBots.get(config.id)!.client;
 	}
 
 	const client = new Client({
 		intents: [GatewayIntentBits.Guilds],
+		...clientConfig,
 		// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 	});
 
@@ -57,11 +58,11 @@ export const startBot = async (config: BotConfig): Promise<Client> => {
 	activeBots.set(config.id, botState);
 
 	client.on("ready", (client) => {
-		console.log(`BOT IS UP ${client.commands} ready!`);
+		console.log(`BOT IS UP WITH ${botState.commands.size} COMMANDS SET!`);
+		setupCommandHandlers(client, config.id);
+		ev.emit("botEntered", config);
 	});
 
-	setupCommandHandlers(client, config.id);
-	ev.emit("botEntered", config);
 	return client;
 };
 
@@ -99,7 +100,11 @@ const setupCommandHandlers = (client: Client, botId: string) => {
 		if (!botState) return;
 
 		const command = botState.commands.get(interaction.commandName);
-		if (!command) return;
+
+		if (!command) {
+			await interaction.reply("Command not registered! Check your files");
+			return;
+		}
 
 		try {
 			await command.execute(interaction);
@@ -126,8 +131,10 @@ export const getSavedCommands = (bot: BotState) => {
 		config: { serverId, userId, clientId },
 	} = bot;
 	const tempFilePath = path.join(__dirname, "users", userId, "servers", serverId, "bots", clientId, "commands");
+	console.log("TEMP FILE PATH", tempFilePath);
 	if (!fs.existsSync(tempFilePath)) {
-		fs.mkdirSync(tempFilePath, { recursive: true });
+		return { error: "No commands found" };
+		// fs.mkdirSync(tempFilePath, { recursive: true });
 	}
 	fs.readdir(tempFilePath, (err, files) => {
 		if (err) throw err;
@@ -150,17 +157,23 @@ export type BotInfoRequest = {
 	name?: string;
 	tags?: string[];
 };
+
+export const botLoginWithToken = async (token: string) => {
+	const client = new Client({
+		presence: { status: "invisible" },
+
+		intents: [GatewayIntentBits.Guilds],
+		// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+	});
+
+	await client.login(token);
+	const rest = new REST().setToken(token);
+
+	return { client, rest };
+};
 export const updateBotInfo = async (data: BotInfoRequest, token: string) => {
 	try {
-		const client = new Client({
-			presence: { status: "invisible" },
-
-			intents: [GatewayIntentBits.Guilds],
-			// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
-		});
-
-		await client.login(token);
-		const rest = new REST().setToken(token);
+		const { client, rest } = await botLoginWithToken(token);
 
 		const updated = await rest.patch(Routes.currentApplication(), { body: data });
 		await client.destroy();
@@ -171,14 +184,7 @@ export const updateBotInfo = async (data: BotInfoRequest, token: string) => {
 };
 export const getBotData = async (token: string): Promise<RESTGetCurrentApplicationResult> => {
 	try {
-		const client = new Client({
-			presence: { status: "invisible" },
-			intents: [GatewayIntentBits.Guilds],
-			// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
-		});
-
-		await client.login(token);
-		const rest = new REST().setToken(token);
+		const { client, rest } = await botLoginWithToken(token);
 
 		const updated: RESTGetCurrentApplicationResult = await rest.get(Routes.currentApplication());
 		await client.destroy();

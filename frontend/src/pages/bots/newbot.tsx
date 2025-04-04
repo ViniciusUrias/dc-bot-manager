@@ -2,13 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import axiosInstance from "@/api/services/axios";
+import BackButton from "@/components/back-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "@/store";
-import { useQuery } from "@tanstack/react-query";
+import { useBot } from "@/hooks/useBots";
 import { useNavigate, useParams } from "react-router";
 
 const formSchema = z.object({
@@ -25,7 +24,6 @@ const formSchema = z.object({
 export default function NewBot() {
 	const navigate = useNavigate();
 	const { serverId } = useParams();
-	const signIn = useSelector((s) => s.signIn);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -34,19 +32,11 @@ export default function NewBot() {
 			botToken: "",
 		},
 	});
-	const { data: server } = useQuery({
-		queryKey: ["servers", serverId],
-		queryFn: async () => {
-			const response = await axiosInstance.get(`/servers/${serverId}`);
-			return response.data;
-		},
-	});
-
+	const { createBot } = useBot({});
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		const response = await axiosInstance.post(`/bots`, {
+		await createBot({
 			...values,
-
 			serverId,
 			prefix: "!",
 			token: values.botToken,
@@ -57,6 +47,7 @@ export default function NewBot() {
 		<Form {...form}>
 			<Card>
 				<CardHeader>
+					<BackButton />
 					<CardTitle className="text-2xl">Bot creation</CardTitle>
 					<CardDescription>
 						Create your bot in{" "}
@@ -108,7 +99,9 @@ export default function NewBot() {
 									</FormItem>
 								)}
 							/>
-							<Button type="submit">Submit</Button>
+							<Button className="w-fit" type="submit">
+								Create
+							</Button>
 						</div>
 					</form>
 				</CardContent>

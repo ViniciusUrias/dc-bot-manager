@@ -2,6 +2,10 @@ generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters", "typedSql"]
 }
+generator typescriptInterfaces {
+  provider = "prisma-generator-typescript-interfaces"
+  output = "../src/generated/types.ts"
+}
 
 datasource db {
   provider = "postgresql"
