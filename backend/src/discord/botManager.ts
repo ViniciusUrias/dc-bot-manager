@@ -93,6 +93,20 @@ const setupCommandHandlers = (client: Client, botId: string) => {
 			fastify.prisma.bot.update({ where: { id: botId }, data: { active: true } });
 		}
 	});
+
+	client.on("messageCreate", async (ev) => {
+		console.log("MESSAGE", ev);
+		await ev.reply("TESTE");
+	});
+	console.log("CLIENT", client);
+	const channel = client.channels.cache.get("1355197976242295017");
+	if (channel.isTextBased()) {
+		channel.isSendable() && channel.send(`Hi, ${client.user?.username} is online! `);
+	}
+	client.on("message", async (ev) => {
+		console.log("MESSAGE", ev);
+		await ev.reply("TESTE");
+	});
 	client.on(Events.InteractionCreate, async (interaction) => {
 		if (!interaction.isCommand()) return;
 
