@@ -1,0 +1,5 @@
+import React from "react";
+
+export default function NoAuthLayout({ children }: { children: React.ReactNode }) {
+	return <div className="flex items-center justify-center m-auto h-[100dvh] w-full">{children}</div>;
+}
