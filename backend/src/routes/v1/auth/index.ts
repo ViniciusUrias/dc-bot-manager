@@ -76,10 +76,7 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 			// Return user data without password
 			const { password: _, ...userWithoutPassword } = user;
 
-			return {
-				token,
-				user: userWithoutPassword,
-			};
+			return reply.status(201).send({ ...userWithoutPassword });
 		}
 	);
 	app.post(
