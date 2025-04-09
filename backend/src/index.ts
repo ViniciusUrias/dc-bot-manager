@@ -11,13 +11,28 @@ import dotenv from "dotenv";
 import Fastify, { FastifyInstance } from "fastify";
 import pino from "pino";
 const crypto = require("crypto");
-
-import prisma from "../prisma/prisma";
+import FastifyBetterAuth from "fastify-better-auth";
 import authPlugin from "./plugins/auth";
 import fastifyCookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
 dotenv.config(); // Load environment variables from .env file
 let fastify: FastifyInstance | null = null;
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import prisma from "../prisma/prisma";
+const auth = betterAuth({
+	trustedOrigins: ["http://localhost:5174"],
+	onAPIError: {
+		onError(error, ctx) {
+			console.log("ERROR", error);
+			console.log("ctx", ctx);
+		},
+	},
+	database: prismaAdapter(prisma, {
+		provider: "postgresql",
+	}),
+	emailAndPassword: { enabled: true },
+});
 
 const main = async () => {
 	const logger = pino({ transport: { target: "pino-pretty" } });
@@ -26,7 +41,15 @@ const main = async () => {
 		loggerInstance: logger,
 		bodyLimit: 1000000000,
 	});
-
+	// fastify.addContentTypeParser("*", { parseAs: "string" }, function (req, body, done) {
+	// 	try {
+	// 		const json = JSON.parse(body);
+	// 		done(null, json);
+	// 	} catch (err) {
+	// 		err.statusCode = 400;
+	// 		done(err, undefined);
+	// 	}
+	// });
 	fastify.addSchema(schemas.User);
 	fastify.addSchema(schemas.Bot);
 	fastify.addSchema(schemas.Error);
@@ -40,7 +63,7 @@ const main = async () => {
 		secret: process.env.COOKIE_SECRET,
 		hook: "onRequest",
 	});
-
+	await fastify.register(FastifyBetterAuth, { auth });
 	fastify.register(authPlugin);
 	fastify.addHook("onClose", async (instance) => {
 		await instance.prisma.$disconnect();

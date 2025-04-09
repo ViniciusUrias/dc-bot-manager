@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 
 // Initializing the PrismaClient with the database connection URL
 const prisma = new PrismaClient({
-	log: ["query"],
+	log: ["query", "info", "warn", "error"],
 	datasources: {
 		db: {
 			url: process.env.DATABASE_URL, // Database URL from environment variables

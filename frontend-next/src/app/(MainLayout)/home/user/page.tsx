@@ -1,8 +1,8 @@
 "use client";
-import { useAuth } from "@/providers/auth-provider";
+import { authClient } from "@/lib/better-auth";
 
 export default function UserPage() {
-	const user = useAuth();
+	const { data } = authClient.useSession();
 
-	return <div>oi, {user.user?.name}</div>;
+	return <div>oi, {data?.user?.name}</div>;
 }

@@ -17,17 +17,12 @@ export default async function (app: FastifyInstance, opts) {
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "User Create",
-
-			body: {
-				type: "object",
-				required: ["email", "password"],
-				properties: {
-					email: { type: "string", format: "email" },
-					password: { type: "string", minLength: 8 },
-				},
-			},
 		}),
 		async (request, reply) => {
+			console.log("REQUEST BODY", request.body);
+			if (typeof request.body === "string") {
+				request.body = JSON.parse(request.body);
+			}
 			const { email, password, name } = request.body as {
 				email: string;
 				password: string;
