@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { login } from "@/lib/auth";
 import { Loader } from "lucide-react";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -19,20 +19,15 @@ export function LoginForm() {
 		setError(null);
 
 		const formData = new FormData(e.currentTarget);
-		const email = formData.get("email") as string;
-		const password = formData.get("password") as string;
 
 		try {
-			const result = await signIn("credentials", {
-				email,
-				password,
-				redirectTo: "/home",
-			});
+			const result = await login(formData);
 
 			if (result?.error) {
 				setError(result.error);
 			}
 		} catch (err) {
+			console.log(err);
 			setError("An unexpected error occurred");
 		} finally {
 			setIsLoading(false);

@@ -74,15 +74,22 @@ export default async function (app: FastifyInstance, opts) {
 			auth: true,
 		}),
 		async (request, reply) => {
-			// request.user is available because of our auth plugin
-			const userId = request.user?.id;
-			console.log("USER", request.user);
-			const user = await app.prisma.user.findUnique({
-				where: { id: userId },
-				omit: { password: true },
-			});
+			try {
+				const userId = request.user.userId;
+				if (!userId) {
+					return reply.status(404).send({ message: "User not found in request middleware", user: request.user });
+				}
+				console.log("USER", request);
+				const user = await app.prisma.user.findUnique({
+					where: { id: userId },
+					omit: { password: true },
+				});
 
-			return user;
+				reply.status(201).send(user);
+			} catch (error) {
+				reply.status(401).send({ error: true, message: error.message });
+			}
+			// request.user is available because of our auth plugin
 		}
 	);
 	app.register(userIdRoutes, { defaultRouteConfig });

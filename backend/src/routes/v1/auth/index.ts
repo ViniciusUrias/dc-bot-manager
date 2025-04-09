@@ -69,16 +69,33 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 					message: "Invalid email or password",
 				});
 			}
-			console.log("USER", user);
-			// Generate JWT token
-			const token = generateToken(user.id);
+
+			const token = app.jwt.sign({ userId: user.id }, { expiresIn: "7d" });
+
+			reply.setCookie("authToken", token, {
+				path: "/",
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: "strict", // For cross-site cookies
+				maxAge: 60 * 60 * 24 * 7, // 7 days
+				domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
+			});
 
 			// Return user data without password
 			const { password: _, ...userWithoutPassword } = user;
 
-			return reply.status(201).send({ ...userWithoutPassword });
+			return reply.status(201).send({ user: userWithoutPassword, token });
 		}
 	);
+	app.post("/auth/logout", async (request, reply) => {
+		reply.clearCookie("authToken", {
+			path: "/",
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "strict",
+		});
+		return { message: "Logged out successfully" };
+	});
 	app.post(
 		"/auth/register",
 		createRouteConfig({

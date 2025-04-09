@@ -4,44 +4,26 @@ import jwt from "jsonwebtoken";
 
 declare module "fastify" {
 	interface FastifyRequest {
-		user?: {
-			id: string;
+		user: {
+			userId: string;
 		};
 	}
 }
 
 const authPlugin: FastifyPluginAsync = async (app) => {
-	// Decorate Fastify with authenticate function
-	app.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
-		const authHeader = request.headers.authorization;
-		console.log(request.headers);
-		if (!authHeader) {
-			return reply.code(401).send({
-				statusCode: 401,
-				error: "Unauthorized",
-				message: "No authorization header provided",
-			});
-		}
-
-		if (!authHeader.startsWith("Bearer ")) {
-			return reply.code(401).send({
-				statusCode: 401,
-				error: "Unauthorized",
-				message: 'Authorization header must start with "Bearer "',
-			});
-		}
-
-		const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-
+	app.decorate("authenticate", async (request: any, reply: any) => {
 		try {
-			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-			request.user = { id: decoded.userId };
-		} catch (error) {
-			return reply.code(401).send({
-				statusCode: 401,
-				error: "Unauthorized",
-				message: "Invalid or expired token",
-			});
+			const token = request.cookies.authToken || request.headers.authorization?.split(" ")[1];
+			console.log("AUTHENTICATE BEARER", request.headers.authorization);
+			console.log("AUTHENTICATE COOKIE", request.cookies.authToken);
+			if (!token) {
+				throw new Error("No token provided");
+			}
+
+			const decoded = app.jwt.verify(token);
+			request.user = decoded;
+		} catch (err) {
+			reply.status(401).send({ message: "Unauthorized", err: err.message });
 		}
 	});
 

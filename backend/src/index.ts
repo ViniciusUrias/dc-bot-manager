@@ -10,10 +10,15 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import dotenv from "dotenv";
 import Fastify, { FastifyInstance } from "fastify";
 import pino from "pino";
+const crypto = require("crypto");
+
 import prisma from "../prisma/prisma";
 import authPlugin from "./plugins/auth";
+import fastifyCookie from "@fastify/cookie";
+import fastifyJwt from "@fastify/jwt";
 dotenv.config(); // Load environment variables from .env file
 let fastify: FastifyInstance | null = null;
+
 const main = async () => {
 	const logger = pino({ transport: { target: "pino-pretty" } });
 
@@ -25,7 +30,17 @@ const main = async () => {
 	fastify.addSchema(schemas.User);
 	fastify.addSchema(schemas.Bot);
 	fastify.addSchema(schemas.Error);
+
 	fastify.decorate("prisma", prisma);
+
+	fastify.register(fastifyJwt, {
+		secret: process.env.JWT_SECRET,
+	});
+	fastify.register(fastifyCookie, {
+		secret: process.env.COOKIE_SECRET,
+		hook: "onRequest",
+	});
+
 	fastify.register(authPlugin);
 	fastify.addHook("onClose", async (instance) => {
 		await instance.prisma.$disconnect();
@@ -87,7 +102,11 @@ const main = async () => {
 	fastify.register(router, {
 		prefix: "/v1",
 	});
-	fastify.register(cors, { origin: "*", methods: ["GET", "PUT", "POST", "DELETE"] });
+	fastify.register(cors, {
+		origin: "http://localhost:5174",
+		credentials: true,
+		methods: ["GET", "PUT", "POST", "DELETE"],
+	});
 	fastify.get("/test", (req, res) => {
 		res.send("connected");
 	});
