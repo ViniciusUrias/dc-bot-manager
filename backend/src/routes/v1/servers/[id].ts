@@ -66,7 +66,7 @@ export default async function (app: FastifyInstance, opts) {
 		async (request, reply) => {
 			const { serverId } = request.params as { serverId: string };
 			const { name, email } = request.body as { name?: string; email?: string };
-
+			console.log("REQUEST BODY", request.body);
 			try {
 				const updatedUser = await app.prisma.server.update({
 					where: { id: serverId },

@@ -73,6 +73,12 @@ export default function LoginForm() {
 		}
 	};
 
+	const signInWithDiscord = async () => {
+		const data = await authClient.signIn.social({
+			provider: "discord",
+			callbackURL: "http://localhost:5174/home/user",
+		});
+	};
 	return (
 		<Card className="w-1/2 md:w-1/3">
 			<CardHeader>
@@ -108,6 +114,8 @@ export default function LoginForm() {
 					<Link className="mt-2" href="/register">
 						<Button variant="ghost">Register now</Button>
 					</Link>
+
+					<Button onClick={signInWithDiscord}>Sign in with discord</Button>
 				</div>
 			</CardContent>
 		</Card>

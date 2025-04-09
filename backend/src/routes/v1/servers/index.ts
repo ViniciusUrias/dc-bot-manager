@@ -13,7 +13,7 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 		},
 	});
 	app.get("/", createRouteConfig2(defaultRouteConfig, { summary: "Get all servers" }), async (request, reply) => {
-		const { userId } = request.params as { userId: string };
+		console.log("USER SERVER", request.user);
 		const { id } = request.user;
 		try {
 			const user = await app.prisma.server.findMany({

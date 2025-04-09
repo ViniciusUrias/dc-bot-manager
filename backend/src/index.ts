@@ -15,24 +15,13 @@ import FastifyBetterAuth from "fastify-better-auth";
 import authPlugin from "./plugins/auth";
 import fastifyCookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
+import fastifyMtp from "@fastify/multipart";
 dotenv.config(); // Load environment variables from .env file
 let fastify: FastifyInstance | null = null;
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "../prisma/prisma";
-const auth = betterAuth({
-	trustedOrigins: ["http://localhost:5174"],
-	onAPIError: {
-		onError(error, ctx) {
-			console.log("ERROR", error);
-			console.log("ctx", ctx);
-		},
-	},
-	database: prismaAdapter(prisma, {
-		provider: "postgresql",
-	}),
-	emailAndPassword: { enabled: true },
-});
+import { auth } from "@/lib/auth";
 
 const main = async () => {
 	const logger = pino({ transport: { target: "pino-pretty" } });
@@ -55,6 +44,7 @@ const main = async () => {
 	fastify.addSchema(schemas.Error);
 
 	fastify.decorate("prisma", prisma);
+	fastify.register(fastifyMtp, { attachFieldsToBody: "keyValues" });
 
 	fastify.register(fastifyJwt, {
 		secret: process.env.JWT_SECRET,
