@@ -4,12 +4,21 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 import { LucidePlus } from "lucide-react";
 import Link from "next/link";
 import { updateServer } from "../actions";
+import { Server } from "@/types/prisma";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import BotForm from "./bot-form";
 
-export default function ServerDetails({ server }) {
+export default function ServerDetails({ server }: { server: Server }) {
 	const handleStartBot = async (bot) => {
 		// const response = await axiosInstance.post("/bots/start", {
 		// 	botId: bot.id,
@@ -52,21 +61,38 @@ export default function ServerDetails({ server }) {
 
 			<div className="flex justify-between gap-2 items-center">
 				<h2 className="text-xl font-semibold">Bots</h2>
-				<Link href={`/home/servers/${server.id}/bots/new`}>
-					<Button variant="outline">
-						<LucidePlus className="h-6 w-6 text-primary" />
-						New
-					</Button>
-				</Link>
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button variant="outline">
+							<LucidePlus className="h-6 w-6 text-primary" />
+							New
+						</Button>
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>New bot</DialogTitle>
+							<DialogDescription>
+								Create your bot in{" "}
+								<a
+									className="text-accent-foreground"
+									target="_blank"
+									href={`https://discord.com/developers/applications`}
+								>
+									discord developers platform
+								</a>{" "}
+								and then insert the Application ID and Token
+							</DialogDescription>
+						</DialogHeader>
+
+						<BotForm server={server} />
+					</DialogContent>
+				</Dialog>
 			</div>
 
 			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 gap-4 rounded-md border">
 				{server?.bots?.map((bot) => {
 					return (
-						<Card
-							key={bot.id}
-							className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn", "my-2")}
-						>
+						<Card key={bot.id} className={"my-2"}>
 							<CardHeader className="flex flex-row items-center justify-between ">
 								<CardTitle aria-label={`Album title: ${bot.name}`}>{bot.name}</CardTitle>
 							</CardHeader>
@@ -84,7 +110,7 @@ export default function ServerDetails({ server }) {
 								<Link
 									key={bot.id}
 									className="  transition-all  focus:scale-105  focus:ring-2 "
-									href={`/home/servers/${serverId.id}/bots/${bot.id}`}
+									href={`/home/servers/${server.id}/bots/${bot.id}`}
 								>
 									<Button variant="outline">Details</Button>
 								</Link>

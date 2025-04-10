@@ -1,7 +1,6 @@
 "use server";
 import { apiClient } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-
 export async function getServers() {
 	try {
 		const response = await apiClient("/servers", { next: { tags: ["servers"] } });
@@ -47,6 +46,36 @@ export async function updateServer(formData: FormData) {
 			body: formData,
 			next: { tags: ["servers", id] },
 		});
+		const res = await response.json();
+
+		if (!response.ok) {
+			return {
+				success: false,
+				error: "Invalid credentials",
+				message: res.message,
+			};
+		}
+		revalidatePath("/servers");
+
+		return res;
+	} catch (error) {
+		return { success: false, error: "Network error" };
+	}
+}
+export async function createBot(formData: FormData) {
+	const data = Object.fromEntries(formData);
+	// data.tags = data.tags.split(",").map((e) => e);
+	// data.icon = avatarUrl;
+	console.log(data);
+
+	try {
+		const response = await apiClient("/bots", { method: "POST", body: formData });
+
+		// await apiClient(`/servers/${id}`, {
+		// 	method: "PUT",
+		// 	body: formData,
+		// 	next: { tags: ["servers", id] },
+		// });
 		const res = await response.json();
 
 		if (!response.ok) {
