@@ -10,18 +10,13 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import dotenv from "dotenv";
 import Fastify, { FastifyInstance } from "fastify";
 import pino from "pino";
-const crypto = require("crypto");
-import FastifyBetterAuth from "fastify-better-auth";
 import authPlugin from "./plugins/auth";
-import fastifyCookie from "@fastify/cookie";
-import fastifyJwt from "@fastify/jwt";
-import fastifyMtp from "@fastify/multipart";
-dotenv.config(); // Load environment variables from .env file
-let fastify: FastifyInstance | null = null;
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+
 import prisma from "../prisma/prisma";
-import { auth } from "@/lib/auth";
+import { configureFastify } from "./lib/fastify";
+
+dotenv.config();
+let fastify: FastifyInstance | null = null;
 
 const main = async () => {
 	const logger = pino({ transport: { target: "pino-pretty" } });
@@ -30,30 +25,13 @@ const main = async () => {
 		loggerInstance: logger,
 		bodyLimit: 1000000000,
 	});
-	// fastify.addContentTypeParser("*", { parseAs: "string" }, function (req, body, done) {
-	// 	try {
-	// 		const json = JSON.parse(body);
-	// 		done(null, json);
-	// 	} catch (err) {
-	// 		err.statusCode = 400;
-	// 		done(err, undefined);
-	// 	}
-	// });
+	fastify.decorate("prisma", prisma);
+
 	fastify.addSchema(schemas.User);
 	fastify.addSchema(schemas.Bot);
 	fastify.addSchema(schemas.Error);
 
-	fastify.decorate("prisma", prisma);
-	fastify.register(fastifyMtp, { attachFieldsToBody: "keyValues" });
-
-	fastify.register(fastifyJwt, {
-		secret: process.env.JWT_SECRET,
-	});
-	fastify.register(fastifyCookie, {
-		secret: process.env.COOKIE_SECRET,
-		hook: "onRequest",
-	});
-	await fastify.register(FastifyBetterAuth, { auth });
+	await configureFastify(fastify);
 	fastify.register(authPlugin);
 	fastify.addHook("onClose", async (instance) => {
 		await instance.prisma.$disconnect();
