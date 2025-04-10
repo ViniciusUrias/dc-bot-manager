@@ -1,13 +1,14 @@
 import logo from "@/assets/react.svg";
-import { useSelector } from "@/store";
 import { MenuIcon, ShirtIcon } from "lucide-react";
 import { Link, NavLink } from "react-router";
 import { ModeToggle } from "./ModeToogle";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { authClient } from "@/lib/auth";
 export default function Header() {
 	const isActiveClassName = (isActive: boolean) => (isActive ? "border-b border-solid" : "");
-	const { user, signOut } = useSelector((s) => s);
+	const { signOut } = authClient;
+	const { data } = authClient.useSession();
 	return (
 		<header className="bg-background sm:h-12 w-full flex  items-center shadow-md shadow-background p-4 justify-between">
 			<Sheet>
@@ -60,7 +61,7 @@ export default function Header() {
 			</nav>
 
 			<div className="items-center flex gap-2">
-				<h2>Hi, {user?.username}</h2>
+				<h2>Hi, {data?.user?.username}</h2>
 				<Button onClick={() => signOut()} variant="outline">
 					Logout
 				</Button>

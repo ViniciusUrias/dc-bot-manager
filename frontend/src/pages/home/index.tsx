@@ -2,12 +2,10 @@ import AlbumList from "@/components/ServerList";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/hooks/useAuth";
 import useUsers from "@/hooks/useUsers";
 
 export default function HomePage() {
 	const { data: users, isError, isLoading, error, refetch } = useUsers();
-	const user = useAuth();
 	console.log(users);
 	if (isLoading) {
 		return (

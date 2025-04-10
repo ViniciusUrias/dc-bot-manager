@@ -1,12 +1,13 @@
 import Header from "@/components/Header";
-import { useSelector } from "@/store";
-import { Navigate, Outlet } from "react-router";
+import { authClient } from "@/lib/auth";
+import { Outlet } from "react-router";
 
 export default function MainLayout() {
-	const user = useSelector((s) => s.user);
-	if (!user) {
-		return <Navigate to="/auth/sign-in" replace />;
-	}
+	const t = authClient.useSession();
+	console.log(t);
+	// if (!user) {
+	// 	return <Navigate to="/auth/sign-in" replace />;
+	// }
 	return (
 		<div className="bg-primary-foreground h-screen w-screen overflow-y-auto">
 			<Header />

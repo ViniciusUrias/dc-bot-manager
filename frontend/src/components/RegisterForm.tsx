@@ -2,13 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { registerAccount } from "@/api/services/auth";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "@/store";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { authClient } from "@/lib/auth";
 
 const formSchema = z.object({
 	email: z.string().min(2, {
@@ -24,7 +23,6 @@ const formSchema = z.object({
 export default function LoginForm() {
 	const navigate = useNavigate();
 
-	const signIn = useSelector((s) => s.signIn);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -36,7 +34,11 @@ export default function LoginForm() {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		const response = await registerAccount(values);
+		const response = await authClient.signUp.email({
+			email: values.email,
+			password: values.password,
+			name: values.name,
+		});
 
 		navigate("/auth/sign-in");
 	}

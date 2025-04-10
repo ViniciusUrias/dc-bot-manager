@@ -11,7 +11,7 @@
 		"clean": "rimraf dist",
 		"generate": "prisma generate",
 		"migrate": "prisma migrate dev",
-		"prisma:copy-types": "cpx \"src/generated/**/*.ts\" \"../frontend/src/types/prisma\" ",
+		"prisma:copy-types": "cpx \"src/generated/**/*.ts\" \"../frontend-next/src/types/prisma\" ",
 		"copy-assets": "copyfiles -u 1 \"prisma/**/*\" \"src/**/*.prisma\" dist/",
 		"postinstall": "prisma generate",
 		"staging": "cross-env NODE_ENV=staging node dist/index.js",
