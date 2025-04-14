@@ -1,7 +1,7 @@
 import { Editor, OnMount } from "@monaco-editor/react";
 import { AutoTypings, JsDelivrSourceResolver, LocalStorageCache } from "monaco-editor-auto-typings";
 import { useEffect, useRef, useState } from "react";
-
+console.log("ajuste");
 const snippet = `import { SlashCommandBuilder, CommandInteraction, Collection } from "discord.js";
 declare module "discord.js" {
 	interface Client {
