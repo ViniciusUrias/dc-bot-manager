@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "tsx watch --exclude src/discord/users --env-file=.env src/index.ts",
 		"start": "node -r tsconfig-paths/register -r module-alias/register dist/index.js",
-		"build": "npm run clean && npm install && npm run generate && tsc --build --noCheck  && npm run copy-assets",
+		"build": "npm install && npm run clean && && npm run generate && tsc --build --noCheck  && npm run copy-assets",
 		"clean": "rimraf dist",
 		"generate": "prisma generate",
 		"migrate": "prisma migrate dev",
