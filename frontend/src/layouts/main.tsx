@@ -1,4 +1,4 @@
-import Header from "@/components/header";
+import Header from "@/components/Header";
 import { authClient } from "@/lib/auth";
 import { Outlet } from "react-router";
 import { AppSidebar } from "@/components/app-sidebar";
