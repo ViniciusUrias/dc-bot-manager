@@ -1,3 +1,4 @@
+import { createHash } from "@/utils/auth";
 import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import serverIdRoutes from "./[id]";
@@ -12,18 +13,21 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 		},
 	});
 	app.get("/", createRouteConfig2(defaultRouteConfig, { summary: "Get all servers" }), async (request, reply) => {
-		const { userId } = request.params as { userId: string };
-
+		console.log("USER SERVER", request.user);
+		const { id } = request.user;
 		try {
-			const user = await app.prisma.user.findMany();
-
-			if (!user) {
-				return reply.code(404).send({
-					statusCode: 404,
-					error: "Not SSS",
-					message: "User not ssss",
-				});
-			}
+			const user = await app.prisma.server.findMany({
+				where: { ownerId: id },
+				select: {
+					name: true,
+					description: true,
+					id: true,
+					serverid: true,
+					createdAt: true,
+					updatedAt: true,
+					bots: true,
+				},
+			});
 
 			return user;
 		} catch (error) {
@@ -42,19 +46,18 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 
 			body: {
 				type: "object",
-				required: ["name"],
+				required: ["name", "serverid"],
 				properties: {
 					name: { type: "string" },
+					serverid: { type: "string" },
 				},
 			},
 		}),
 		async (request, reply) => {
-			const { name } = request.body as {
-				name: string;
-			};
+			const { name, serverid, description } = request.body as { name: string; serverid: string };
 			const { id } = request.user;
 			const exists = await app.prisma.server.findUnique({
-				where: { name },
+				where: { name, ownerId: id },
 			});
 
 			if (exists) {
@@ -64,17 +67,18 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 					message: "Server with this name already exists",
 				});
 			}
-
+			const crpytd = await createHash(serverid);
 			const server = await app.prisma.server.create({
 				data: {
 					ownerId: id,
-
+					serverid,
 					name,
+					description,
 				},
 				select: {
 					id: true,
+					serverid: true,
 					name: true,
-					owner: true,
 					createdAt: true,
 				},
 			});

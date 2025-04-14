@@ -1,48 +1,22 @@
 import { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
-import jwt from "jsonwebtoken";
-
+import { fromNodeHeaders } from "better-auth/node";
+import { type Session } from "better-auth";
 declare module "fastify" {
 	interface FastifyRequest {
-		user?: {
-			id: string;
-		};
+		user: Partial<Session>;
 	}
 }
 
 const authPlugin: FastifyPluginAsync = async (app) => {
-	// Decorate Fastify with authenticate function
 	app.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
-		const authHeader = request.headers.authorization;
-
-		if (!authHeader) {
-			return reply.code(401).send({
-				statusCode: 401,
-				error: "Unauthorized",
-				message: "No authorization header provided",
-			});
+		const session = await app.auth.api.getSession({ headers: fromNodeHeaders(request.headers) });
+		app.log.info("HEADERS", request.headers);
+		app.log.info("SESSION", session);
+		if (!session) {
+			return reply.status(401).send({ message: "Unauthorized" });
 		}
-
-		if (!authHeader.startsWith("Bearer ")) {
-			return reply.code(401).send({
-				statusCode: 401,
-				error: "Unauthorized",
-				message: 'Authorization header must start with "Bearer "',
-			});
-		}
-
-		const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-
-		try {
-			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-			request.user = { id: decoded.userId };
-		} catch (error) {
-			return reply.code(401).send({
-				statusCode: 401,
-				error: "Unauthorized",
-				message: "Invalid or expired token",
-			});
-		}
+		request.user = session.user;
 	});
 
 	// Add hook to automatically protect routes with security schema

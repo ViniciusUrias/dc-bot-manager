@@ -4,6 +4,12 @@
 /node_modules
 /.pnp
 .pnp.js
+BUNDLE
+/dist
+
+COMMAND files
+
+/src/discord/users/*
 
 # testing
 /coverage

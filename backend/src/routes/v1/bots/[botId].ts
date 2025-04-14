@@ -1,8 +1,63 @@
+import * as botManager from "@/discord/botManager";
 import { createRouteConfig2 } from "@/utils/route-config";
+import { type Bot } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 
 export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 	// GET /bots/:id - Get bot details
+	app.post(
+		"/start",
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "Initiate bot",
+			body: {
+				type: "object",
+				required: ["botId"],
+				properties: {
+					serverid: { type: "string" },
+				},
+			},
+		}),
+		async (request, reply) => {
+			const { botId } = request.body;
+			const { id } = request.user;
+			const bot = await app.prisma.bot.findFirst({ where: { id: botId } });
+			const server = await app.prisma.server.findFirst({ where: { id: bot.serverId } });
+			const client = await botManager.startBot({
+				clientId: botId,
+				id: botId,
+				name: bot.name,
+				serverId: server.serverid,
+				token: bot.token,
+				userId: id,
+			});
+			await app.prisma.bot.update({ where: { id: botId }, data: { active: true } });
+			return reply.code(200).send({ message: "Bot initiated successfully", activeBots: botManager.getActiveBots() });
+		}
+	);
+	app.post(
+		"/stop",
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "stop bot",
+			body: {
+				type: "object",
+				required: ["botId"],
+				properties: {
+					serverid: { type: "string" },
+				},
+			},
+		}),
+		async (request, reply) => {
+			const { name, serverId, botId } = request.body;
+			const { id } = request.user;
+
+			// const { client, rest } = await initiateBotConnection({ serverId, userId: id, botInfo: bot });
+			const client = await botManager.stopBot(botId);
+			await app.prisma.bot.update({ where: { id: botId }, data: { active: false } });
+
+			return reply.code(200).send({ message: "Bot stopped successfully", activeBots: botManager.getActiveBots() });
+		}
+	);
+
 	app.get(
 		"/:botId",
 		createRouteConfig2(defaultRouteConfig, {
@@ -23,9 +78,9 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 			// Implement logic to get bot details
 			const bot = await app.prisma.bot.findUnique({
 				where: { id: botId },
-				include: { configurations: true, commands: true, events: true },
+				include: { configurations: true, commands: true, events: true, server: true },
 			});
-			return { bot };
+			return bot;
 		}
 	);
 
@@ -45,8 +100,70 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };
+			const userId = request.user.id;
+			const bot = await app.prisma.bot.findFirst({
+				where: { id: botId, ownerId: userId },
+				select: { token: true },
+			});
+			const { icon, name, description } = request.body;
+			try {
+				const res = await botManager.updateBotInfo(request.body, bot.token);
+				if (res) {
+					await app.prisma.bot.update({
+						where: { id: botId, ownerId: userId },
+						data: {
+							icon,
+							name,
+							description,
+						},
+					});
+				}
+				return res;
+			} catch (error) {
+				reply.send({ message: error?.message });
+			}
 			// Implement update logic
-			return { message: "Bot updated successfully" };
+		}
+	);
+	app.put(
+		"/:botId/sync",
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "Sync bot info with discord api",
+			params: {
+				type: "object",
+				properties: {
+					botId: {
+						type: "string",
+					},
+				},
+			},
+		}),
+		async (request, reply) => {
+			const { botId } = request.params as { botId: string };
+			const userId = request.user.id;
+			const bot = await app.prisma.bot.findFirst({
+				where: { id: botId, ownerId: userId },
+				select: { token: true },
+			});
+
+			try {
+				const { description, name, tags, id } = await botManager.getBotData(bot.token);
+				const body: Partial<Bot> = {
+					description,
+					name,
+					tags,
+				};
+				if (id) {
+					await app.prisma.bot.update({
+						where: { id: botId, ownerId: userId },
+						data: body,
+					});
+				}
+				return reply.send({ message: "Bot sync with success", body });
+			} catch (error) {
+				reply.send({ message: error?.message });
+			}
+			// Implement update logic
 		}
 	);
 
@@ -66,59 +183,9 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		}),
 		async (request, reply) => {
 			const { botId } = request.params as { botId: string };
+			await app.prisma.bot.delete({ where: { id: botId } });
 			// Implement delete logic
 			return { message: "Bot deleted successfully" };
-		}
-	);
-
-	// POST /bots/:id/activate - Activate bot
-	app.post(
-		"/:botId/activate",
-		createRouteConfig2(defaultRouteConfig, {
-			summary: "Activate bot",
-			params: {
-				type: "object",
-				properties: {
-					botId: {
-						type: "string",
-					},
-				},
-			},
-		}),
-		async (request, reply) => {
-			const { botId } = request.params as { botId: string };
-
-			await app.prisma.bot.update({
-				data: { active: true },
-				where: { id: botId },
-			});
-			// Implement activation logic
-			return { message: "Bot activated successfully" };
-		}
-	);
-
-	// POST /bots/:id/deactivate - Deactivate bot
-	app.post(
-		"/:botId/deactivate",
-		createRouteConfig2(defaultRouteConfig, {
-			summary: "Deactivate bot",
-			params: {
-				type: "object",
-				properties: {
-					botId: {
-						type: "string",
-					},
-				},
-			},
-		}),
-		async (request, reply) => {
-			const { botId } = request.params as { botId: string };
-
-			await app.prisma.bot.update({
-				data: { active: false },
-				where: { id: botId },
-			});
-			return { message: "Bot deactivated successfully" };
 		}
 	);
 }

@@ -1,6 +1,6 @@
 import bc from "bcrypt";
 import jwt from "jsonwebtoken";
-import prisma from "../prisma/prisma";
+import prisma from "../../prisma/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

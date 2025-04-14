@@ -1,6 +1,7 @@
 // src/utils/route-config.ts
 
 import { FastifyPluginOptions, RouteShorthandOptions } from "fastify";
+import { fastify } from "..";
 
 type RouteConfig = {
 	tags?: string[];
@@ -35,7 +36,9 @@ export function createRouteConfig(config: RouteConfig): RouteShorthandOptions {
 	};
 }
 export function createRouteConfig2(defaultOptions: RouteConfig, routeSpecificOptions?: RouteConfig) {
+	const hasAuth = defaultOptions.auth || routeSpecificOptions?.auth;
 	return {
+		preValidation: hasAuth ? [fastify.authenticate] : null,
 		schema: {
 			// Merge default and route-specific options
 			...defaultOptions,

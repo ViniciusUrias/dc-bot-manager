@@ -1,4 +1,4 @@
-import { hashPassword } from "@/utils/auth";
+import { createHash } from "@/utils/auth";
 import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 import userIdRoutes from "./[userId]";
@@ -17,17 +17,12 @@ export default async function (app: FastifyInstance, opts) {
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "User Create",
-
-			body: {
-				type: "object",
-				required: ["email", "password"],
-				properties: {
-					email: { type: "string", format: "email" },
-					password: { type: "string", minLength: 8 },
-				},
-			},
 		}),
 		async (request, reply) => {
+			console.log("REQUEST BODY", request.body);
+			if (typeof request.body === "string") {
+				request.body = JSON.parse(request.body);
+			}
 			const { email, password, name } = request.body as {
 				email: string;
 				password: string;
@@ -48,7 +43,7 @@ export default async function (app: FastifyInstance, opts) {
 			}
 
 			// Hash password
-			const hashedPassword = await hashPassword(password);
+			const hashedPassword = await createHash(password);
 
 			// Create user
 			const user = await app.prisma.user.create({
@@ -68,25 +63,28 @@ export default async function (app: FastifyInstance, opts) {
 	);
 	app.get(
 		"/me",
-		createRouteConfig2({
+		createRouteConfig2(opts, {
 			tags: ["Users"],
 			summary: "Get current user profile",
+			auth: true,
 		}),
 		async (request, reply) => {
+			try {
+				const userId = request.user.userId;
+				if (!userId) {
+					return reply.status(404).send({ message: "User not found in request middleware", user: request.user });
+				}
+				console.log("USER", request);
+				const user = await app.prisma.user.findUnique({
+					where: { id: userId },
+					omit: { password: true },
+				});
+
+				reply.status(201).send(user);
+			} catch (error) {
+				reply.status(401).send({ error: true, message: error.message });
+			}
 			// request.user is available because of our auth plugin
-			const userId = request.user?.id;
-
-			const user = await app.prisma.user.findUnique({
-				where: { id: userId },
-				select: {
-					id: true,
-					email: true,
-					name: true,
-					createdAt: true,
-				},
-			});
-
-			return user;
 		}
 	);
 	app.register(userIdRoutes, { defaultRouteConfig });
