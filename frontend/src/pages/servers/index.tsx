@@ -1,4 +1,4 @@
-import ServerList from "@/components/ServerList";
+import ServerList from "@/components/server-list";
 
 export default function ServersPage() {
 	return <ServerList />;
