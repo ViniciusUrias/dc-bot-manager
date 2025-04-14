@@ -41,12 +41,13 @@ export const startBot = async (config: BotConfig, clientConfig?: Partial<ClientO
 	}
 
 	const client = new Client({
-		intents: [GatewayIntentBits.Guilds],
 		...clientConfig,
+		intents: [GatewayIntentBits.Guilds],
 		// intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 	});
-
-	await client.login(config.token);
+	console.log("CONFIG", config);
+	const response = await client.login(config.token);
+	console.log("response", response);
 	const rest = new REST().setToken(config.token);
 	const botState: BotState = {
 		client,

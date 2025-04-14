@@ -1,4 +1,3 @@
-import AlbumList from "@/components/ServerList";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,9 +25,5 @@ export default function HomePage() {
 			</div>
 		);
 	}
-	return (
-		<ScrollArea className="w-full h-[75vh]  p-2 rounded-md border">
-			<AlbumList />
-		</ScrollArea>
-	);
+	return <ScrollArea className="w-full h-[75vh]  p-2 rounded-lg "></ScrollArea>;
 }

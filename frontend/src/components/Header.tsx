@@ -1,72 +1,29 @@
-import logo from "@/assets/react.svg";
-import { MenuIcon, ShirtIcon } from "lucide-react";
-import { Link, NavLink } from "react-router";
-import { ModeToggle } from "./ModeToogle";
-import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { authClient } from "@/lib/auth";
+import { SidebarTrigger } from "./ui/sidebar";
+import { Separator } from "./ui/separator";
+import {
+	Breadcrumb,
+	BreadcrumbList,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbSeparator,
+	BreadcrumbPage,
+} from "./ui/breadcrumb";
 export default function Header() {
-	const isActiveClassName = (isActive: boolean) => (isActive ? "border-b border-solid" : "");
-	const { signOut } = authClient;
-	const { data } = authClient.useSession();
 	return (
-		<header className="bg-background sm:h-12 w-full flex  items-center shadow-md shadow-background p-4 justify-between">
-			<Sheet>
-				<SheetTrigger asChild>
-					<Button variant="outline" size="icon" className="sm:hidden">
-						<MenuIcon className="h-6 w-6" />
-						<span className="sr-only">Toggle navigation menu</span>
-					</Button>
-				</SheetTrigger>
-				<SheetContent side="left">
-					<Link to="#">
-						<ShirtIcon className="h-6 w-6" />
-						<span className="sr-only">ShadCN</span>
-					</Link>
-					<div className="grid gap-2 py-6">
-						<NavLink
-							viewTransition
-							className={({ isActive }) => isActiveClassName(isActive)}
-							aria-label="Go to home page"
-							to="/home"
-						>
-							Home
-						</NavLink>
-						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/home/servers">
-							My servers
-						</NavLink>
-						<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/profile">
-							My Profile
-						</NavLink>
-					</div>
-				</SheetContent>
-			</Sheet>
-			<nav className="items-center gap-4 hidden sm:flex text-lg">
-				<img className="aspect-square h-8 rounded-full hidden sm:block mr-2" src={logo} alt="Logo image" />
-				<NavLink
-					end
-					viewTransition
-					className={({ isActive }) => isActiveClassName(isActive)}
-					aria-label="Go to home page"
-					to="/home"
-				>
-					Home
-				</NavLink>
-				<NavLink viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/home/servers">
-					My servers
-				</NavLink>
-				<NavLink end viewTransition className={({ isActive }) => isActiveClassName(isActive)} to="/users/profile">
-					My Profile
-				</NavLink>
-			</nav>
-
-			<div className="items-center flex gap-2">
-				<h2>Hi, {data?.user?.username}</h2>
-				<Button onClick={() => signOut()} variant="outline">
-					Logout
-				</Button>
-				<ModeToggle />
-			</div>
-		</header>
+		<div className="bg-background sm:h-12 w-full flex  items-center shadow-md shadow-background p-4 ">
+			<SidebarTrigger className="-ml-1" />
+			<Separator orientation="vertical" className="mr-2 h-4" />
+			<Breadcrumb className="flex flex-1">
+				<BreadcrumbList>
+					<BreadcrumbItem className="hidden md:block">
+						<BreadcrumbLink href="#">Building Your Application</BreadcrumbLink>
+					</BreadcrumbItem>
+					<BreadcrumbSeparator className="hidden md:block" />
+					<BreadcrumbItem>
+						<BreadcrumbPage>Data Fetching</BreadcrumbPage>
+					</BreadcrumbItem>
+				</BreadcrumbList>
+			</Breadcrumb>
+		</div>
 	);
 }

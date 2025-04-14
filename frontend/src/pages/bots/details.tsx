@@ -4,10 +4,9 @@ import BotForm from "@/components/Bot/bot-form";
 import BotHeader from "@/components/Bot/bot-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBot } from "@/hooks/useBots";
 import { cn } from "@/lib/utils";
-import { Check, LucidePlus } from "lucide-react";
+import { Check, LucidePlus, X } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router";
 
 import { z } from "zod";
@@ -35,6 +34,7 @@ export default function BotDetails() {
 
 	const {
 		bot: { data, isLoading },
+		deleteCommands,
 	} = useBot({ botId });
 
 	if (isLoading) return "...";
@@ -54,7 +54,11 @@ export default function BotDetails() {
 			</Card>
 
 			<div className="flex justify-between gap-2 items-center">
-				<h2 className="text-xl font-semibold">Commands</h2>
+				<h2 className="text-xl font-semibold flex-1">Commands</h2>
+				<Button variant="outline" onClick={() => deleteCommands(data!)}>
+					<X className="h-6 w-6 text-destructive" />
+					Delete all
+				</Button>
 				<NavLink to={`/home/servers/${serverId}/bots/${botId}/commands/new`}>
 					<Button variant="outline">
 						<LucidePlus className="h-6 w-6 text-primary" />
@@ -62,32 +66,29 @@ export default function BotDetails() {
 					</Button>
 				</NavLink>
 			</div>
-			<ScrollArea className="w-full min-h-[100px] max-h-[75vh]  grid grid-cols-2 p-2 rounded-md border">
+			<div className="w-full min-h-[100px] max-h-[75vh]  grid grid-cols-2 p-2 gap-2 rounded-md border">
 				{data?.commands?.map((command) => {
 					return (
-						<>
-							<NavLink
-								key={command.id}
-								viewTransition
-								className="   transition-all  focus:scale-105  focus:ring-2 "
-								to={`/home/servers/${serverId}/bots/${botId}/commands/${command.name}`}
-								state={{ command }}
-							>
-								<Card className={cn(`transition-transform`)}>
-									<CardHeader className="flex flex-row items-center justify-between ">
-										<CardTitle aria-label={`Album title: ${command.name}`}>{command.name}</CardTitle>
-									</CardHeader>
-									<CardContent>
-										<p aria-label={`Description of command ${command.name}`}>
-											Enabled: {command?.enabled ? <Check /> : <X />}
-										</p>
-									</CardContent>
-								</Card>
-							</NavLink>
-						</>
+						<NavLink
+							key={command.id}
+							viewTransition
+							className="transition-all  focus:scale-105  focus:ring-2 "
+							to={`/home/servers/${serverId}/bots/${botId}/commands/${command.name}`}
+							state={{ command }}
+						>
+							<Card className={cn(`transition-transform`)}>
+								<CardHeader className="flex flex-row items-center justify-between ">
+									<CardTitle aria-label={`Album title: ${command.name}`}>{command.name}</CardTitle>
+								</CardHeader>
+								<CardContent className="flex items-center gap-2">
+									<span>Enabled:</span>
+									<span>{command?.enabled ? <Check /> : <X />}</span>
+								</CardContent>
+							</Card>
+						</NavLink>
 					);
 				})}
-			</ScrollArea>
+			</div>
 		</div>
 	);
 }

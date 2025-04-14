@@ -17,21 +17,25 @@ const useBot = ({ botId }: { botId?: string }) => {
 		await axiosInstance.put(`/bots/${botId}/sync`);
 		refetch();
 	};
-	const startBot = async (bot: Bot) => {
+	const startBot = async (bot: Bot, rf: boolean = true) => {
 		await axiosInstance.post("/bots/start", {
 			botId: bot.id,
 		});
-		refetch();
 	};
-	const stopBot = async (bot: Bot) => {
+	const stopBot = async (bot: Bot, rf: boolean = true) => {
 		await axiosInstance.post("/bots/stop", {
 			botId: bot.id,
 		});
-		refetch();
+		if (rf) {
+			refetch();
+		}
 	};
 	const deleteBot = async (bot: Bot) => {
 		await axiosInstance.delete(`/bots/${bot.id}`);
 		await refetch();
+	};
+	const deleteCommands = async (bot: Bot) => {
+		await axiosInstance.delete(`/bots/${bot.id}/commands`);
 	};
 	const createBot = async (bot: Bot) => {
 		await axiosInstance.post(`/bots`, bot);
@@ -42,7 +46,7 @@ const useBot = ({ botId }: { botId?: string }) => {
 		await refetch();
 	};
 
-	return { bot, deleteBot, createBot, editBot, startBot, stopBot, handleSync };
+	return { bot, deleteBot, deleteCommands, createBot, editBot, startBot, stopBot, handleSync };
 };
 
 export { useBot };

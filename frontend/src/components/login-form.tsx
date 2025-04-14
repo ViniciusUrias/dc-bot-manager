@@ -5,9 +5,10 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { authClient } from "@/lib/auth";
+import { Checkbox } from "./ui/checkbox";
 const formSchema = z.object({
 	email: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
@@ -15,33 +16,32 @@ const formSchema = z.object({
 	password: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
+	rememberMe: z.boolean().default(false).optional(),
 });
 export default function LoginForm() {
-	const navigate = useNavigate();
-
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: "viniciusuriasdeabreu@gmail.com",
-			password: "1234",
+			email: "teste@teste.com",
+			password: "12345678",
 		},
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		const { email, password } = values;
-		// const response = await handleAuthenticate(values);
+		const { email, password, rememberMe } = values;
+
 		try {
-			const { data, error } = await authClient.signIn.email(
+			await authClient.signIn.email(
 				{
 					email,
 					password,
 					callbackURL: "/home",
+					rememberMe,
 				},
-
 				{
 					onSuccess(context) {
-						const authToken = context.response.headers.get("set-auth-token"); // get the token from the response headers
+						const authToken = context.response.headers.get("set-auth-token");
 						if (authToken) {
 							localStorage.setItem("bearer", authToken);
 						}
@@ -65,7 +65,6 @@ export default function LoginForm() {
 				},
 			},
 		});
-		console.log("DATA DISCORD", data);
 	};
 	return (
 		<Form {...form}>
@@ -99,6 +98,20 @@ export default function LoginForm() {
 										<FormControl>
 											<Input type="password" placeholder="****" {...field} />
 										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="rememberMe"
+								render={({ field }) => (
+									<FormItem className="flex flex-row items-start ">
+										<FormControl>
+											<Checkbox checked={field.value} onCheckedChange={field.onChange} />
+										</FormControl>
+										<FormLabel>Remember me</FormLabel>
+
 										<FormMessage />
 									</FormItem>
 								)}

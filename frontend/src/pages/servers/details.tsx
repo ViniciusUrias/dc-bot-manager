@@ -2,9 +2,10 @@ import axiosInstance from "@/api/services/axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useBot } from "@/hooks/useBots";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { LucidePlus } from "lucide-react";
+import { LucidePlus, X } from "lucide-react";
 import { NavLink, useParams } from "react-router";
 
 export default function ServerDetails() {
@@ -17,30 +18,14 @@ export default function ServerDetails() {
 			return response.data;
 		},
 	});
-	const handleStartBot = async (bot) => {
-		const response = await axiosInstance.post("/bots/start", {
-			botId: bot.id,
-			serverId,
-		});
-		refetch();
-	};
-	const handleStopBot = async (bot) => {
-		const response = await axiosInstance.post("/bots/stop", {
-			botId: bot.id,
-			serverId,
-		});
-		refetch();
-	};
-	const handleDeleteCommands = async (botId) => {
-		const response = await axiosInstance.delete(`/bots/${botId}/commands`);
-	};
+	const { startBot, stopBot } = useBot({});
+
 	return (
 		<div className="flex flex-col gap-4 p-4">
 			<h1 className="text-2xl font-bold">Server Details</h1>
 			<div className="flex flex-col gap-2">
 				<h2 className="text-xl font-semibold">Server Name: {data?.name}</h2>
-				<p className="text-foreground">Server ID: {data?.id}</p>
-				<p className="text-primary-foreground">Server Description: {data?.description}</p>
+				<p className="text-primary">Server Description: {data?.description}</p>
 			</div>
 			<div className="flex justify-between gap-2 items-center">
 				<h2 className="text-xl font-semibold">Bots</h2>
@@ -59,16 +44,30 @@ export default function ServerDetails() {
 								<CardTitle aria-label={`Album title: ${bot.name}`}>{bot.name}</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<p aria-label={`Description of bot ${bot.name}`}>Prefix: '{bot?.prefix}'</p>
+								<p aria-label={`Description of bot ${bot.name}`}>Description: '{bot?.description}'</p>
 							</CardContent>
 							<CardFooter className="flex items-center gap-4 justify-self-end">
 								{bot.active ? (
-									<Button variant="destructive" onClick={() => handleStopBot(bot)}>
+									<Button
+										variant="destructive"
+										onClick={async () => {
+											await stopBot(bot, false);
+											await refetch();
+										}}
+									>
 										Stop bot
 									</Button>
 								) : (
-									<Button onClick={() => handleStartBot(bot)}>Start bot</Button>
+									<Button
+										onClick={async () => {
+											await startBot(bot, false);
+											await refetch();
+										}}
+									>
+										Start bot
+									</Button>
 								)}
+
 								<NavLink
 									key={bot.id}
 									viewTransition
@@ -77,8 +76,15 @@ export default function ServerDetails() {
 								>
 									<Button variant="outline">Details</Button>
 								</NavLink>
-								<Button variant="destructive" onClick={() => handleDeleteCommands(bot.id)}>
-									Delete commands
+
+								<Button
+									variant={"destructive"}
+									onClick={async () => {
+										await axiosInstance.delete(`/bots/${bot.id}`);
+										await refetch();
+									}}
+								>
+									<X /> Delete bot
 								</Button>
 							</CardFooter>
 						</Card>

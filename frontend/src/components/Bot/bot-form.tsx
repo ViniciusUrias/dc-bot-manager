@@ -15,6 +15,7 @@ const formSchema = z.object({
 	name: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
+
 	tags: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
@@ -33,7 +34,7 @@ export default function BotForm({ bot }: { bot: Bot }) {
 	const [file, setFile] = useState("");
 	const { editBot } = useBot({ botId: bot.id });
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: zodResolver(formSchema, undefined, { raw: true }),
 		defaultValues: {
 			description: "",
 			name: "",
@@ -133,6 +134,20 @@ export default function BotForm({ bot }: { bot: Bot }) {
 									<AvatarFallback>BT</AvatarFallback>
 								</Avatar>
 							</div>
+
+							<FormField
+								control={form.control}
+								name="token"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Token</FormLabel>
+										<FormControl>
+											<Input type="text" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
 							<Button className="w-fit self-end" type="submit">
 								Save changes

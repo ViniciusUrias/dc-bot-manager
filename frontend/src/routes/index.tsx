@@ -31,13 +31,13 @@ const router = createBrowserRouter([
 			{
 				path: "home",
 				children: [
-					{ index: true, element: <HomePage /> }, // Matches "/users"
+					{ index: true, element: <HomePage /> },
 
 					{
 						path: "servers",
 						children: [
-							{ index: true, element: <ServersPage /> }, // Matches "/users/:userId/albums"
-							{ path: "create", element: <ServerCreate /> }, // Matches "/users/:userId/albums"
+							{ index: true, element: <ServersPage /> },
+							{ path: "create", element: <ServerCreate /> },
 							{
 								path: ":serverId",
 								element: <ServerDetails />,
