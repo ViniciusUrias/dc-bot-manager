@@ -91,9 +91,9 @@ const main = async () => {
 		prefix: "/v1",
 	});
 	fastify.register(cors, {
-		origin: ["http://localhost:5174", "http://localhost:5173", "https://dc-bot-manager.vercel.app/"],
+		origin: ["http://localhost:5174", "http://localhost:5173", "https://dc-bot-manager.vercel.app"],
 		credentials: true,
-		methods: ["GET", "PUT", "POST", "DELETE"],
+		methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
 	});
 	fastify.get("/test", (req, res) => {
 		res.send("connected");
