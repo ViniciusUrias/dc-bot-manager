@@ -1,6 +1,4 @@
 // Importing required modules
-import "module-alias/register";
-import "tsconfig-paths/register";
 
 import router from "@/routes";
 import { schemas } from "@/schemas";
@@ -89,12 +87,11 @@ const main = async () => {
 		staticCSP: true,
 		transformStaticCSP: (header) => header,
 	});
-	const port = process.env.PORT || 3000;
 	fastify.register(router, {
 		prefix: "/v1",
 	});
 	fastify.register(cors, {
-		origin: ["http://localhost:5174", "http://localhost:5173"],
+		origin: ["http://localhost:5174", "http://localhost:5173", "https://dc-bot-manager.vercel.app/"],
 		credentials: true,
 		methods: ["GET", "PUT", "POST", "DELETE"],
 	});
@@ -115,23 +112,24 @@ const main = async () => {
 	});
 	await fastify.ready();
 	fastify.swagger();
-	fastify.listen(
-		{ port, host: process.env.HOST || (process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost") },
-		function (err, address) {
-			console.log("Server listening on port 3000");
-			console.log(`Test at http://localhost:3000/test`);
-			console.log(`Documentation available at http://localhost:3000/docs`);
+	const port = process.env.PORT || 3000;
+	// or 0.0.0.0 for running in docker
+	const host = process.env.NODE_ENV === "production" ? process.env.BASE_URL : "localhost";
 
-			console.log(`Server listening on ${address}`);
-			console.log(`Test endpoint: ${address}/test`);
-			console.log(`Docs: ${address}/docs`);
-			console.log(`Health check: ${address}/health`);
-			if (err) {
-				fastify.log.error(err);
-				process.exit(1);
-			}
+	fastify.listen({ port, host }, function (err, address) {
+		console.log("Server listening on port 3000");
+		console.log(`Test at http://localhost:3000/test`);
+		console.log(`Documentation available at http://localhost:3000/docs`);
+
+		console.log(`Server listening on ${address}`);
+		console.log(`Test endpoint: ${address}/test`);
+		console.log(`Docs: ${address}/docs`);
+		console.log(`Health check: ${address}/health`);
+		if (err) {
+			fastify.log.error(err);
+			process.exit(1);
 		}
-	);
+	});
 };
 
 main();

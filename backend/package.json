@@ -4,10 +4,12 @@
 	"description": "",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"scripts": {
 		"dev": "tsx watch --exclude src/discord/users --env-file=.env src/index.ts",
-		"start": "node -r tsconfig-paths/register -r module-alias/register dist/index.js",
-		"build": "npm install && npm run clean && npm run generate && tsc --build --noCheck  && npm run copy-assets",
+		"start": "node dist/index.js",
+		"build": "npm install && npm run clean && npm run generate && tsc --build --noCheck --verbose  && npm run copy-assets && tsc-alias",
+		"build:prod": "npm run clean  && tsc --build --verbose --noCheck  && npm run copy-assets && tsc-alias && npm run start",
 		"clean": "rimraf dist",
 		"generate": "prisma generate",
 		"migrate": "prisma migrate dev",
@@ -66,13 +68,12 @@
 		"prisma-generator-typescript-interfaces": "^2.1.0",
 		"rimraf": "^5.0.5",
 		"ts-node": "^10.9.2",
+		"tsc-alias": "^1.8.15",
 		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.7.1",
 		"typescript": "^5.8.2"
 	},
 	"_moduleAliases": {
-		"@": "./dist",
-		"@commands": "./dist/commands",
-		"@utils": "./dist/utils"
+		"@": "./dist/src"
 	}
 }
