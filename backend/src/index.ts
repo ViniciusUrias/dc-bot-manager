@@ -115,11 +115,14 @@ const main = async () => {
 	const port = process.env.PORT || 3000;
 	// or 0.0.0.0 for running in docker
 	const host = process.env.NODE_ENV === "production" ? process.env.BASE_URL : "localhost";
+	const hostRender = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 
-	fastify.listen({ port }, function (err, address) {
-		console.log("Server listening on port 3000");
-		console.log(`Test at http://localhost:3000/test`);
-		console.log(`Documentation available at http://localhost:3000/docs`);
+	fastify.listen({ port, host: hostRender }, function (err, address) {
+		console.log(`${port}${host}`);
+		console.log("HOST", host);
+		console.log("PORT", port);
+
+		console.log("ENV", process.env.NODE_ENV);
 
 		console.log(`Server listening on ${address}`);
 		console.log(`Test endpoint: ${address}/test`);
