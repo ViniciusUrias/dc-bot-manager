@@ -9,6 +9,8 @@ import { NavLink } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { authClient } from "@/lib/auth";
 import { Checkbox } from "./ui/checkbox";
+import { Loader } from "lucide-react";
+import { useState } from "react";
 const formSchema = z.object({
 	email: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
@@ -22,15 +24,16 @@ export default function LoginForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: "teste@teste.com",
-			password: "12345678",
+			email: "",
+			password: "",
 		},
 	});
-
+	const [isLoading, setLoading] = useState(false);
+	const triggerLoading = () => setLoading((prev) => !prev);
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
 		const { email, password, rememberMe } = values;
-
+		triggerLoading();
 		try {
 			await authClient.signIn.email(
 				{
@@ -53,18 +56,19 @@ export default function LoginForm() {
 			);
 		} catch (err) {
 			console.log(err);
+			triggerLoading();
 		}
 	}
 	const signInWithDiscord = async () => {
-		const { data } = await authClient.signIn.social({
-			provider: "discord",
-			callbackURL: "http://localhost:5173/home",
-			fetchOptions: {
-				onSuccess(context) {
-					console.log("SUCCESS", context);
-				},
-			},
-		});
+		// const { data } = await authClient.signIn.social({
+		// 	provider: "discord",
+		// 	callbackURL: "http://localhost:5173/home",
+		// 	fetchOptions: {
+		// 		onSuccess(context) {
+		// 			console.log("SUCCESS", context);
+		// 		},
+		// 	},
+		// });
 	};
 	return (
 		<Form {...form}>
@@ -81,7 +85,7 @@ export default function LoginForm() {
 								name="email"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Username</FormLabel>
+										<FormLabel>E-mail</FormLabel>
 										<FormControl>
 											<Input placeholder="user" {...field} />
 										</FormControl>
@@ -116,7 +120,7 @@ export default function LoginForm() {
 									</FormItem>
 								)}
 							/>
-							<Button type="submit">Submit</Button>
+							<Button type="submit"> {isLoading ? <Loader /> : "Submit"}</Button>
 						</div>
 					</form>
 				</CardContent>
