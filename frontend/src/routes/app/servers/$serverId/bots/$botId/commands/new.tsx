@@ -1,42 +1,35 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/app/servers/$serverId/bots/$botId/commands/new")({
+	component: NewCommand,
+});
+
 import axiosInstance from "@/api/services/axios";
 import BackButton from "@/components/back-button";
 import Editor from "@/components/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useBot } from "@/hooks/useBots";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useState } from "react";
 
-export default function CommandDetails() {
-	const { botId, serverId, commandName } = useParams();
-	const { state } = useLocation();
-	const navigate = useNavigate();
-	const { bot } = useBot({ botId });
-	const [code, setCode] = useState("");
-	const [name, setName] = useState("");
+function NewCommand() {
+	const { botId, serverId } = Route.useParams();
 
-	const { data, isLoading } = useQuery({
-		queryKey: ["bots", botId, "commands", commandName],
+	const { data } = useQuery({
+		queryKey: ["bots", botId],
 		queryFn: async () => {
-			const response = await axiosInstance.get(`/bots/${botId}/commands/${commandName}`);
+			const response = await axiosInstance.get(`/bots/${botId}`);
 			return response.data;
 		},
 	});
-	useEffect(() => {
-		if (data) {
-			setCode(data.command);
-			setName(commandName);
-		}
-	}, [data, commandName]);
+	const [name, setName] = useState("");
 	const handleTestCommand = async () => {
 		console.log("JSSON", JSON.stringify(code));
-		const response = await axiosInstance.put(`/bots/${botId}/commands/${commandName}`, {
+		const response = await axiosInstance.post(`/bots/${botId}/commands`, {
+			serverId: data.server?.serverid,
 			command: JSON.stringify(code),
 			name,
-			commandId: state?.command?.id,
 		});
-		navigate({ pathname: `/home/servers/${serverId}/bots/${botId}/commands/${name}` });
 	};
 	const handleDeleteCommands = async () => {
 		console.log("JSSON", JSON.stringify(code));
@@ -44,17 +37,17 @@ export default function CommandDetails() {
 			serverId,
 		});
 	};
-	if (isLoading) return "...";
+	const [code, setCode] = useState("");
 	return (
 		<div className="flex  gap-4 p-4">
 			<div className="flex flex-col gap-4 h-full">
 				<BackButton />
-				<h1 className="text-2xl font-bold">Command details</h1>
+				<h1 className="text-2xl font-bold">New bot command</h1>
 				<div className="flex flex-col gap-2">
-					<h2 className="text-xl font-semibold">Bot Name: {bot.data?.name}</h2>
-					<p>Bot Server: {bot.data?.server?.name}</p>
+					<h2 className="text-xl font-semibold">Bot Name: {data?.name}</h2>
+					<p>Bot Server: {data?.server?.name}</p>
 				</div>
-				<Input onChange={(e) => setName(e.target.value)} value={name} />
+				<Input onChange={(e) => setName(e.target.value)} />
 				<a
 					className="text-blue-400 italic"
 					target="_blank"
@@ -63,7 +56,7 @@ export default function CommandDetails() {
 					SEE: Discord api types
 				</a>
 				<div className="justify-self-end flex-1">
-					<Button onClick={handleTestCommand}>Update</Button>
+					<Button onClick={handleTestCommand}>Test command</Button>
 				</div>
 				<div className="justify-self-end flex-1">
 					<Button variant="destructive" onClick={handleDeleteCommands}>
@@ -76,7 +69,7 @@ export default function CommandDetails() {
 					NOTE: you should always export a default object with <span className="italic font-semibold">data </span> and{" "}
 					<span className="italic  font-semibold">async execute</span> props
 				</p>
-				<Editor onChange={(code) => setCode(code as string)} defaultValue={code} />
+				<Editor onChange={(code) => setCode(code as string)} />
 			</div>
 		</div>
 	);

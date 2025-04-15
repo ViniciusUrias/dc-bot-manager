@@ -5,10 +5,12 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { NavLink } from "react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { authClient } from "@/lib/auth";
 import { Checkbox } from "./ui/checkbox";
+import { Loader } from "lucide-react";
+import { useState } from "react";
 const formSchema = z.object({
 	email: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
@@ -26,17 +28,18 @@ export default function LoginForm() {
 			password: "12345678",
 		},
 	});
-
+	const router = useRouter();
+	const [isLoading, setLoading] = useState(false);
+	const triggerLoading = () => setLoading((prev) => !prev);
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
 		const { email, password, rememberMe } = values;
-
+		triggerLoading();
 		try {
 			await authClient.signIn.email(
 				{
 					email,
 					password,
-					callbackURL: "/",
 					rememberMe,
 				},
 				{
@@ -45,6 +48,7 @@ export default function LoginForm() {
 						if (authToken) {
 							localStorage.setItem("bearer", authToken);
 						}
+						router.navigate({ to: "/app" });
 					},
 					onError(context) {
 						console.log(context);
@@ -53,18 +57,19 @@ export default function LoginForm() {
 			);
 		} catch (err) {
 			console.log(err);
+			triggerLoading();
 		}
 	}
 	const signInWithDiscord = async () => {
-		const { data } = await authClient.signIn.social({
-			provider: "discord",
-			callbackURL: "http://localhost:5173/home",
-			fetchOptions: {
-				onSuccess(context) {
-					console.log("SUCCESS", context);
-				},
-			},
-		});
+		// const { data } = await authClient.signIn.social({
+		// 	provider: "discord",
+		// 	callbackURL: "http://localhost:5173/home",
+		// 	fetchOptions: {
+		// 		onSuccess(context) {
+		// 			console.log("SUCCESS", context);
+		// 		},
+		// 	},
+		// });
 	};
 	return (
 		<Form {...form}>
@@ -81,7 +86,7 @@ export default function LoginForm() {
 								name="email"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Username</FormLabel>
+										<FormLabel>E-mail</FormLabel>
 										<FormControl>
 											<Input placeholder="user" {...field} />
 										</FormControl>
@@ -116,15 +121,15 @@ export default function LoginForm() {
 									</FormItem>
 								)}
 							/>
-							<Button type="submit">Submit</Button>
+							<Button type="submit"> {isLoading ? <Loader /> : "Submit"}</Button>
 						</div>
 					</form>
 				</CardContent>
 				<div className="mt-2  flex flex-col items-center justify-between">
 					<span className="font-medium text-muted-foreground">Don't have an account?</span>
-					<NavLink className="mt-0 w-fit" to="/register">
+					<Link className="mt-0 w-fit" to="/auth/register">
 						<Button variant="link">Register now</Button>
-					</NavLink>
+					</Link>
 					<em className="text-muted-foreground">or</em>
 					<Button disabled variant="outline" className="w-fit mt-2" onClick={signInWithDiscord}>
 						<svg

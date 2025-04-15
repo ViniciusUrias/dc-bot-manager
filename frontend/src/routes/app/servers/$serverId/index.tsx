@@ -1,24 +1,30 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import axiosInstance from "@/api/services/axios";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBot } from "@/hooks/useBots";
-import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { LucidePlus, X } from "lucide-react";
-import { NavLink, useParams } from "react-router";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
-export default function ServerDetails() {
-	const { serverId } = useParams();
-
-	const { data, refetch } = useQuery({
+const getQueryOptions = (serverId: string) =>
+	queryOptions({
 		queryKey: ["servers", serverId],
-		queryFn: async () => {
-			const response = await axiosInstance.get(`/servers/${serverId}`);
-			return response.data;
-		},
+		queryFn: async () => (await axiosInstance.get(`/servers/${serverId}`)).data,
 	});
+export const Route = createFileRoute("/app/servers/$serverId/")({
+	component: RouteComponent,
+	loader: async ({ context: { queryClient }, params }) => {
+		return queryClient.ensureQueryData(getQueryOptions(params.serverId));
+	},
+});
+
+function RouteComponent() {
+	const serverId = Route.useParams().serverId;
+	const { data, refetch } = useSuspenseQuery(getQueryOptions(serverId));
 	const { startBot, stopBot } = useBot({});
+	console.log(data);
 
 	return (
 		<div className="flex flex-col gap-4 p-4">
@@ -29,12 +35,12 @@ export default function ServerDetails() {
 			</div>
 			<div className="flex justify-between gap-2 items-center">
 				<h2 className="text-xl font-semibold">Bots</h2>
-				<NavLink to={`/home/servers/${serverId}/bots/new`}>
+				<Link to={"/app/servers/$serverId/bots/new"} params={{ serverId: serverId }}>
 					<Button variant="outline">
 						<LucidePlus className="h-6 w-6 text-primary" />
 						New
 					</Button>
-				</NavLink>
+				</Link>
 			</div>
 			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 gap-4 rounded-md border">
 				{data?.bots?.map((bot) => {
@@ -68,14 +74,15 @@ export default function ServerDetails() {
 									</Button>
 								)}
 
-								<NavLink
+								<Link
 									key={bot.id}
 									viewTransition
 									className="  transition-all  focus:scale-105  focus:ring-2 "
-									to={`/home/servers/${serverId}/bots/${bot.id}`}
+									to={"/app/servers/$serverId/bots/$botId"}
+									params={{ botId: bot.id, serverId }}
 								>
 									<Button variant="outline">Details</Button>
-								</NavLink>
+								</Link>
 
 								<Button
 									variant={"destructive"}

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
@@ -74,7 +74,7 @@ export function NavUser() {
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => signOut().then(() => navigate("/auth/sign-in"))}>
+						<DropdownMenuItem onClick={() => signOut().then(() => navigate({ to: "/auth/login" }))}>
 							<IconLogout />
 							Log out
 						</DropdownMenuItem>

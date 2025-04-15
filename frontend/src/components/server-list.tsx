@@ -2,7 +2,7 @@ import { useServers } from "@/hooks/useServers";
 import { cn } from "@/lib/utils";
 import { Album, Albums } from "@/types/album";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { NavLink } from "react-router";
+import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
@@ -20,9 +20,9 @@ export default function ServerList() {
 		return (
 			<div>
 				<span>You don't have any servers yet, try creating a new one</span>
-				<NavLink viewTransition to="/home/servers/create">
+				<Link viewTransition to="/app/servers/create">
 					<Button>New server</Button>
-				</NavLink>
+				</Link>
 			</div>
 		);
 	}
@@ -30,20 +30,21 @@ export default function ServerList() {
 	return (
 		<ScrollArea className="w-full h-[75vh]  p-2 rounded-lg ">
 			<div className="justify-self-end my-2">
-				<NavLink viewTransition to="/home/servers/create">
+				<Link viewTransition to="/app/servers/create">
 					<Button>
 						<Plus /> New server
 					</Button>
-				</NavLink>
+				</Link>
 			</div>
 			<div className="masonry-grid flex gap-2 flex-col">
 				{servers?.data?.map((server) => {
 					return (
-						<NavLink
+						<Link
 							key={server.id}
 							viewTransition
-							className="  z-[999999] transition-all  "
-							to={`/home/servers/${server.id}`}
+							className="   transition-all  "
+							to="/app/servers/$serverId"
+							params={{ serverId: server.id }}
 							state={{ server }}
 						>
 							<Card className={cn(`transition-transform`, server.isRemoving ? "animate-fadeOut" : "animate-fadeIn")}>
@@ -94,7 +95,7 @@ export default function ServerList() {
 									<p aria-label={`Categories of server ${server.name}`}>{server.description}</p>
 								</CardFooter>
 							</Card>
-						</NavLink>
+						</Link>
 					);
 				})}
 			</div>

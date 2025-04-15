@@ -1,3 +1,9 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/app/servers/$serverId/bots/$botId/")({
+	component: BotDetails,
+});
+
 import BackButton from "@/components/back-button";
 import BotActions from "@/components/Bot/bot-actions";
 import BotForm from "@/components/Bot/bot-form";
@@ -7,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBot } from "@/hooks/useBots";
 import { cn } from "@/lib/utils";
 import { Check, LucidePlus, X } from "lucide-react";
-import { NavLink, useNavigate, useParams } from "react-router";
 
 import { z } from "zod";
 const formSchema = z.object({
@@ -29,8 +34,8 @@ const formSchema = z.object({
 	}),
 });
 export default function BotDetails() {
-	const { botId, serverId } = useParams();
-	const nav = useNavigate();
+	const { botId, serverId } = Route.useParams();
+	const nav = Route.useNavigate();
 
 	const {
 		bot: { data, isLoading },
@@ -59,21 +64,22 @@ export default function BotDetails() {
 					<X className="h-6 w-6 text-destructive" />
 					Delete all
 				</Button>
-				<NavLink to={`/home/servers/${serverId}/bots/${botId}/commands/new`}>
+				<Link params={{ botId, serverId }} to="/app/servers/$serverId/bots/$botId/commands/new">
 					<Button variant="outline">
 						<LucidePlus className="h-6 w-6 text-primary" />
 						New
 					</Button>
-				</NavLink>
+				</Link>
 			</div>
 			<div className="w-full min-h-[100px] max-h-[75vh]  grid grid-cols-2 p-2 gap-2 rounded-md border">
 				{data?.commands?.map((command) => {
 					return (
-						<NavLink
+						<Link
 							key={command.id}
 							viewTransition
 							className="transition-all  focus:scale-105  focus:ring-2 "
-							to={`/home/servers/${serverId}/bots/${botId}/commands/${command.name}`}
+							to={"/app/servers/$serverId/bots/$botId/commands/$commandName"}
+							params={{ botId: botId, serverId, commandName: command.name }}
 							state={{ command }}
 						>
 							<Card className={cn(`transition-transform`)}>
@@ -85,7 +91,7 @@ export default function BotDetails() {
 									<span>{command?.enabled ? <Check /> : <X />}</span>
 								</CardContent>
 							</Card>
-						</NavLink>
+						</Link>
 					);
 				})}
 			</div>
