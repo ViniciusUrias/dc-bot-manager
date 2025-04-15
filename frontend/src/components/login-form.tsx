@@ -36,7 +36,7 @@ export default function LoginForm() {
 				{
 					email,
 					password,
-					callbackURL: "/home",
+					callbackURL: "/",
 					rememberMe,
 				},
 				{
