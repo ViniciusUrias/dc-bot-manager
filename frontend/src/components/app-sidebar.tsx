@@ -16,7 +16,6 @@ import {
 
 import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
 	Sidebar,
@@ -28,6 +27,16 @@ import {
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import { RegisteredRouter, ValidateFromPath, ValidateLinkOptionsArray } from "@tanstack/react-router";
+import { Server } from "lucide-react";
+export interface MenuProps<
+	TRouter extends RegisteredRouter = RegisteredRouter,
+	TItems extends ReadonlyArray<unknown> = ReadonlyArray<unknown>,
+	TFrom extends string = string,
+> {
+	from: ValidateFromPath<TRouter, TFrom>;
+	items: ValidateLinkOptionsArray<TRouter, TItems, TFrom>;
+}
 const data = {
 	navMain: [
 		{
@@ -141,9 +150,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
+				<NavMain
+					items={[
+						{ to: "/app", icon: IconHome, title: "Home" },
+						{ title: "Servers", to: "/app/servers", icon: Server },
+					]}
+				/>
 				<NavDocuments items={data.documents} />
-				<NavSecondary items={data.navSecondary} className="mt-auto" />
+				{/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />

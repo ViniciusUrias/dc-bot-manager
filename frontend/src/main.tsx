@@ -5,8 +5,10 @@ import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
+
+// Import the generated route tree
+import App from "./App";
 
 self.MonacoEnvironment = {
 	getWorker(_, label) {
