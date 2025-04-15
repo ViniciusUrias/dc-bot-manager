@@ -4,6 +4,7 @@ import { RESTGetCurrentApplicationResult } from "discord-api-types/v10";
 import { Client, ClientOptions, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import EventEmitter from "events";
 import fs from "fs-extra";
+import { createRequire } from "module";
 import path from "path";
 type BotConfig = {
 	id: string;
@@ -13,6 +14,8 @@ type BotConfig = {
 	userId: string;
 	name: string;
 };
+const require = createRequire(import.meta.url);
+
 const __dirname = import.meta.dirname;
 type CommandDefinition = {
 	data: any;

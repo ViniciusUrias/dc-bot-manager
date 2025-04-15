@@ -2,7 +2,10 @@ import { Routes } from "discord.js";
 import fs from "fs-extra";
 import path from "path";
 import * as botManager from "./botManager";
+import { createRequire } from "module";
 const __dirname = import.meta.dirname;
+
+const require = createRequire(import.meta.url);
 export const registerCommand = async ({ botId, name, command, userId }) => {
 	const { client, rest, config, commands } = botManager.getBotClient(botId);
 	const { clientId, serverId } = config;
