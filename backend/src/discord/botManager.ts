@@ -5,6 +5,7 @@ import { Client, ClientOptions, Events, GatewayIntentBits, REST, Routes } from "
 import EventEmitter from "events";
 import fs from "fs-extra";
 import path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
 type BotConfig = {
 	id: string;
 	token: string;
@@ -13,6 +14,11 @@ type BotConfig = {
 	userId: string;
 	name: string;
 };
+
+const __filename = fileURLToPath(import.meta.url);
+
+// 👇️ "/home/john/Desktop/javascript"
+const __dirname = path.dirname(__filename);
 
 type CommandDefinition = {
 	data: any;
@@ -55,7 +61,7 @@ export const startBot = async (config: BotConfig, clientConfig?: Partial<ClientO
 		commands: new Map(),
 		rest,
 	};
-	getSavedCommands(botState);
+	await getSavedCommands(botState);
 	activeBots.set(config.id, botState);
 
 	client.on("ready", (client) => {
@@ -141,21 +147,26 @@ export const getActiveBots = (): Map<string, BotState> => {
 	return new Map(activeBots);
 };
 
-export const getSavedCommands = (bot: BotState) => {
+export const getSavedCommands = async (bot: BotState) => {
 	const {
 		config: { serverId, userId, clientId },
 	} = bot;
+	console.log("BOT GET SAVED COMMANDS", bot.config);
+	console.log("FULL PATH", __dirname, "users", userId, "servers", serverId, "bots", clientId, "commands");
 	const tempFilePath = path.join(__dirname, "users", userId, "servers", serverId, "bots", clientId, "commands");
 	console.log("TEMP FILE PATH", tempFilePath);
 	if (!fs.existsSync(tempFilePath)) {
 		return { error: "No commands found" };
 		// fs.mkdirSync(tempFilePath, { recursive: true });
 	}
-	fs.readdir(tempFilePath, (err, files) => {
+	fs.readdir(tempFilePath, async (err, files) => {
 		if (err) throw err;
 
 		for (const file of files) {
-			const commandImport = require(path.join(tempFilePath, file)).default;
+			const pathWithFile = path.join(tempFilePath, file);
+			const fileUrl = pathToFileURL(pathWithFile).href;
+
+			const commandImport = (await import(fileUrl)).default;
 			// fs.unlinkSync(pathWithFile);
 			console.log("FILE", file);
 			bot.commands.set(commandImport.data?.name, commandImport);

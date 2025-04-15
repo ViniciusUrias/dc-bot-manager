@@ -1,6 +1,6 @@
 import axiosInstance from "@/api/services/axios";
 import BackButton from "@/components/back-button";
-import Editor from "@/components/editor";
+import Editor from "@/components/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";

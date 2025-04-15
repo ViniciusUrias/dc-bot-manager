@@ -2,48 +2,67 @@ import { Routes } from "discord.js";
 import fs from "fs-extra";
 import path from "path";
 import * as botManager from "./botManager";
+import { fileURLToPath, pathToFileURL } from "url";
+const __filename = fileURLToPath(import.meta.url);
+
+// 👇️ "/home/john/Desktop/javascript"
+const __dirname = path.dirname(__filename);
+
 export const registerCommand = async ({ botId, name, command, userId }) => {
 	const { client, rest, config, commands } = botManager.getBotClient(botId);
 	const { clientId, serverId } = config;
-	console.log("registerCommand", { botId, name, command, userId, config });
+
 	let tempFilePath = "";
 	let pathWithFile = "";
+
 	try {
-		const newCommand = JSON.parse(command);
+		// Ensure the command is properly formatted as a string
+		const commandContent = typeof command === "string" ? JSON.parse(command) : command;
 
 		tempFilePath = path.join(__dirname, "users", userId, "servers", serverId, "bots", botId, "commands");
 
-		console.log("tempFilePath", tempFilePath);
 		if (!fs.existsSync(tempFilePath)) {
 			fs.mkdirSync(tempFilePath, { recursive: true });
 		}
-		pathWithFile = path.join(tempFilePath, `${name}.ts`);
-		fs.writeFileSync(pathWithFile, newCommand, { encoding: "utf-8" });
 
-		const commandImport = require(pathWithFile).default;
+		pathWithFile = path.join(tempFilePath, `${name}.js`);
+
+		// Write the file with proper ES Module syntax if it's not already present
+		if (!fs.existsSync(pathWithFile) || true) {
+			// Always overwrite for this example
+			fs.writeFileSync(pathWithFile, commandContent, { encoding: "utf-8" });
+			console.log("File content:", fs.readFileSync(pathWithFile, "utf-8"));
+		}
+
+		// Convert path to file URL and import
+		const fileUrl = pathToFileURL(pathWithFile).href;
+		const commandModule = await import(fileUrl);
+
+		if (!commandModule || !commandModule.default) {
+			console.error("Module contents:", commandModule);
+			throw new Error("Command file doesn't have a default export");
+		}
+		const commandImport = commandModule.default;
+
 		if (!commandImport) {
-			throw new Error("error writing file");
+			throw new Error("Command file doesn't have a default export");
 		}
+
 		if (!commandImport?.data?.name || typeof commandImport.execute !== "function") {
-			fs.unlinkSync(pathWithFile);
-
-			throw new Error("Invalid command structure");
+			throw new Error("Invalid command structure - missing data.name or execute function");
 		}
-		client?.commands?.set(commandImport.data?.name, commandImport);
-		commands.set(commandImport.data?.name, commandImport);
+
+		// Register the command
+		client?.commands?.set(commandImport.data.name, commandImport);
+		commands.set(commandImport.data.name, commandImport);
+
 		const commandData = commandImport.data.toJSON();
+		const response = await rest.post(Routes.applicationGuildCommands(clientId, serverId), { body: commandData });
 
-		// Register command with timeout
-
-		const response = await Promise.race([
-			rest.post(Routes.applicationGuildCommands(clientId, serverId), { body: commandData }),
-			new Promise((_, reject) => setTimeout(() => reject(new Error("Command registration timeout")), 5000)),
-		]);
 		return response;
 	} catch (error) {
-		// Clean up temp file if still exists
 		if (pathWithFile && fs.existsSync(pathWithFile)) {
-			fs.unlinkSync(pathWithFile);
+			// fs.unlinkSync(pathWithFile);
 		}
 		console.error("Command creation failed:", error);
 		throw error;
@@ -92,9 +111,11 @@ export const getCommand = async ({ botId, commandName, serverId, userId }) => {
 			"bots",
 			botId,
 			"commands",
-			`${commandName}.ts`
+			`${commandName}.js`
 		);
-		const commandImport = require(`${tempFilePath}?raw`);
+		const fileUrl = pathToFileURL(tempFilePath).href;
+
+		const commandImport = await import(fileUrl);
 		console.log("commandImport", commandImport.default);
 		file = fs.readFileSync(tempFilePath, "utf-8");
 		// file = commandImport;
@@ -113,15 +134,15 @@ export const updateCommand = async ({ botId, oldName, name, command, userId, ser
 		const newCommand = JSON.parse(command);
 
 		tempFilePath = path.join(__dirname, "users", userId, "servers", serverId, "bots", botId, "commands");
-		const oldFilePath = path.join(tempFilePath, `${oldName}.ts`);
-		const newFilePath = path.join(tempFilePath, `${name}.ts`);
+		const oldFilePath = path.join(tempFilePath, `${oldName}.js`);
+		const newFilePath = path.join(tempFilePath, `${name}.js`);
 		console.log("tempFilePath", oldFilePath);
 		if (fs.existsSync(oldFilePath)) {
 			fs.rmSync(oldFilePath, { recursive: true });
 		}
 		fs.writeFileSync(newFilePath, newCommand, { encoding: "utf-8" });
 
-		const commandImport = require(newFilePath).default;
+		const commandImport = (await import(newFilePath)).default;
 		if (!commandImport) {
 			throw new Error("error writing file");
 		}
