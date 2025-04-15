@@ -13,7 +13,7 @@ type BotConfig = {
 	userId: string;
 	name: string;
 };
-
+const __dirname = import.meta.dirname;
 type CommandDefinition = {
 	data: any;
 	execute: (interaction: any) => Promise<void>;
