@@ -2,9 +2,9 @@ import axiosInstance from "@/api/services/axios";
 import { Bot } from "@/types/prisma";
 import { useQuery } from "@tanstack/react-query";
 
-const useBot = ({ botId }: { botId?: string }) => {
+const useBot = ({ botId, serverId }: { botId?: string; serverId?: string }) => {
 	const bot = useQuery({
-		queryKey: ["bots", botId],
+		queryKey: ["bots", botId, serverId],
 		experimental_prefetchInRender: true,
 		enabled: !!botId,
 		queryFn: async () => {

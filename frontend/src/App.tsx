@@ -3,6 +3,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import { routeTree } from "./routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 // Create a new router instance
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<RouterProvider router={router} />
 				<TanStackRouterDevtools router={router} />
+				<ReactQueryDevtools />
 			</QueryClientProvider>
 		</ThemeProvider>
 	);

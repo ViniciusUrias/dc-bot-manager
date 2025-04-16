@@ -6,9 +6,5 @@ export const Route = createFileRoute("/app/servers/")({
 });
 
 function RouteComponent() {
-	return (
-		<div>
-			<ServerList />
-		</div>
-	);
+	return <ServerList />;
 }

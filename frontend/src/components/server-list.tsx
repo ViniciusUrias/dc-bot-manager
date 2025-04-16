@@ -6,6 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
+import { Skeleton } from "./ui/skeleton";
 interface ServerListProps {
 	servers: Albums;
 	userId: number;
@@ -14,9 +15,23 @@ interface ServerListProps {
 }
 
 export default function ServerList() {
-	const { servers, deleteServer } = useServers({});
+	const {
+		servers: { data, isFetching },
+		deleteServer,
+	} = useServers({});
 
-	if (!servers?.data?.length) {
+	if (isFetching) {
+		return (
+			<>
+				<Skeleton className="w-[10%] h-10 self-end justify-self-end" />
+				<Skeleton className="w-full h-50" />
+				<Skeleton className="w-full h-50" />
+				<Skeleton className="w-full h-50" />
+			</>
+		);
+	}
+
+	if (!data?.length) {
 		return (
 			<div>
 				<span>You don't have any servers yet, try creating a new one</span>
@@ -29,15 +44,15 @@ export default function ServerList() {
 
 	return (
 		<ScrollArea className="w-full h-[75vh]  p-2 rounded-lg ">
-			<div className="justify-self-end my-2">
+			<div className="justify-self-end mb-4">
 				<Link viewTransition to="/app/servers/create">
 					<Button>
 						<Plus /> New server
 					</Button>
 				</Link>
 			</div>
-			<div className="masonry-grid flex gap-2 flex-col">
-				{servers?.data?.map((server) => {
+			<div className="masonry-grid flex gap-4 flex-col">
+				{data?.map((server) => {
 					return (
 						<Link
 							key={server.id}

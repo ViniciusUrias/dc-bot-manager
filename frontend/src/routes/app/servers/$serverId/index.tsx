@@ -23,7 +23,7 @@ export const Route = createFileRoute("/app/servers/$serverId/")({
 function RouteComponent() {
 	const serverId = Route.useParams().serverId;
 	const { data, refetch } = useSuspenseQuery(getQueryOptions(serverId));
-	const { startBot, stopBot } = useBot({});
+	const { startBot, stopBot } = useBot({ serverId });
 	console.log(data);
 
 	return (
@@ -42,7 +42,7 @@ function RouteComponent() {
 					</Button>
 				</Link>
 			</div>
-			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 gap-4 rounded-md border">
+			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col gap-4 rounded-md ">
 				{data?.bots?.map((bot) => {
 					return (
 						<Card className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn", "my-2")}>
