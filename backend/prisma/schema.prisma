@@ -9,6 +9,14 @@ generator typescriptInterfaces {
   output   = "../src/generated/types.ts"
 }
 
+generator zod {
+  output = "../src/generated"
+  provider       = "zod-prisma-types"
+  createInputTypes = false
+  addInputTypeValidation = false
+  addSelectType = false
+  useDefaultValidators = false
+}
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")

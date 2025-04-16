@@ -1,7 +1,8 @@
-import { createHash } from "@/utils/auth";
 import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import serverIdRoutes from "./[id]";
+import { z } from "zod";
+import { Server, ServerSchema } from "@/generated";
 
 export default async function (app: FastifyInstance, opts: FastifyPluginOptions) {
 	const { defaultRouteConfig } = createRoutePlugin({
@@ -12,49 +13,59 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 			auth: true,
 		},
 	});
-	app.get("/", createRouteConfig2(defaultRouteConfig, { summary: "Get all servers" }), async (request, reply) => {
-		console.log("USER SERVER", request.user);
-		const { id } = request.user;
-		try {
-			const user = await app.prisma.server.findMany({
-				where: { ownerId: id },
-				select: {
-					name: true,
-					description: true,
-					id: true,
-					serverid: true,
-					createdAt: true,
-					updatedAt: true,
-					bots: true,
-				},
-			});
 
-			return user;
-		} catch (error) {
-			app.log.error(error);
-			return reply.code(500).send({
-				statusCode: 500,
-				error: "Internal Server Error",
-				message: "Something went wrong",
-			});
-		}
-	});
-	app.post(
+	app.get(
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
-			summary: "Create server",
+			schema: { tags: ["Servers"], response: { 200: z.array(ServerSchema.optional()) } },
+		}),
+		async (request, reply) => {
+			const { id } = request.user;
+			try {
+				const servers = await app.prisma.server.findMany({
+					where: { ownerId: id },
+					select: {
+						name: true,
+						description: true,
+						id: true,
+						serverid: true,
+						createdAt: true,
+						updatedAt: true,
+						bots: true,
+						ownerId: true,
+					},
+				});
 
-			body: {
-				type: "object",
-				required: ["name", "serverid"],
-				properties: {
-					name: { type: "string" },
-					serverid: { type: "string" },
+				return reply.status(200).send(servers);
+			} catch (error) {
+				app.log.error(error);
+				return reply.code(500).send({
+					statusCode: 500,
+					error: "Internal Server Error",
+					message: "Something went wrong",
+				});
+			}
+		}
+	);
+	app.post(
+		"/",
+
+		createRouteConfig2(defaultRouteConfig, {
+			summary: "Create server",
+			schema: {
+				tags: ["Servers"],
+				body: ServerSchema.partial(),
+				response: {
+					201: ServerSchema,
+					409: z.object({
+						error: z.string(),
+						message: z.string(),
+					}),
 				},
 			},
 		}),
 		async (request, reply) => {
-			const { name, serverid, description } = request.body as { name: string; serverid: string };
+			const { name, serverid, description } = request.body as Server;
 			const { id } = request.user;
 			const exists = await app.prisma.server.findUnique({
 				where: { name, ownerId: id },
@@ -67,7 +78,6 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 					message: "Server with this name already exists",
 				});
 			}
-			const crpytd = await createHash(serverid);
 			const server = await app.prisma.server.create({
 				data: {
 					ownerId: id,
@@ -76,13 +86,16 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 					description,
 				},
 				select: {
+					description: true,
 					id: true,
 					serverid: true,
+					ownerId: true,
 					name: true,
 					createdAt: true,
+					updatedAt: true,
 				},
 			});
-			return server;
+			return reply.status(201).send(server);
 		}
 	);
 

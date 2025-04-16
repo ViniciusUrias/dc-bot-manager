@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
 import { Skeleton } from "./ui/skeleton";
+import { useGetV1Servers } from "@/gen";
 interface ServerListProps {
 	servers: Albums;
 	userId: number;
@@ -15,11 +16,9 @@ interface ServerListProps {
 }
 
 export default function ServerList() {
-	const {
-		servers: { data, isFetching },
-		deleteServer,
-	} = useServers({});
+	const { data, isFetching } = useGetV1Servers();
 
+	const { deleteServer } = useServers({});
 	if (isFetching) {
 		return (
 			<>
@@ -31,7 +30,7 @@ export default function ServerList() {
 		);
 	}
 
-	if (!data?.length) {
+	if (!data?.data?.length) {
 		return (
 			<div>
 				<span>You don't have any servers yet, try creating a new one</span>
@@ -52,7 +51,7 @@ export default function ServerList() {
 				</Link>
 			</div>
 			<div className="masonry-grid flex gap-4 flex-col">
-				{data?.map((server) => {
+				{data?.data?.map((server) => {
 					return (
 						<Link
 							key={server.id}

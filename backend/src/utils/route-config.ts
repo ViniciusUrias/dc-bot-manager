@@ -1,7 +1,18 @@
 // src/utils/route-config.ts
 
-import { FastifyPluginOptions, RouteShorthandOptions } from "fastify";
+import {
+	ContextConfigDefault,
+	FastifyBaseLogger,
+	FastifyPluginOptions,
+	FastifySchema,
+	RawReplyDefaultExpression,
+	RawRequestDefaultExpression,
+	RawServerDefault,
+	RouteGenericInterface,
+	RouteShorthandOptions,
+} from "fastify";
 import { fastify } from "..";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 type RouteConfig = {
 	tags?: string[];
@@ -16,33 +27,31 @@ type RouteConfig = {
 	security?: Array<Record<string, any[]>>;
 };
 
-export function createRouteConfig(config: RouteConfig): RouteShorthandOptions {
-	return {
-		schema: {
-			...config,
-			security: config.auth ? [{ bearerAuth: [] }] : config.security ? config.security : null,
-			response: {
-				...config.response,
-				500: {
-					description: "Internal Server Error",
-					content: {
-						"application/json": {
-							schema: { $ref: "Error#" },
-						},
-					},
-				},
-			},
-		},
-	};
-}
-export function createRouteConfig2(defaultOptions: RouteConfig, routeSpecificOptions?: RouteConfig) {
+type TypedRouteConfig = RouteShorthandOptions<
+	RawServerDefault,
+	RawRequestDefaultExpression,
+	RawReplyDefaultExpression,
+	RouteGenericInterface,
+	ContextConfigDefault,
+	FastifySchema,
+	ZodTypeProvider,
+	FastifyBaseLogger
+> & {
+	auth?: boolean;
+	tags?: string[];
+	summary?: string;
+	description?: string;
+};
+
+export function createRouteConfig2(defaultOptions: TypedRouteConfig, routeSpecificOptions?: TypedRouteConfig) {
 	const hasAuth = defaultOptions.auth || routeSpecificOptions?.auth;
 	return {
 		preValidation: hasAuth ? [fastify.authenticate] : null,
 		schema: {
 			// Merge default and route-specific options
-			...defaultOptions,
-			...routeSpecificOptions,
+
+			...defaultOptions.schema,
+			...routeSpecificOptions.schema,
 			// Security is handled separately if auth is true
 			...(defaultOptions.auth || routeSpecificOptions?.auth ? { security: [{ bearerAuth: [] }] } : {}),
 		},

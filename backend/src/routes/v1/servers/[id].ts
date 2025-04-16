@@ -1,24 +1,27 @@
+import { ServerSchema } from "@/generated";
 import { createRouteConfig2 } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
+import { z } from "zod";
 
 export default async function (app: FastifyInstance, opts) {
 	app.get(
 		"/:serverId",
 		createRouteConfig2(opts.defaultConfig, {
 			summary: "Get server by id",
-			params: {
-				type: "object",
-				properties: {
-					serverId: { type: "string" },
-				},
-				required: ["serverId"],
+			schema: {
+				tags: ["Servers"],
+				description: "Get server by id",
+				params: z.object({
+					serverId: z.string(),
+				}),
+				response: { 200: ServerSchema, 404: z.object({ message: z.string(), error: z.string() }) },
 			},
 		}),
 		async (request, reply) => {
 			const { serverId } = request.params as { serverId: string };
 
 			try {
-				const user = await app.prisma.server.findUnique({
+				const server = await app.prisma.server.findUnique({
 					where: { id: serverId },
 					select: {
 						bots: true,
@@ -26,19 +29,21 @@ export default async function (app: FastifyInstance, opts) {
 						id: true,
 						name: true,
 						createdAt: true,
+						description: true,
+						ownerId: true,
 						updatedAt: true,
 					},
 				});
 
-				if (!user) {
+				if (!server) {
 					return reply.code(404).send({
 						statusCode: 404,
 						error: "Not Found",
-						message: "User not ssssssssfound",
+						message: "Server not found",
 					});
 				}
 
-				return user;
+				return reply.status(200).send(server);
 			} catch (error) {
 				app.log.error(error);
 				return reply.code(500).send({
@@ -54,13 +59,12 @@ export default async function (app: FastifyInstance, opts) {
 		"/:serverId",
 		createRouteConfig2(opts.defaultConfig, {
 			summary: "Update server",
-			body: {
-				type: "object",
-				properties: {
-					name: { type: "string" },
-					email: { type: "string", format: "email" },
-				},
-				required: [],
+			schema: {
+				tags: ["Servers"],
+				body: z.object({
+					name: z.string(),
+					description: z.string().nullable().optional(),
+				}),
 			},
 		}),
 		async (request, reply) => {
@@ -108,16 +112,11 @@ export default async function (app: FastifyInstance, opts) {
 		"/:serverId",
 		createRouteConfig2(opts.defaultConfig, {
 			summary: "Delete server",
-			params: {
-				type: "object",
-				properties: {
-					serverId: { type: "string" },
-				},
-				required: ["serverId"],
-			},
-			response: {
-				204: {
-					description: "No Content",
+			schema: {
+				params: z.object({ serverId: z.string() }),
+				tags: ["Servers"],
+				response: {
+					204: z.object({ messsage: z.string() }),
 				},
 			},
 		}),

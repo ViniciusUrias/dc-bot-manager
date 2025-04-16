@@ -1,17 +1,17 @@
 // Importing required modules
 
-import router from "@/routes";
-import { schemas } from "@/schemas";
 import cors from "@fastify/cors";
-import fastifySwagger from "@fastify/swagger";
-import fastifySwaggerUi from "@fastify/swagger-ui";
+import { fastifySwagger } from "@fastify/swagger";
+import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import dotenv from "dotenv";
 import Fastify, { FastifyInstance } from "fastify";
 import pino from "pino";
 import authPlugin from "./plugins/auth";
-
+import fs from "fs";
 import prisma from "../prisma/prisma";
 import { configureFastify } from "./lib/fastify";
+import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
+import Router from "./routes";
 
 dotenv.config();
 let fastify: FastifyInstance | null = null;
@@ -22,13 +22,14 @@ const main = async () => {
 	fastify = Fastify({
 		loggerInstance: logger,
 		bodyLimit: 1000000000,
-	});
+	}).withTypeProvider<ZodTypeProvider>();
 	fastify.decorate("prisma", prisma);
 
-	fastify.addSchema(schemas.User);
-	fastify.addSchema(schemas.Bot);
-	fastify.addSchema(schemas.Error);
-
+	// fastify.addSchema(schemas.User);
+	// fastify.addSchema(schemas.Bot);
+	// fastify.addSchema(schemas.Error);
+	fastify.setValidatorCompiler(validatorCompiler);
+	fastify.setSerializerCompiler(serializerCompiler);
 	await configureFastify(fastify);
 	fastify.register(authPlugin);
 	fastify.addHook("onClose", async (instance) => {
@@ -42,8 +43,6 @@ const main = async () => {
 	});
 	await fastify.register(fastifySwagger, {
 		openapi: {
-			openapi: "3.0.0",
-
 			info: {
 				title: "Discord Bot Builder API",
 				description: "API for building and managing Discord bots",
@@ -65,14 +64,11 @@ const main = async () => {
 					},
 				},
 			},
-
-			refResolver: {
-				buildLocalReference(json, baseUri, fragment, i) {
-					return json.$id || `def-${i}`;
-				},
-			},
 		},
-		hideUntagged: false,
+
+		transform: jsonSchemaTransform,
+
+		hideUntagged: true,
 	});
 	await fastify.register(fastifySwaggerUi, {
 		routePrefix: "/docs",
@@ -87,7 +83,7 @@ const main = async () => {
 		staticCSP: true,
 		transformStaticCSP: (header) => header,
 	});
-	fastify.register(router, {
+	fastify.register(Router, {
 		prefix: "/v1",
 	});
 	fastify.register(cors, {
@@ -111,7 +107,11 @@ const main = async () => {
 		}
 	});
 	await fastify.ready();
-	fastify.swagger();
+	const file = fastify.swagger({ yaml: true });
+	fs.writeFileSync("./swagger.yaml", file);
+	fs.writeFileSync("../frontend/swagger.yaml", file);
+
+	console.log(file);
 	const port = process.env.PORT || 3000;
 	// or 0.0.0.0 for running in docker
 	const host = process.env.NODE_ENV === "production" ? process.env.BASE_URL : "localhost";
