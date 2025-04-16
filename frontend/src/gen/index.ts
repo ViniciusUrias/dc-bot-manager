@@ -13,10 +13,17 @@ export type { getV1Servers200, getV1ServersQueryResponse, getV1ServersQuery } fr
 export type {
   getV1ServersServeridPathParams,
   getV1ServersServerid200,
+  getV1ServersServerid404,
   getV1ServersServeridQueryResponse,
   getV1ServersServeridQuery,
 } from './types/servers/getServersServerid.ts'
-export type { postV1Servers201, postV1ServersMutationRequest, postV1ServersMutationResponse, postV1ServersMutation } from './types/servers/postServers.ts'
+export type {
+  postV1Servers201,
+  postV1Servers409,
+  postV1ServersMutationRequest,
+  postV1ServersMutationResponse,
+  postV1ServersMutation,
+} from './types/servers/postServers.ts'
 export type {
   putV1ServersServeridPathParams,
   putV1ServersServerid200,
@@ -43,9 +50,15 @@ export { getV1Servers200Schema, getV1ServersQueryResponseSchema } from './zod/se
 export {
   getV1ServersServeridPathParamsSchema,
   getV1ServersServerid200Schema,
+  getV1ServersServerid404Schema,
   getV1ServersServeridQueryResponseSchema,
 } from './zod/servers/getServersServeridSchema.ts'
-export { postV1Servers201Schema, postV1ServersMutationRequestSchema, postV1ServersMutationResponseSchema } from './zod/servers/postServersSchema.ts'
+export {
+  postV1Servers201Schema,
+  postV1Servers409Schema,
+  postV1ServersMutationRequestSchema,
+  postV1ServersMutationResponseSchema,
+} from './zod/servers/postServersSchema.ts'
 export {
   putV1ServersServeridPathParamsSchema,
   putV1ServersServerid200Schema,

@@ -6,7 +6,7 @@
 import client from '../../../api/services/axios.ts'
 import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '../../../api/services/axios.ts'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
-import type { getV1ServersServeridQueryResponse, getV1ServersServeridPathParams } from '../../types/servers/getServersServerid.ts'
+import type { getV1ServersServeridQueryResponse, getV1ServersServeridPathParams, getV1ServersServerid404 } from '../../types/servers/getServersServerid.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
 export const getV1ServersServeridQueryKey = (serverId: getV1ServersServeridPathParams['serverId']) =>
@@ -24,7 +24,7 @@ export async function getV1ServersServerid(
 ) {
   const { client: request = client, ...requestConfig } = config
 
-  const res = await request<getV1ServersServeridQueryResponse, ResponseErrorConfig<Error>, unknown>({
+  const res = await request<getV1ServersServeridQueryResponse, ResponseErrorConfig<getV1ServersServerid404>, unknown>({
     method: 'GET',
     url: `/v1/servers/${serverId}`,
     ...requestConfig,
@@ -39,7 +39,7 @@ export function getV1ServersServeridQueryOptions(
   const queryKey = getV1ServersServeridQueryKey(serverId)
   return queryOptions<
     ResponseConfig<getV1ServersServeridQueryResponse>,
-    ResponseErrorConfig<Error>,
+    ResponseErrorConfig<getV1ServersServerid404>,
     ResponseConfig<getV1ServersServeridQueryResponse>,
     typeof queryKey
   >({
@@ -63,9 +63,9 @@ export function useGetV1ServersServerid<
 >(
   serverId: getV1ServersServeridPathParams['serverId'],
   options: {
-    query?: Partial<QueryObserverOptions<ResponseConfig<getV1ServersServeridQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
-      client?: QueryClient
-    }
+    query?: Partial<
+      QueryObserverOptions<ResponseConfig<getV1ServersServeridQueryResponse>, ResponseErrorConfig<getV1ServersServerid404>, TData, TQueryData, TQueryKey>
+    > & { client?: QueryClient }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {
@@ -79,7 +79,7 @@ export function useGetV1ServersServerid<
       ...(queryOptions as unknown as Omit<QueryObserverOptions, 'queryKey'>),
     },
     queryClient,
-  ) as UseQueryResult<TData, ResponseErrorConfig<Error>> & { queryKey: TQueryKey }
+  ) as UseQueryResult<TData, ResponseErrorConfig<getV1ServersServerid404>> & { queryKey: TQueryKey }
 
   query.queryKey = queryKey as TQueryKey
 

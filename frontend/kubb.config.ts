@@ -7,7 +7,7 @@ export default defineConfig(() => {
 	return {
 		root: ".",
 		input: {
-			path: "./swagger.yaml",
+			path: "../common/swagger.yaml",
 		},
 		output: {
 			path: "./src/gen",

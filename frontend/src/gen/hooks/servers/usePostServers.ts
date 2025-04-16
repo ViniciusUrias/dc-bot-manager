@@ -6,7 +6,7 @@
 import client from '../../../api/services/axios.ts'
 import type { RequestConfig, ResponseConfig, ResponseErrorConfig } from '../../../api/services/axios.ts'
 import type { UseMutationOptions, QueryClient } from '@tanstack/react-query'
-import type { postV1ServersMutationRequest, postV1ServersMutationResponse } from '../../types/servers/postServers.ts'
+import type { postV1ServersMutationRequest, postV1ServersMutationResponse, postV1Servers409 } from '../../types/servers/postServers.ts'
 import { useMutation } from '@tanstack/react-query'
 
 export const postV1ServersMutationKey = () => [{ url: '/v1/servers/' }] as const
@@ -17,12 +17,12 @@ export type PostV1ServersMutationKey = ReturnType<typeof postV1ServersMutationKe
  * {@link /v1/servers/}
  */
 export async function postV1Servers(
-  data: postV1ServersMutationRequest,
+  data?: postV1ServersMutationRequest,
   config: Partial<RequestConfig<postV1ServersMutationRequest>> & { client?: typeof client } = {},
 ) {
   const { client: request = client, ...requestConfig } = config
 
-  const res = await request<postV1ServersMutationResponse, ResponseErrorConfig<Error>, postV1ServersMutationRequest>({
+  const res = await request<postV1ServersMutationResponse, ResponseErrorConfig<postV1Servers409>, postV1ServersMutationRequest>({
     method: 'POST',
     url: `/v1/servers/`,
     data,
@@ -38,8 +38,8 @@ export function usePostV1Servers<TContext>(
   options: {
     mutation?: UseMutationOptions<
       ResponseConfig<postV1ServersMutationResponse>,
-      ResponseErrorConfig<Error>,
-      { data: postV1ServersMutationRequest },
+      ResponseErrorConfig<postV1Servers409>,
+      { data?: postV1ServersMutationRequest },
       TContext
     > & { client?: QueryClient }
     client?: Partial<RequestConfig<postV1ServersMutationRequest>> & { client?: typeof client }
@@ -48,7 +48,7 @@ export function usePostV1Servers<TContext>(
   const { mutation: { client: queryClient, ...mutationOptions } = {}, client: config = {} } = options ?? {}
   const mutationKey = mutationOptions?.mutationKey ?? postV1ServersMutationKey()
 
-  return useMutation<ResponseConfig<postV1ServersMutationResponse>, ResponseErrorConfig<Error>, { data: postV1ServersMutationRequest }, TContext>(
+  return useMutation<ResponseConfig<postV1ServersMutationResponse>, ResponseErrorConfig<postV1Servers409>, { data?: postV1ServersMutationRequest }, TContext>(
     {
       mutationFn: async ({ data }) => {
         return postV1Servers(data, config)

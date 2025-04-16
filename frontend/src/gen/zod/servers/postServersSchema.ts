@@ -9,16 +9,31 @@ import { z } from 'zod'
  * @description Default Response
  */
 export const postV1Servers201Schema = z.object({
-  name: z.string(),
-  description: z.string(),
   id: z.string(),
-  serverid: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  ownerId: z.string(),
   createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+  serverid: z.string().nullable(),
+})
+
+/**
+ * @description Default Response
+ */
+export const postV1Servers409Schema = z.object({
+  error: z.string(),
+  message: z.string(),
 })
 
 export const postV1ServersMutationRequestSchema = z.object({
-  name: z.string(),
-  description: z.string(),
+  id: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().nullable().nullish(),
+  ownerId: z.string().optional(),
+  createdAt: z.string().datetime().optional(),
+  updatedAt: z.string().datetime().optional(),
+  serverid: z.string().nullable().nullish(),
 })
 
 export const postV1ServersMutationResponseSchema = z.lazy(() => postV1Servers201Schema)

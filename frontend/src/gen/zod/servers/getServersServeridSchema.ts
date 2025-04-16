@@ -13,7 +13,21 @@ export const getV1ServersServeridPathParamsSchema = z.object({
  * @description Default Response
  */
 export const getV1ServersServerid200Schema = z.object({
+  id: z.string(),
   name: z.string(),
+  description: z.string().nullable(),
+  ownerId: z.string(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+  serverid: z.string().nullable(),
+})
+
+/**
+ * @description Default Response
+ */
+export const getV1ServersServerid404Schema = z.object({
+  message: z.string(),
+  error: z.string(),
 })
 
 export const getV1ServersServeridQueryResponseSchema = z.lazy(() => getV1ServersServerid200Schema)

@@ -10,7 +10,31 @@ export type getV1Servers200 = {
   /**
    * @type string
    */
+  id: string
+  /**
+   * @type string
+   */
   name: string
+  /**
+   * @type string
+   */
+  description: string | null
+  /**
+   * @type string
+   */
+  ownerId: string
+  /**
+   * @type string, date-time
+   */
+  createdAt: string
+  /**
+   * @type string, date-time
+   */
+  updatedAt: string
+  /**
+   * @type string
+   */
+  serverid: string | null
 }[]
 
 export type getV1ServersQueryResponse = getV1Servers200

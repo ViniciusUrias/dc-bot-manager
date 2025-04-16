@@ -108,8 +108,8 @@ const main = async () => {
 	});
 	await fastify.ready();
 	const file = fastify.swagger({ yaml: true });
-	fs.writeFileSync("./swagger.yaml", file);
-	fs.writeFileSync("../frontend/swagger.yaml", file);
+
+	fs.writeFileSync("../common/swagger.yaml", file);
 
 	console.log(file);
 	const port = process.env.PORT || 3000;

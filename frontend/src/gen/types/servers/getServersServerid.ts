@@ -17,7 +17,45 @@ export type getV1ServersServerid200 = {
   /**
    * @type string
    */
+  id: string
+  /**
+   * @type string
+   */
   name: string
+  /**
+   * @type string
+   */
+  description: string | null
+  /**
+   * @type string
+   */
+  ownerId: string
+  /**
+   * @type string, date-time
+   */
+  createdAt: string
+  /**
+   * @type string, date-time
+   */
+  updatedAt: string
+  /**
+   * @type string
+   */
+  serverid: string | null
+}
+
+/**
+ * @description Default Response
+ */
+export type getV1ServersServerid404 = {
+  /**
+   * @type string
+   */
+  message: string
+  /**
+   * @type string
+   */
+  error: string
 }
 
 export type getV1ServersServeridQueryResponse = getV1ServersServerid200
@@ -25,5 +63,5 @@ export type getV1ServersServeridQueryResponse = getV1ServersServerid200
 export type getV1ServersServeridQuery = {
   Response: getV1ServersServerid200
   PathParams: getV1ServersServeridPathParams
-  Errors: any
+  Errors: getV1ServersServerid404
 }

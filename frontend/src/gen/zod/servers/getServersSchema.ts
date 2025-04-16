@@ -9,9 +9,17 @@ import { z } from 'zod'
  * @description Default Response
  */
 export const getV1Servers200Schema = z.array(
-  z.object({
-    name: z.string(),
-  }),
+  z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string().nullable(),
+      ownerId: z.string(),
+      createdAt: z.string().datetime(),
+      updatedAt: z.string().datetime(),
+      serverid: z.string().nullable(),
+    })
+    .strict(),
 )
 
 export const getV1ServersQueryResponseSchema = z.lazy(() => getV1Servers200Schema)

@@ -10,34 +10,76 @@ export type postV1Servers201 = {
   /**
    * @type string
    */
-  name: string
-  /**
-   * @type string
-   */
-  description: string
-  /**
-   * @type string
-   */
   id: string
   /**
    * @type string
    */
-  serverid: string
-  /**
-   * @type string, date-time
-   */
-  createdAt: string
-}
-
-export type postV1ServersMutationRequest = {
-  /**
-   * @type string
-   */
   name: string
   /**
    * @type string
    */
-  description: string
+  description: string | null
+  /**
+   * @type string
+   */
+  ownerId: string
+  /**
+   * @type string, date-time
+   */
+  createdAt: string
+  /**
+   * @type string, date-time
+   */
+  updatedAt: string
+  /**
+   * @type string
+   */
+  serverid: string | null
+}
+
+/**
+ * @description Default Response
+ */
+export type postV1Servers409 = {
+  /**
+   * @type string
+   */
+  error: string
+  /**
+   * @type string
+   */
+  message: string
+}
+
+export type postV1ServersMutationRequest = {
+  /**
+   * @type string | undefined
+   */
+  id?: string
+  /**
+   * @type string | undefined
+   */
+  name?: string
+  /**
+   * @type string
+   */
+  description?: string | null
+  /**
+   * @type string | undefined
+   */
+  ownerId?: string
+  /**
+   * @type string | undefined, date-time
+   */
+  createdAt?: string
+  /**
+   * @type string | undefined, date-time
+   */
+  updatedAt?: string
+  /**
+   * @type string
+   */
+  serverid?: string | null
 }
 
 export type postV1ServersMutationResponse = postV1Servers201
@@ -45,5 +87,5 @@ export type postV1ServersMutationResponse = postV1Servers201
 export type postV1ServersMutation = {
   Response: postV1Servers201
   Request: postV1ServersMutationRequest
-  Errors: any
+  Errors: postV1Servers409
 }
