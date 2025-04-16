@@ -44,7 +44,7 @@ export default defineConfig(() => {
 			}),
 			pluginReactQuery({
 				output: {
-					path: "./hooks",
+					path: "../hooks",
 				},
 				group: {
 					type: "tag",
@@ -59,7 +59,7 @@ export default defineConfig(() => {
 					},
 				},
 				client: {
-					importPath: "../../../api/services/axios.ts",
+					importPath: "../../api/services/axios.ts",
 					dataReturnType: "full",
 				},
 				mutation: {

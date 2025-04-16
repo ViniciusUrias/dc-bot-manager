@@ -1,4 +1,4 @@
-import { ServerSchema } from "@/generated";
+import { ServerSchema } from "@/types";
 import { createRouteConfig2 } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";

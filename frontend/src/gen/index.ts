@@ -1,8 +1,8 @@
-export type { DeleteV1ServersServeridMutationKey } from './hooks/servers/useDeleteServersServerid.ts'
-export type { GetV1ServersQueryKey } from './hooks/servers/useGetServers.ts'
-export type { GetV1ServersServeridQueryKey } from './hooks/servers/useGetServersServerid.ts'
-export type { PostV1ServersMutationKey } from './hooks/servers/usePostServers.ts'
-export type { PutV1ServersServeridMutationKey } from './hooks/servers/usePutServersServerid.ts'
+export type { DeleteV1ServersServeridMutationKey } from '../hooks/servers/useDeleteServersServerid.ts'
+export type { GetV1ServersQueryKey } from '../hooks/servers/useGetServers.ts'
+export type { GetV1ServersServeridQueryKey } from '../hooks/servers/useGetServersServerid.ts'
+export type { PostV1ServersMutationKey } from '../hooks/servers/usePostServers.ts'
+export type { PutV1ServersServeridMutationKey } from '../hooks/servers/usePutServersServerid.ts'
 export type {
   deleteV1ServersServeridPathParams,
   deleteV1ServersServerid204,
@@ -31,16 +31,16 @@ export type {
   putV1ServersServeridMutationResponse,
   putV1ServersServeridMutation,
 } from './types/servers/putServersServerid.ts'
-export { deleteV1ServersServeridMutationKey, deleteV1ServersServerid, useDeleteV1ServersServerid } from './hooks/servers/useDeleteServersServerid.ts'
-export { getV1ServersQueryKey, getV1Servers, getV1ServersQueryOptions, useGetV1Servers } from './hooks/servers/useGetServers.ts'
+export { deleteV1ServersServeridMutationKey, deleteV1ServersServerid, useDeleteV1ServersServerid } from '../hooks/servers/useDeleteServersServerid.ts'
+export { getV1ServersQueryKey, getV1Servers, getV1ServersQueryOptions, useGetV1Servers } from '../hooks/servers/useGetServers.ts'
 export {
   getV1ServersServeridQueryKey,
   getV1ServersServerid,
   getV1ServersServeridQueryOptions,
   useGetV1ServersServerid,
-} from './hooks/servers/useGetServersServerid.ts'
-export { postV1ServersMutationKey, postV1Servers, usePostV1Servers } from './hooks/servers/usePostServers.ts'
-export { putV1ServersServeridMutationKey, putV1ServersServerid, usePutV1ServersServerid } from './hooks/servers/usePutServersServerid.ts'
+} from '../hooks/servers/useGetServersServerid.ts'
+export { postV1ServersMutationKey, postV1Servers, usePostV1Servers } from '../hooks/servers/usePostServers.ts'
+export { putV1ServersServeridMutationKey, putV1ServersServerid, usePutV1ServersServerid } from '../hooks/servers/usePutServersServerid.ts'
 export {
   deleteV1ServersServeridPathParamsSchema,
   deleteV1ServersServerid204Schema,

@@ -3,14 +3,14 @@
  * Do not edit manually.
  */
 
-import client from '../../../api/services/axios.ts'
-import type { RequestConfig, ResponseConfig, ResponseErrorConfig } from '../../../api/services/axios.ts'
+import client from '../../api/services/axios.ts'
+import type { RequestConfig, ResponseConfig, ResponseErrorConfig } from '../../api/services/axios.ts'
 import type { UseMutationOptions, QueryClient } from '@tanstack/react-query'
 import type {
   putV1ServersServeridMutationRequest,
   putV1ServersServeridMutationResponse,
   putV1ServersServeridPathParams,
-} from '../../types/servers/putServersServerid.ts'
+} from '../../gen/types/servers/putServersServerid.ts'
 import { useMutation } from '@tanstack/react-query'
 
 export const putV1ServersServeridMutationKey = () => [{ url: '/v1/servers/{serverId}' }] as const

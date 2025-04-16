@@ -2,7 +2,7 @@ import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import serverIdRoutes from "./[id]";
 import { z } from "zod";
-import { Server, ServerSchema } from "@/generated";
+import { Server, ServerSchema } from "@/types";
 
 export default async function (app: FastifyInstance, opts: FastifyPluginOptions) {
 	const { defaultRouteConfig } = createRoutePlugin({

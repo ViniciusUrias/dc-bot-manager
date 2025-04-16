@@ -4,13 +4,13 @@ generator client {
   previewFeatures = ["driverAdapters", "typedSql"]
 }
 
-generator typescriptInterfaces {
-  provider = "prisma-generator-typescript-interfaces"
-  output   = "../src/generated/types.ts"
-}
+// generator typescriptInterfaces {
+//   provider = "prisma-generator-typescript-interfaces"
+//   output   = "../src/generated/types.ts"
+// }
 
 generator zod {
-  output = "../src/generated"
+  output = "../src/types"
   provider       = "zod-prisma-types"
   createInputTypes = false
   addInputTypeValidation = false
@@ -175,7 +175,7 @@ model Analytics {
   id        String   @id @default(uuid())
   botId     String
   eventType String
-  data      Json
+  data      String
   timestamp DateTime @default(now())
   bot       Bot      @relation(fields: [botId], references: [id])
 }

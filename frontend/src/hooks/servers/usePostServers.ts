@@ -3,10 +3,10 @@
  * Do not edit manually.
  */
 
-import client from '../../../api/services/axios.ts'
-import type { RequestConfig, ResponseConfig, ResponseErrorConfig } from '../../../api/services/axios.ts'
+import client from '../../api/services/axios.ts'
+import type { RequestConfig, ResponseConfig, ResponseErrorConfig } from '../../api/services/axios.ts'
 import type { UseMutationOptions, QueryClient } from '@tanstack/react-query'
-import type { postV1ServersMutationRequest, postV1ServersMutationResponse, postV1Servers409 } from '../../types/servers/postServers.ts'
+import type { postV1ServersMutationRequest, postV1ServersMutationResponse, postV1Servers409 } from '../../gen/types/servers/postServers.ts'
 import { useMutation } from '@tanstack/react-query'
 
 export const postV1ServersMutationKey = () => [{ url: '/v1/servers/' }] as const

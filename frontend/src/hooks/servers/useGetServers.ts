@@ -3,10 +3,10 @@
  * Do not edit manually.
  */
 
-import client from '../../../api/services/axios.ts'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '../../../api/services/axios.ts'
+import client from '../../api/services/axios.ts'
+import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '../../api/services/axios.ts'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
-import type { getV1ServersQueryResponse } from '../../types/servers/getServers.ts'
+import type { getV1ServersQueryResponse } from '../../gen/types/servers/getServers.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
 export const getV1ServersQueryKey = () => [{ url: '/v1/servers/' }] as const
