@@ -2,7 +2,7 @@ import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import serverIdRoutes from "./[id]";
 import { z } from "zod";
-import { Server, ServerSchema } from "@/types";
+import { Server, ServerSchema, ServerWithPartialRelationsSchema } from "@/types";
 
 export default async function (app: FastifyInstance, opts: FastifyPluginOptions) {
 	const { defaultRouteConfig } = createRoutePlugin({
@@ -19,7 +19,7 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 		createRouteConfig2(defaultRouteConfig, {
 			schema: {
 				tags: ["Servers"],
-				// response: { 200: z.array(ServerSchema.merge(BotSchema).optional()) }
+				response: { 200: z.array(ServerWithPartialRelationsSchema) },
 			},
 		}),
 		async (request, reply) => {

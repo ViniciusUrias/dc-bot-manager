@@ -1,4 +1,4 @@
-import { ServerSchema } from "@/types";
+import { ServerPartialWithRelationsSchema } from "@/types";
 import { createRouteConfig2 } from "@/utils/route-config";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
@@ -14,7 +14,7 @@ export default async function (app: FastifyInstance, opts) {
 				params: z.object({
 					serverId: z.string(),
 				}),
-				response: { 200: ServerSchema, 404: z.object({ message: z.string(), error: z.string() }) },
+				response: { 200: ServerPartialWithRelationsSchema, 404: z.object({ message: z.string(), error: z.string() }) },
 			},
 		}),
 		async (request, reply) => {

@@ -2,7 +2,7 @@ import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import botIdRoutes from "./[botId]";
 import commandsRoutes from "./commands";
-import { Bot } from "@/types";
+import { Bot, BotPartialSchema } from "@/types";
 // import eventsRoutes from './events';
 
 export default async function (app: FastifyInstance, _opts: FastifyPluginOptions) {
@@ -51,11 +51,11 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 			summary: "Create bot",
 			schema: {
 				tags: ["Bots"],
-				// body: BotSchema,
+				body: BotPartialSchema,
 			},
 		}),
 		async (request, reply) => {
-			app.log.info(request.user);
+			app.log.info(request.body);
 			// Implement bot creation logic
 			const { serverId, name, prefix, botId, token, description } = request.body as Bot;
 			const body = {

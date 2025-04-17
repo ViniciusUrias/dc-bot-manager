@@ -56,6 +56,7 @@ export default function BotForm({ bot }: { bot?: Bot }) {
 			...values,
 			tags: values.tags.split(",").map((e) => e),
 			icon: file,
+			serverId: values.serverId,
 			// bot: { name: values.name, username: values.name },
 		};
 		if (bot) {

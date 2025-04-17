@@ -17,53 +17,53 @@ export type putV1BotsBotid200 = any
 
 export type putV1BotsBotidMutationRequest = {
   /**
-   * @type string | undefined
+   * @type string
    */
-  id?: string
-  /**
-   * @type string | undefined
-   */
-  name?: string
-  /**
-   * @type string | undefined
-   */
-  token?: string
-  /**
-   * @type boolean | undefined
-   */
-  active?: boolean
-  /**
-   * @type string | undefined
-   */
-  ownerId?: string
-  /**
-   * @type string | undefined
-   */
-  prefix?: string
-  /**
-   * @type string | undefined, date-time
-   */
-  createdAt?: string
-  /**
-   * @type string | undefined, date-time
-   */
-  updatedAt?: string
-  /**
-   * @type string | undefined
-   */
-  description?: string
-  /**
-   * @type array | undefined
-   */
-  tags?: string[]
+  id: string
   /**
    * @type string
    */
-  icon?: string | null
+  name: string
   /**
-   * @type string | undefined
+   * @type string
    */
-  serverId?: string
+  token: string
+  /**
+   * @type boolean
+   */
+  active: boolean
+  /**
+   * @type string
+   */
+  ownerId: string
+  /**
+   * @type string
+   */
+  prefix: string
+  /**
+   * @type string, date-time
+   */
+  createdAt: string
+  /**
+   * @type string, date-time
+   */
+  updatedAt: string
+  /**
+   * @type string
+   */
+  description: string
+  /**
+   * @type array
+   */
+  tags: string[]
+  /**
+   * @type string
+   */
+  icon: string | null
+  /**
+   * @type string
+   */
+  serverId: string
 }
 
 export type putV1BotsBotidMutationResponse = putV1BotsBotid200

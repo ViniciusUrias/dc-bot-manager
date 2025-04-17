@@ -16,6 +16,8 @@ generator zod {
   addInputTypeValidation = false
   addSelectType = false
   useDefaultValidators = false
+  createRelationValuesTypes = true
+  createPartialTypes = true
 }
 datasource db {
   provider = "postgresql"

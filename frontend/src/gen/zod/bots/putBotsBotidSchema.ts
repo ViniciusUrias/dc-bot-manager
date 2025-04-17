@@ -16,18 +16,18 @@ export const putV1BotsBotid200Schema = z.any()
 
 export const putV1BotsBotidMutationRequestSchema = z
   .object({
-    id: z.string().optional(),
-    name: z.string().optional(),
-    token: z.string().optional(),
-    active: z.boolean().optional(),
-    ownerId: z.string().optional(),
-    prefix: z.string().optional(),
-    createdAt: z.string().datetime().optional(),
-    updatedAt: z.string().datetime().optional(),
-    description: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    icon: z.string().nullable().nullish(),
-    serverId: z.string().optional(),
+    id: z.string(),
+    name: z.string(),
+    token: z.string(),
+    active: z.boolean(),
+    ownerId: z.string(),
+    prefix: z.string(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
+    description: z.string(),
+    tags: z.array(z.string()),
+    icon: z.string().nullable(),
+    serverId: z.string(),
   })
   .strict()
 

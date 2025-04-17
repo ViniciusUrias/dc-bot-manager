@@ -13,13 +13,305 @@ export const getV1ServersServeridPathParamsSchema = z.object({
  * @description Default Response
  */
 export const getV1ServersServerid200Schema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().nullable(),
-  ownerId: z.string(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
-  serverid: z.string().nullable(),
+  id: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().nullable().nullish(),
+  ownerId: z.string().optional(),
+  createdAt: z.string().datetime().optional(),
+  updatedAt: z.string().datetime().optional(),
+  serverid: z.string().nullable().nullish(),
+  bots: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        name: z.string().optional(),
+        token: z.string().optional(),
+        active: z.boolean().optional(),
+        ownerId: z.string().optional(),
+        prefix: z.string().optional(),
+        createdAt: z.string().datetime().optional(),
+        updatedAt: z.string().datetime().optional(),
+        description: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+        icon: z.string().nullable().nullish(),
+        serverId: z.string().optional(),
+        analytics: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              botId: z.string().optional(),
+              eventType: z.string().optional(),
+              data: z.string().optional(),
+              timestamp: z.string().datetime().optional(),
+              bot: z.any().optional(),
+            }),
+          )
+          .optional(),
+        owner: z
+          .object({
+            id: z.string().optional(),
+            name: z.string().optional(),
+            email: z.string().optional(),
+            emailVerified: z.boolean().optional(),
+            image: z.string().nullable().nullish(),
+            createdAt: z.string().datetime().optional(),
+            updatedAt: z.string().datetime().optional(),
+            sessions: z
+              .array(
+                z.object({
+                  id: z.string().optional(),
+                  expiresAt: z.string().datetime().optional(),
+                  token: z.string().optional(),
+                  createdAt: z.string().datetime().optional(),
+                  updatedAt: z.string().datetime().optional(),
+                  ipAddress: z.string().nullable().nullish(),
+                  userAgent: z.string().nullable().nullish(),
+                  userId: z.string().optional(),
+                  user: z.any().optional(),
+                }),
+              )
+              .optional(),
+            accounts: z
+              .array(
+                z.object({
+                  id: z.string().optional(),
+                  accountId: z.string().optional(),
+                  providerId: z.string().optional(),
+                  userId: z.string().optional(),
+                  accessToken: z.string().nullable().nullish(),
+                  refreshToken: z.string().nullable().nullish(),
+                  idToken: z.string().nullable().nullish(),
+                  accessTokenExpiresAt: z.string().datetime().nullable().nullish(),
+                  refreshTokenExpiresAt: z.string().datetime().nullable().nullish(),
+                  scope: z.string().nullable().nullish(),
+                  password: z.string().nullable().nullish(),
+                  createdAt: z.string().datetime().optional(),
+                  updatedAt: z.string().datetime().optional(),
+                  user: z.any().optional(),
+                }),
+              )
+              .optional(),
+            Bot: z.array(z.any()).optional(),
+            Server: z.array(z.any()).optional(),
+          })
+          .optional(),
+        server: z.any().optional(),
+        configurations: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              key: z.string().optional(),
+              value: z.string().optional(),
+              botId: z.string().optional(),
+              createdAt: z.string().datetime().optional(),
+              updatedAt: z.string().datetime().optional(),
+              bot: z.any().optional(),
+            }),
+          )
+          .optional(),
+        commands: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              name: z.string().optional(),
+              description: z.string().optional(),
+              response: z.string().optional(),
+              enabled: z.boolean().optional(),
+              botId: z.string().optional(),
+              createdAt: z.string().datetime().optional(),
+              updatedAt: z.string().datetime().optional(),
+              bot: z.any().optional(),
+              permissions: z
+                .array(
+                  z.object({
+                    id: z.string().optional(),
+                    commandId: z.string().optional(),
+                    roleId: z.string().optional(),
+                    allow: z.boolean().optional(),
+                    createdAt: z.string().datetime().optional(),
+                    command: z.any().optional(),
+                  }),
+                )
+                .optional(),
+              usage: z
+                .array(
+                  z.object({
+                    id: z.string().optional(),
+                    commandId: z.string().optional(),
+                    userId: z.string().optional(),
+                    guildId: z.string().optional(),
+                    channelId: z.string().optional(),
+                    timestamp: z.string().datetime().optional(),
+                    command: z.any().optional(),
+                  }),
+                )
+                .optional(),
+            }),
+          )
+          .optional(),
+        events: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              name: z.string().optional(),
+              action: z.string().optional(),
+              enabled: z.boolean().optional(),
+              botId: z.string().optional(),
+              createdAt: z.string().datetime().optional(),
+              updatedAt: z.string().datetime().optional(),
+              bot: z.any().optional(),
+            }),
+          )
+          .optional(),
+      }),
+    )
+    .optional(),
+  owner: z
+    .object({
+      id: z.string().optional(),
+      name: z.string().optional(),
+      email: z.string().optional(),
+      emailVerified: z.boolean().optional(),
+      image: z.string().nullable().nullish(),
+      createdAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime().optional(),
+      sessions: z
+        .array(
+          z.object({
+            id: z.string().optional(),
+            expiresAt: z.string().datetime().optional(),
+            token: z.string().optional(),
+            createdAt: z.string().datetime().optional(),
+            updatedAt: z.string().datetime().optional(),
+            ipAddress: z.string().nullable().nullish(),
+            userAgent: z.string().nullable().nullish(),
+            userId: z.string().optional(),
+            user: z.any().optional(),
+          }),
+        )
+        .optional(),
+      accounts: z
+        .array(
+          z.object({
+            id: z.string().optional(),
+            accountId: z.string().optional(),
+            providerId: z.string().optional(),
+            userId: z.string().optional(),
+            accessToken: z.string().nullable().nullish(),
+            refreshToken: z.string().nullable().nullish(),
+            idToken: z.string().nullable().nullish(),
+            accessTokenExpiresAt: z.string().datetime().nullable().nullish(),
+            refreshTokenExpiresAt: z.string().datetime().nullable().nullish(),
+            scope: z.string().nullable().nullish(),
+            password: z.string().nullable().nullish(),
+            createdAt: z.string().datetime().optional(),
+            updatedAt: z.string().datetime().optional(),
+            user: z.any().optional(),
+          }),
+        )
+        .optional(),
+      Bot: z
+        .array(
+          z.object({
+            id: z.string().optional(),
+            name: z.string().optional(),
+            token: z.string().optional(),
+            active: z.boolean().optional(),
+            ownerId: z.string().optional(),
+            prefix: z.string().optional(),
+            createdAt: z.string().datetime().optional(),
+            updatedAt: z.string().datetime().optional(),
+            description: z.string().optional(),
+            tags: z.array(z.string()).optional(),
+            icon: z.string().nullable().nullish(),
+            serverId: z.string().optional(),
+            analytics: z
+              .array(
+                z.object({
+                  id: z.string().optional(),
+                  botId: z.string().optional(),
+                  eventType: z.string().optional(),
+                  data: z.string().optional(),
+                  timestamp: z.string().datetime().optional(),
+                  bot: z.any().optional(),
+                }),
+              )
+              .optional(),
+            owner: z.any().optional(),
+            server: z.any().optional(),
+            configurations: z
+              .array(
+                z.object({
+                  id: z.string().optional(),
+                  key: z.string().optional(),
+                  value: z.string().optional(),
+                  botId: z.string().optional(),
+                  createdAt: z.string().datetime().optional(),
+                  updatedAt: z.string().datetime().optional(),
+                  bot: z.any().optional(),
+                }),
+              )
+              .optional(),
+            commands: z
+              .array(
+                z.object({
+                  id: z.string().optional(),
+                  name: z.string().optional(),
+                  description: z.string().optional(),
+                  response: z.string().optional(),
+                  enabled: z.boolean().optional(),
+                  botId: z.string().optional(),
+                  createdAt: z.string().datetime().optional(),
+                  updatedAt: z.string().datetime().optional(),
+                  bot: z.any().optional(),
+                  permissions: z
+                    .array(
+                      z.object({
+                        id: z.string().optional(),
+                        commandId: z.string().optional(),
+                        roleId: z.string().optional(),
+                        allow: z.boolean().optional(),
+                        createdAt: z.string().datetime().optional(),
+                        command: z.any().optional(),
+                      }),
+                    )
+                    .optional(),
+                  usage: z
+                    .array(
+                      z.object({
+                        id: z.string().optional(),
+                        commandId: z.string().optional(),
+                        userId: z.string().optional(),
+                        guildId: z.string().optional(),
+                        channelId: z.string().optional(),
+                        timestamp: z.string().datetime().optional(),
+                        command: z.any().optional(),
+                      }),
+                    )
+                    .optional(),
+                }),
+              )
+              .optional(),
+            events: z
+              .array(
+                z.object({
+                  id: z.string().optional(),
+                  name: z.string().optional(),
+                  action: z.string().optional(),
+                  enabled: z.boolean().optional(),
+                  botId: z.string().optional(),
+                  createdAt: z.string().datetime().optional(),
+                  updatedAt: z.string().datetime().optional(),
+                  bot: z.any().optional(),
+                }),
+              )
+              .optional(),
+          }),
+        )
+        .optional(),
+      Server: z.array(z.any()).optional(),
+    })
+    .optional(),
 })
 
 /**
