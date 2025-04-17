@@ -1,10 +1,6 @@
 import * as React from "react";
 import {
 	IconBrandDiscordFilled,
-	IconCamera,
-	IconDatabase,
-	IconFileAi,
-	IconFileDescription,
 	IconFileWord,
 	IconHelp,
 	IconHome,
@@ -50,54 +46,7 @@ const data = {
 			icon: IconServer,
 		},
 	],
-	navClouds: [
-		{
-			title: "Capture",
-			icon: IconCamera,
-			isActive: true,
-			url: "#",
-			items: [
-				{
-					title: "Active Proposals",
-					url: "#",
-				},
-				{
-					title: "Archived",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "Proposal",
-			icon: IconFileDescription,
-			url: "#",
-			items: [
-				{
-					title: "Active Proposals",
-					url: "#",
-				},
-				{
-					title: "Archived",
-					url: "#",
-				},
-			],
-		},
-		{
-			title: "Prompts",
-			icon: IconFileAi,
-			url: "#",
-			items: [
-				{
-					title: "Active Proposals",
-					url: "#",
-				},
-				{
-					title: "Archived",
-					url: "#",
-				},
-			],
-		},
-	],
+
 	navSecondary: [
 		{
 			title: "Settings",
@@ -115,11 +64,11 @@ const data = {
 			icon: IconSearch,
 		},
 	],
-	documents: [
+	bots: [
 		{
-			name: "Data Library",
-			url: "#",
-			icon: IconDatabase,
+			name: "List",
+			url: "/app/bots",
+			icon: IconBrandDiscordFilled,
 		},
 		{
 			name: "Reports",
@@ -156,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						{ title: "Servers", to: "/app/servers", icon: Server },
 					]}
 				/>
-				<NavDocuments items={data.documents} />
+				<NavDocuments items={[{ to: "/app/bots", icon: IconBrandDiscordFilled, title: "List" }]} />
 				{/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
 			</SidebarContent>
 			<SidebarFooter>

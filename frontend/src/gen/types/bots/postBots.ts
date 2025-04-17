@@ -6,7 +6,9 @@
 /**
  * @description Default Response
  */
-export type getV1Servers200 = {
+export type postV1Bots200 = any
+
+export type postV1BotsMutationRequest = {
   /**
    * @type string | undefined
    */
@@ -18,11 +20,19 @@ export type getV1Servers200 = {
   /**
    * @type string | undefined
    */
-  description?: string
+  token?: string
+  /**
+   * @type boolean | undefined
+   */
+  active?: boolean
   /**
    * @type string | undefined
    */
   ownerId?: string
+  /**
+   * @type string | undefined
+   */
+  prefix?: string
   /**
    * @type string | undefined, date-time
    */
@@ -32,21 +42,9 @@ export type getV1Servers200 = {
    */
   updatedAt?: string
   /**
-   * @type string
-   */
-  serverid: string | null
-  /**
    * @type string | undefined
    */
-  token?: string
-  /**
-   * @type boolean | undefined
-   */
-  active?: boolean
-  /**
-   * @type string | undefined
-   */
-  prefix?: string
+  description?: string
   /**
    * @type array | undefined
    */
@@ -59,11 +57,12 @@ export type getV1Servers200 = {
    * @type string | undefined
    */
   serverId?: string
-}[]
+}
 
-export type getV1ServersQueryResponse = getV1Servers200
+export type postV1BotsMutationResponse = postV1Bots200
 
-export type getV1ServersQuery = {
-  Response: getV1Servers200
+export type postV1BotsMutation = {
+  Response: postV1Bots200
+  Request: postV1BotsMutationRequest
   Errors: any
 }

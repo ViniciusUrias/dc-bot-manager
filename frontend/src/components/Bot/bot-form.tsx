@@ -10,11 +10,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useGetV1Servers } from "@/gen";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
 	}),
+	serverId: z.string(),
 
 	tags: z.string().min(2, {
 		message: "Username must be at least 2 characters.",
@@ -30,9 +33,10 @@ const formSchema = z.object({
 		message: "Username must be at least 2 characters.",
 	}),
 });
-export default function BotForm({ bot }: { bot: Bot }) {
+export default function BotForm({ bot }: { bot?: Bot }) {
 	const [file, setFile] = useState("");
-	const { editBot } = useBot({ botId: bot.id });
+	const { updateBot, createBot } = useBot({ botId: bot?.id });
+	const { data } = useGetV1Servers();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema, undefined, { raw: true }),
 		defaultValues: {
@@ -40,6 +44,7 @@ export default function BotForm({ bot }: { bot: Bot }) {
 			name: "",
 			icon: "",
 			tags: "",
+			serverId: "",
 		},
 	});
 	const transformFileToBase64 = async (ev) => {
@@ -51,9 +56,13 @@ export default function BotForm({ bot }: { bot: Bot }) {
 			...values,
 			tags: values.tags.split(",").map((e) => e),
 			icon: file,
-			bot: { name: values.name, username: values.name },
+			// bot: { name: values.name, username: values.name },
 		};
-		await editBot(bot.id, body);
+		if (bot) {
+			await updateBot({ botId: bot.id, data: body });
+		} else {
+			await createBot({ data: body });
+		}
 	}
 	useEffect(() => {
 		if (bot) {
@@ -67,6 +76,26 @@ export default function BotForm({ bot }: { bot: Bot }) {
 				<CardContent>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
 						<div className={"flex flex-col  gap-6"}>
+							<FormField
+								control={form.control}
+								name="serverId"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Server</FormLabel>
+
+										<Select onValueChange={field.onChange} defaultValue={field.value}>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue placeholder="Select a server" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{data?.data?.map((e) => <SelectItem value={e.id}>{e.name}</SelectItem>)}
+											</SelectContent>
+										</Select>
+									</FormItem>
+								)}
+							/>
 							<FormField
 								control={form.control}
 								name="name"

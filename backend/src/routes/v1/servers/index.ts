@@ -17,7 +17,10 @@ export default async function (app: FastifyInstance, opts: FastifyPluginOptions)
 	app.get(
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
-			schema: { tags: ["Servers"], response: { 200: z.array(ServerSchema.optional()) } },
+			schema: {
+				tags: ["Servers"],
+				// response: { 200: z.array(ServerSchema.merge(BotSchema).optional()) }
+			},
 		}),
 		async (request, reply) => {
 			const { id } = request.user;

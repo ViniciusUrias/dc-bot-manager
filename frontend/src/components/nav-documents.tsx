@@ -1,6 +1,6 @@
 "use client";
 
-import { IconDots, IconFolder, IconShare3, IconTrash, type Icon } from "@tabler/icons-react";
+import { IconDots, IconFolder, IconShare3, IconTrash } from "@tabler/icons-react";
 
 import {
 	DropdownMenu,
@@ -18,16 +18,10 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import { MenuProps } from "./nav-main";
+import { Link } from "@tanstack/react-router";
 
-export function NavDocuments({
-	items,
-}: {
-	items: {
-		name: string;
-		url: string;
-		icon: Icon;
-	}[];
-}) {
+export function NavDocuments({ items }: MenuProps) {
 	const { isMobile } = useSidebar();
 
 	return (
@@ -35,12 +29,12 @@ export function NavDocuments({
 			<SidebarGroupLabel>Bots</SidebarGroupLabel>
 			<SidebarMenu>
 				{items.map((item) => (
-					<SidebarMenuItem key={item.name}>
+					<SidebarMenuItem key={item.title}>
 						<SidebarMenuButton asChild>
-							<a href={item.url}>
+							<Link viewTransition to={item.to}>
 								<item.icon />
-								<span>{item.name}</span>
-							</a>
+								<span>{item.title}</span>
+							</Link>
 						</SidebarMenuButton>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>

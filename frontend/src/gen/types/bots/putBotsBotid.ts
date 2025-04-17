@@ -3,10 +3,19 @@
  * Do not edit manually.
  */
 
+export type putV1BotsBotidPathParams = {
+  /**
+   * @type string
+   */
+  botId: string
+}
+
 /**
  * @description Default Response
  */
-export type getV1Servers200 = {
+export type putV1BotsBotid200 = any
+
+export type putV1BotsBotidMutationRequest = {
   /**
    * @type string | undefined
    */
@@ -18,11 +27,19 @@ export type getV1Servers200 = {
   /**
    * @type string | undefined
    */
-  description?: string
+  token?: string
+  /**
+   * @type boolean | undefined
+   */
+  active?: boolean
   /**
    * @type string | undefined
    */
   ownerId?: string
+  /**
+   * @type string | undefined
+   */
+  prefix?: string
   /**
    * @type string | undefined, date-time
    */
@@ -32,21 +49,9 @@ export type getV1Servers200 = {
    */
   updatedAt?: string
   /**
-   * @type string
-   */
-  serverid: string | null
-  /**
    * @type string | undefined
    */
-  token?: string
-  /**
-   * @type boolean | undefined
-   */
-  active?: boolean
-  /**
-   * @type string | undefined
-   */
-  prefix?: string
+  description?: string
   /**
    * @type array | undefined
    */
@@ -59,11 +64,13 @@ export type getV1Servers200 = {
    * @type string | undefined
    */
   serverId?: string
-}[]
+}
 
-export type getV1ServersQueryResponse = getV1Servers200
+export type putV1BotsBotidMutationResponse = putV1BotsBotid200
 
-export type getV1ServersQuery = {
-  Response: getV1Servers200
+export type putV1BotsBotidMutation = {
+  Response: putV1BotsBotid200
+  Request: putV1BotsBotidMutationRequest
+  PathParams: putV1BotsBotidPathParams
   Errors: any
 }

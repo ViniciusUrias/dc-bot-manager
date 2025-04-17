@@ -2,6 +2,7 @@ import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import botIdRoutes from "./[botId]";
 import commandsRoutes from "./commands";
+import { Bot } from "@/types";
 // import eventsRoutes from './events';
 
 export default async function (app: FastifyInstance, _opts: FastifyPluginOptions) {
@@ -19,6 +20,9 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Get all bot",
+			schema: {
+				tags: ["Bots"],
+			},
 		}),
 		async (request, reply) => {
 			const bots = await app.prisma.bot.findMany({
@@ -32,11 +36,11 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 					prefix: true,
 					createdAt: true,
 					updatedAt: true,
-					owner: { omit: { password: true, createdAt: true, updatedAt: true } },
+					owner: { omit: { createdAt: true, updatedAt: true } },
 					server: { select: { name: true, id: true } },
 				},
 			});
-			return { bots };
+			return reply.status(200).send(bots);
 		}
 	);
 
@@ -45,34 +49,35 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		"/",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Create bot",
-
-			body: {
-				type: "object",
-				required: ["serverId", "name", "prefix"],
-				properties: {
-					name: { type: "string" },
-					serverId: { type: "string" },
-					prefix: { type: "string" },
-				},
+			schema: {
+				tags: ["Bots"],
+				// body: BotSchema,
 			},
 		}),
 		async (request, reply) => {
+			app.log.info(request.user);
 			// Implement bot creation logic
-			const { serverId, name, prefix, botId, token } = request.body;
+			const { serverId, name, prefix, botId, token, description } = request.body as Bot;
 			const body = {
 				serverId,
 				name,
 				prefix,
-				id: botId,
 				token,
 				ownerId: request.user.id,
+				description,
 			};
-			const bot = await app.prisma.bot.create({
-				data: body,
-				select: { id: true, name: true, prefix: true, ownerId: true, serverId: true, createdAt: true },
-			});
 
-			return { message: "Bot created successfully" };
+			try {
+				const bot = await app.prisma.bot.create({
+					// data: { name, token, serverId: serverId, description, ownerId: request.user.id },
+					data: body,
+					select: { name: true },
+				});
+
+				return reply.status(201).send({ message: "Bot created successfully", bot });
+			} catch (error) {
+				reply.send(error);
+			}
 		}
 	);
 

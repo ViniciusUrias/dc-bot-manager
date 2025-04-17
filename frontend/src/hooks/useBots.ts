@@ -1,4 +1,5 @@
 import axiosInstance from "@/api/services/axios";
+import { usePostV1Bots, usePutV1BotsBotid } from "@/gen";
 import { Bot } from "@/types/prisma";
 import { useQuery } from "@tanstack/react-query";
 
@@ -12,6 +13,8 @@ const useBot = ({ botId, serverId }: { botId?: string; serverId?: string }) => {
 			return response.data;
 		},
 	});
+	const { mutateAsync: createBot } = usePostV1Bots();
+	const { mutateAsync: updateBot } = usePutV1BotsBotid();
 	const { refetch } = bot;
 	const handleSync = async () => {
 		await axiosInstance.put(`/bots/${botId}/sync`);
@@ -37,16 +40,8 @@ const useBot = ({ botId, serverId }: { botId?: string; serverId?: string }) => {
 	const deleteCommands = async (bot: Bot) => {
 		await axiosInstance.delete(`/bots/${bot.id}/commands`);
 	};
-	const createBot = async (bot: Bot) => {
-		await axiosInstance.post(`/bots`, bot);
-		await refetch();
-	};
-	const editBot = async (botId: string, body: Partial<Bot>) => {
-		await axiosInstance.put(`/bots/${botId}`, body);
-		await refetch();
-	};
 
-	return { bot, deleteBot, deleteCommands, createBot, editBot, startBot, stopBot, handleSync };
+	return { bot, deleteBot, deleteCommands, createBot, updateBot, startBot, stopBot, handleSync };
 };
 
 export { useBot };

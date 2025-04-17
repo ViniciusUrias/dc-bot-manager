@@ -10,7 +10,14 @@ import authPlugin from "./plugins/auth";
 import fs from "fs";
 import prisma from "../prisma/prisma";
 import { configureFastify } from "./lib/fastify";
-import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
+import {
+	hasZodFastifySchemaValidationErrors,
+	isResponseSerializationError,
+	jsonSchemaTransform,
+	serializerCompiler,
+	validatorCompiler,
+	ZodTypeProvider,
+} from "fastify-type-provider-zod";
 import Router from "./routes";
 
 dotenv.config();
@@ -94,9 +101,34 @@ const main = async () => {
 	fastify.get("/test", (req, res) => {
 		res.send("connected");
 	});
-	fastify.setErrorHandler((error, request, reply) => {
-		fastify.log.error(error);
-		reply.status(500).send({ error: "Internal Server Error" });
+	fastify.setErrorHandler((err, req, reply) => {
+		fastify.log.warn(err);
+		if (hasZodFastifySchemaValidationErrors(err)) {
+			return reply.code(400).send({
+				error: "Response Validation Error",
+				message: "Request doesn't match the schema",
+				statusCode: 400,
+				details: {
+					issues: err.validation,
+					method: req.method,
+					url: req.url,
+				},
+			});
+		}
+
+		if (isResponseSerializationError(err)) {
+			return reply.code(500).send({
+				error: "Internal Server Error",
+				message: "Response doesn't match the schema",
+				statusCode: 500,
+				details: {
+					issues: err.cause.issues,
+					method: err.method,
+					url: err.url,
+				},
+			});
+		}
+		reply.status(500).send({ error: "Internal Server Error", message: err });
 	});
 	fastify.get("/health", async () => {
 		try {

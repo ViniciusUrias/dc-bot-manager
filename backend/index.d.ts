@@ -19,7 +19,7 @@ export type FastifyTypedWithZodInstance = FastifyInstance<
 >;
 // Extend Fastify types to include Prisma
 declare module "fastify" {
-	interface FastifyInstance extends FastifyTypedWithZodInstance {
+	interface FastifyInstance {
 		prisma: import("@prisma/client").PrismaClient;
 	}
 }

@@ -11,13 +11,19 @@ import { z } from 'zod'
 export const getV1Servers200Schema = z.array(
   z
     .object({
-      id: z.string(),
-      name: z.string(),
-      description: z.string().nullable(),
-      ownerId: z.string(),
-      createdAt: z.string().datetime(),
-      updatedAt: z.string().datetime(),
+      id: z.string().optional(),
+      name: z.string().optional(),
+      description: z.string().optional(),
+      ownerId: z.string().optional(),
+      createdAt: z.string().datetime().optional(),
+      updatedAt: z.string().datetime().optional(),
       serverid: z.string().nullable(),
+      token: z.string().optional(),
+      active: z.boolean().optional(),
+      prefix: z.string().optional(),
+      tags: z.array(z.string()).optional(),
+      icon: z.string().nullable().nullish(),
+      serverId: z.string().optional(),
     })
     .strict(),
 )
