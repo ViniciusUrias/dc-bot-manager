@@ -2,7 +2,8 @@ import { createRouteConfig2, createRoutePlugin } from "@/utils/route-config";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import botIdRoutes from "./[botId]";
 import commandsRoutes from "./commands";
-import { Bot, BotPartialSchema } from "@/types";
+import { Bot, BotPartialSchema, BotPartialWithRelationsSchema } from "@/types";
+import { z } from "zod";
 // import eventsRoutes from './events';
 
 export default async function (app: FastifyInstance, _opts: FastifyPluginOptions) {
@@ -22,6 +23,7 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 			summary: "Get all bot",
 			schema: {
 				tags: ["Bots"],
+				response: { 200: z.array(BotPartialWithRelationsSchema) },
 			},
 		}),
 		async (request, reply) => {
@@ -32,6 +34,8 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 					events: true,
 					name: true,
 					id: true,
+					active: true,
+					icon: true,
 					commands: true,
 					prefix: true,
 					createdAt: true,
@@ -57,12 +61,13 @@ export default async function (app: FastifyInstance, _opts: FastifyPluginOptions
 		async (request, reply) => {
 			app.log.info(request.body);
 			// Implement bot creation logic
-			const { serverId, name, prefix, botId, token, description } = request.body as Bot;
+			const { serverId, name, prefix, botId, token, description, icon } = request.body as Bot;
 			const body = {
 				serverId,
 				name,
 				prefix,
 				token,
+				icon,
 				ownerId: request.user.id,
 				description,
 			};

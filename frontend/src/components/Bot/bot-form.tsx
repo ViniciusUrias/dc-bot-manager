@@ -33,7 +33,13 @@ const formSchema = z.object({
 		message: "Username must be at least 2 characters.",
 	}),
 });
-export default function BotForm({ bot }: { bot?: Bot }) {
+export default function BotForm({
+	bot,
+	onFormSubmit,
+}: {
+	bot?: Bot;
+	onFormSubmit?: (values: z.infer<typeof formSchema>) => void;
+}) {
 	const [file, setFile] = useState("");
 	const { updateBot, createBot } = useBot({ botId: bot?.id });
 	const { data } = useGetV1Servers();
@@ -64,6 +70,7 @@ export default function BotForm({ bot }: { bot?: Bot }) {
 		} else {
 			await createBot({ data: body });
 		}
+		!!onFormSubmit && onFormSubmit(values);
 	}
 	useEffect(() => {
 		if (bot) {
@@ -81,12 +88,12 @@ export default function BotForm({ bot }: { bot?: Bot }) {
 								control={form.control}
 								name="serverId"
 								render={({ field }) => (
-									<FormItem>
+									<FormItem className="w-full">
 										<FormLabel>Server</FormLabel>
 
 										<Select onValueChange={field.onChange} defaultValue={field.value}>
 											<FormControl>
-												<SelectTrigger>
+												<SelectTrigger className="w-full">
 													<SelectValue placeholder="Select a server" />
 												</SelectTrigger>
 											</FormControl>
