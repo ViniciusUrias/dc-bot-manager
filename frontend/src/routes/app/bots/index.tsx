@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { useGetV1Bots } from "@/gen";
 import { Bot } from "@/types";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal, Plus } from "lucide-react";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -30,8 +30,8 @@ const ChangeRunningSwitch = ({ row }: { row: Row<Bot> }) => {
 	const isActive = row.original.active;
 	return (
 		<Switch
-			onCheckedChange={(e) =>
-				e ? stopBot({ data: { botId: row.original.id } }) : startBot({ data: { botId: row.original.id } })
+			onCheckedChange={() =>
+				isActive ? stopBot({ data: { botId: row.original.id } }) : startBot({ data: { botId: row.original.id } })
 			}
 			checked={isActive}
 			id="active"
@@ -64,16 +64,14 @@ const columns: ColumnDef<Bot>[] = [
 		accessorKey: "active",
 		header: "Running",
 
-		cell: ({ getValue, row }) => {
-			// return getValue() ? <Check className="text-primary" /> : <X className="text-red-400" />;
-
+		cell: ({ row }) => {
 			return <ChangeRunningSwitch row={row} />;
 		},
 	},
 	{
 		id: "actions",
 		cell: ({ row }) => {
-			const payment = row.original;
+			const bot = row.original;
 
 			return (
 				<DropdownMenu>
@@ -85,12 +83,14 @@ const columns: ColumnDef<Bot>[] = [
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-							Copy payment ID
-						</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => navigator.clipboard.writeText(bot.token)}>Copy token</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>View customer</DropdownMenuItem>
-						<DropdownMenuItem>View payment details</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<Link viewTransition to="/app/bots/$botId/details" params={{ botId: bot.id }}>
+								Details
+							</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem>Commands</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);

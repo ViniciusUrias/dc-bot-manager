@@ -15,11 +15,11 @@ export default function BotActions({ bot }: { bot: Bot }) {
 	return (
 		<div className="flex items-center gap-2">
 			{bot.active ? (
-				<Button className="w-fit" variant="destructive" onClick={() => stopBot(data!)}>
+				<Button className="w-fit" variant="destructive" onClick={() => stopBot({ data: { botId: bot.id } })}>
 					Stop bot
 				</Button>
 			) : (
-				<Button className="w-fit" variant="success" onClick={() => startBot(data!)}>
+				<Button className="w-fit" variant="success" onClick={() => startBot({ data: { botId: bot.id } })}>
 					Start bot
 				</Button>
 			)}

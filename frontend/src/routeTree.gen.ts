@@ -21,6 +21,7 @@ import { Route as AppServersIndexImport } from './routes/app/servers/index'
 import { Route as AppBotsIndexImport } from './routes/app/bots/index'
 import { Route as AppServersCreateImport } from './routes/app/servers/create'
 import { Route as AppServersServerIdIndexImport } from './routes/app/servers/$serverId/index'
+import { Route as AppBotsBotIdDetailsImport } from './routes/app/bots/$botId.details'
 import { Route as AppServersServerIdBotsNewImport } from './routes/app/servers/$serverId/bots/new'
 import { Route as AppServersServerIdBotsBotIdIndexImport } from './routes/app/servers/$serverId/bots/$botId/index'
 import { Route as AppServersServerIdBotsBotIdCommandsNewImport } from './routes/app/servers/$serverId/bots/$botId/commands/new'
@@ -86,6 +87,12 @@ const AppServersServerIdIndexRoute = AppServersServerIdIndexImport.update({
   id: '/$serverId/',
   path: '/$serverId/',
   getParentRoute: () => AppServersRouteRoute,
+} as any)
+
+const AppBotsBotIdDetailsRoute = AppBotsBotIdDetailsImport.update({
+  id: '/bots/$botId/details',
+  path: '/bots/$botId/details',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 
 const AppServersServerIdBotsNewRoute = AppServersServerIdBotsNewImport.update({
@@ -182,6 +189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppServersIndexImport
       parentRoute: typeof AppServersRouteImport
     }
+    '/app/bots/$botId/details': {
+      id: '/app/bots/$botId/details'
+      path: '/bots/$botId/details'
+      fullPath: '/app/bots/$botId/details'
+      preLoaderRoute: typeof AppBotsBotIdDetailsImport
+      parentRoute: typeof AppRouteImport
+    }
     '/app/servers/$serverId/': {
       id: '/app/servers/$serverId/'
       path: '/$serverId'
@@ -251,11 +265,13 @@ const AppServersRouteRouteWithChildren = AppServersRouteRoute._addFileChildren(
 interface AppRouteRouteChildren {
   AppServersRouteRoute: typeof AppServersRouteRouteWithChildren
   AppBotsIndexRoute: typeof AppBotsIndexRoute
+  AppBotsBotIdDetailsRoute: typeof AppBotsBotIdDetailsRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppServersRouteRoute: AppServersRouteRouteWithChildren,
   AppBotsIndexRoute: AppBotsIndexRoute,
+  AppBotsBotIdDetailsRoute: AppBotsBotIdDetailsRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -286,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/app/servers/create': typeof AppServersCreateRoute
   '/app/bots': typeof AppBotsIndexRoute
   '/app/servers/': typeof AppServersIndexRoute
+  '/app/bots/$botId/details': typeof AppBotsBotIdDetailsRoute
   '/app/servers/$serverId': typeof AppServersServerIdIndexRoute
   '/app/servers/$serverId/bots/new': typeof AppServersServerIdBotsNewRoute
   '/app/servers/$serverId/bots/$botId': typeof AppServersServerIdBotsBotIdIndexRoute
@@ -302,6 +319,7 @@ export interface FileRoutesByTo {
   '/app/servers/create': typeof AppServersCreateRoute
   '/app/bots': typeof AppBotsIndexRoute
   '/app/servers': typeof AppServersIndexRoute
+  '/app/bots/$botId/details': typeof AppBotsBotIdDetailsRoute
   '/app/servers/$serverId': typeof AppServersServerIdIndexRoute
   '/app/servers/$serverId/bots/new': typeof AppServersServerIdBotsNewRoute
   '/app/servers/$serverId/bots/$botId': typeof AppServersServerIdBotsBotIdIndexRoute
@@ -320,6 +338,7 @@ export interface FileRoutesById {
   '/app/servers/create': typeof AppServersCreateRoute
   '/app/bots/': typeof AppBotsIndexRoute
   '/app/servers/': typeof AppServersIndexRoute
+  '/app/bots/$botId/details': typeof AppBotsBotIdDetailsRoute
   '/app/servers/$serverId/': typeof AppServersServerIdIndexRoute
   '/app/servers/$serverId/bots/new': typeof AppServersServerIdBotsNewRoute
   '/app/servers/$serverId/bots/$botId/': typeof AppServersServerIdBotsBotIdIndexRoute
@@ -339,6 +358,7 @@ export interface FileRouteTypes {
     | '/app/servers/create'
     | '/app/bots'
     | '/app/servers/'
+    | '/app/bots/$botId/details'
     | '/app/servers/$serverId'
     | '/app/servers/$serverId/bots/new'
     | '/app/servers/$serverId/bots/$botId'
@@ -354,6 +374,7 @@ export interface FileRouteTypes {
     | '/app/servers/create'
     | '/app/bots'
     | '/app/servers'
+    | '/app/bots/$botId/details'
     | '/app/servers/$serverId'
     | '/app/servers/$serverId/bots/new'
     | '/app/servers/$serverId/bots/$botId'
@@ -370,6 +391,7 @@ export interface FileRouteTypes {
     | '/app/servers/create'
     | '/app/bots/'
     | '/app/servers/'
+    | '/app/bots/$botId/details'
     | '/app/servers/$serverId/'
     | '/app/servers/$serverId/bots/new'
     | '/app/servers/$serverId/bots/$botId/'
@@ -412,7 +434,8 @@ export const routeTree = rootRoute
       "filePath": "app/route.tsx",
       "children": [
         "/app/servers",
-        "/app/bots/"
+        "/app/bots/",
+        "/app/bots/$botId/details"
       ]
     },
     "/auth": {
@@ -454,6 +477,10 @@ export const routeTree = rootRoute
     "/app/servers/": {
       "filePath": "app/servers/index.tsx",
       "parent": "/app/servers"
+    },
+    "/app/bots/$botId/details": {
+      "filePath": "app/bots/$botId.details.tsx",
+      "parent": "/app"
     },
     "/app/servers/$serverId/": {
       "filePath": "app/servers/$serverId/index.tsx",

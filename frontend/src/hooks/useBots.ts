@@ -1,19 +1,19 @@
 import axiosInstance from "@/api/services/axios";
-import { getV1BotsQueryKey, usePostV1Bots, usePostV1BotsStart, usePostV1BotsStop, usePutV1BotsBotid } from "@/gen";
+import {
+	getV1BotsQueryKey,
+	useGetV1BotsBotid,
+	usePostV1Bots,
+	usePostV1BotsStart,
+	usePostV1BotsStop,
+	usePutV1BotsBotid,
+} from "@/gen";
 import { Bot } from "@/types/prisma";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const useBot = ({ botId, serverId }: { botId?: string; serverId?: string }) => {
 	const client = useQueryClient();
-	const bot = useQuery({
-		queryKey: ["bots", botId, serverId],
-		experimental_prefetchInRender: true,
-		enabled: !!botId,
-		queryFn: async () => {
-			const response = await axiosInstance.get<Bot>(`/bots/${botId}`);
-			return response.data;
-		},
-	});
+	const bot = useGetV1BotsBotid(botId, { query: { enabled: !!botId } });
+
 	const { mutateAsync: createBot } = usePostV1Bots({
 		mutation: {
 			onSuccess() {
