@@ -1,22 +1,28 @@
-import { useServers } from "@/hooks/useServers";
 import { cn } from "@/lib/utils";
-import { Album, Albums } from "@/types/album";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
-interface ServerListProps {
-	servers: Albums;
-	userId: number;
-	onDelete?: (id: number) => void;
-	onEdit?: (album: Album) => void;
-}
+import { Skeleton } from "./ui/skeleton";
+import { useDeleteV1ServersServerid, useGetV1Servers } from "@/gen";
 
 export default function ServerList() {
-	const { servers, deleteServer } = useServers({});
+	const { data, isFetching } = useGetV1Servers();
 
-	if (!servers?.data?.length) {
+	const { mutateAsync: deleteServer } = useDeleteV1ServersServerid();
+	if (isFetching) {
+		return (
+			<>
+				<Skeleton className="w-[10%] h-10 self-end justify-self-end" />
+				<Skeleton className="w-full h-50" />
+				<Skeleton className="w-full h-50" />
+				<Skeleton className="w-full h-50" />
+			</>
+		);
+	}
+
+	if (!data?.data?.length) {
 		return (
 			<div>
 				<span>You don't have any servers yet, try creating a new one</span>
@@ -29,15 +35,15 @@ export default function ServerList() {
 
 	return (
 		<ScrollArea className="w-full h-[75vh]  p-2 rounded-lg ">
-			<div className="justify-self-end my-2">
+			<div className="justify-self-end mb-4">
 				<Link viewTransition to="/app/servers/create">
 					<Button>
 						<Plus /> New server
 					</Button>
 				</Link>
 			</div>
-			<div className="masonry-grid flex gap-2 flex-col">
-				{servers?.data?.map((server) => {
+			<div className="masonry-grid flex gap-4 flex-col">
+				{data?.data?.map((server) => {
 					return (
 						<Link
 							key={server.id}
@@ -47,34 +53,34 @@ export default function ServerList() {
 							params={{ serverId: server.id }}
 							state={{ server }}
 						>
-							<Card className={cn(`transition-transform`, server.isRemoving ? "animate-fadeOut" : "animate-fadeIn")}>
+							<Card className={cn(`transition-transform`)}>
 								<CardHeader className="flex flex-row items-center justify-between ">
 									<CardTitle aria-label={`Album title: ${server.name}`}>{server.name}</CardTitle>
 									<div className="flex items-center gap-2 justify-self-end">
 										<Button
 											role="button"
-											id={`exclude-server-${server.title}-button`}
-											aria-label={`Exclude server: ${server.title}`}
+											id={`exclude-server-${server.name}-button`}
+											aria-label={`Exclude server: ${server.name}`}
 											onClick={async (e) => {
 												console.log(e);
 												e.preventDefault();
 												e.stopPropagation();
-												deleteServer(server);
+												deleteServer({ serverId: server.id });
 												const liveRegion = document.getElementById("live-region");
 												if (liveRegion) {
-													liveRegion.textContent = `Album ${server.title} has been excluded.`;
+													liveRegion.textContent = `Album ${server.name} has been excluded.`;
 												}
 											}}
 											size="icon"
 											variant="ghost"
 										>
 											<Trash2 />
-											<span className="sr-only">Exclude server: {server.title}</span>
+											<span className="sr-only">Exclude server: {server.name}</span>
 										</Button>
 										<Button
 											role="button"
-											id={`edit-server-${server.title}-button`}
-											aria-label={`Edit server: ${server.title}`}
+											id={`edit-server-${server.name}-button`}
+											aria-label={`Edit server: ${server.name}`}
 											onClick={(e) => {
 												e.preventDefault();
 												e.stopPropagation();
@@ -84,7 +90,7 @@ export default function ServerList() {
 											variant="ghost"
 										>
 											<Pencil />
-											<span className="sr-only">Edit server: {server.title}</span>
+											<span className="sr-only">Edit server: {server.name}</span>
 										</Button>
 									</div>
 								</CardHeader>

@@ -1,0 +1,2255 @@
+openapi: 3.0.3
+info:
+  title: Discord Bot Builder API
+  description: API for building and managing Discord bots
+  version: 1.0.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Enter JWT token in format: Bearer <token>"
+  schemas: {}
+paths:
+  /v1/servers/:
+    get:
+      tags:
+        - Servers
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    ownerId:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    serverid:
+                      type: string
+                      nullable: true
+                    bots:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          token:
+                            type: string
+                          active:
+                            type: boolean
+                          ownerId:
+                            type: string
+                          prefix:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          description:
+                            type: string
+                          tags:
+                            type: array
+                            items:
+                              type: string
+                          icon:
+                            type: string
+                            nullable: true
+                          serverId:
+                            type: string
+                          analytics:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                botId:
+                                  type: string
+                                eventType:
+                                  type: string
+                                data:
+                                  type: string
+                                timestamp:
+                                  type: string
+                                  format: date-time
+                                bot: {}
+                              additionalProperties: false
+                          owner:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              email:
+                                type: string
+                              emailVerified:
+                                type: boolean
+                              image:
+                                type: string
+                                nullable: true
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              sessions:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    expiresAt:
+                                      type: string
+                                      format: date-time
+                                    token:
+                                      type: string
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    ipAddress:
+                                      type: string
+                                      nullable: true
+                                    userAgent:
+                                      type: string
+                                      nullable: true
+                                    userId:
+                                      type: string
+                                    user: {}
+                                  additionalProperties: false
+                              accounts:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    accountId:
+                                      type: string
+                                    providerId:
+                                      type: string
+                                    userId:
+                                      type: string
+                                    accessToken:
+                                      type: string
+                                      nullable: true
+                                    refreshToken:
+                                      type: string
+                                      nullable: true
+                                    idToken:
+                                      type: string
+                                      nullable: true
+                                    accessTokenExpiresAt:
+                                      type: string
+                                      format: date-time
+                                      nullable: true
+                                    refreshTokenExpiresAt:
+                                      type: string
+                                      format: date-time
+                                      nullable: true
+                                    scope:
+                                      type: string
+                                      nullable: true
+                                    password:
+                                      type: string
+                                      nullable: true
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    user: {}
+                                  additionalProperties: false
+                              Bot:
+                                type: array
+                                items: {}
+                              Server:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    name:
+                                      type: string
+                                    description:
+                                      type: string
+                                      nullable: true
+                                    ownerId:
+                                      type: string
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    serverid:
+                                      type: string
+                                      nullable: true
+                                    bots:
+                                      type: array
+                                      items: {}
+                                    owner: {}
+                                  additionalProperties: false
+                            additionalProperties: false
+                          server:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                                nullable: true
+                              ownerId:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              serverid:
+                                type: string
+                                nullable: true
+                              bots:
+                                type: array
+                                items: {}
+                              owner:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  email:
+                                    type: string
+                                  emailVerified:
+                                    type: boolean
+                                  image:
+                                    type: string
+                                    nullable: true
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  sessions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id:
+                                          type: string
+                                        expiresAt:
+                                          type: string
+                                          format: date-time
+                                        token:
+                                          type: string
+                                        createdAt:
+                                          type: string
+                                          format: date-time
+                                        updatedAt:
+                                          type: string
+                                          format: date-time
+                                        ipAddress:
+                                          type: string
+                                          nullable: true
+                                        userAgent:
+                                          type: string
+                                          nullable: true
+                                        userId:
+                                          type: string
+                                        user: {}
+                                      additionalProperties: false
+                                  accounts:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id:
+                                          type: string
+                                        accountId:
+                                          type: string
+                                        providerId:
+                                          type: string
+                                        userId:
+                                          type: string
+                                        accessToken:
+                                          type: string
+                                          nullable: true
+                                        refreshToken:
+                                          type: string
+                                          nullable: true
+                                        idToken:
+                                          type: string
+                                          nullable: true
+                                        accessTokenExpiresAt:
+                                          type: string
+                                          format: date-time
+                                          nullable: true
+                                        refreshTokenExpiresAt:
+                                          type: string
+                                          format: date-time
+                                          nullable: true
+                                        scope:
+                                          type: string
+                                          nullable: true
+                                        password:
+                                          type: string
+                                          nullable: true
+                                        createdAt:
+                                          type: string
+                                          format: date-time
+                                        updatedAt:
+                                          type: string
+                                          format: date-time
+                                        user: {}
+                                      additionalProperties: false
+                                  Bot:
+                                    type: array
+                                    items: {}
+                                  Server:
+                                    type: array
+                                    items: {}
+                                additionalProperties: false
+                            additionalProperties: false
+                          configurations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                                botId:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                bot: {}
+                              additionalProperties: false
+                          commands:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                response:
+                                  type: string
+                                enabled:
+                                  type: boolean
+                                botId:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                bot: {}
+                                permissions:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      commandId:
+                                        type: string
+                                      roleId:
+                                        type: string
+                                      allow:
+                                        type: boolean
+                                      createdAt:
+                                        type: string
+                                        format: date-time
+                                      command: {}
+                                    additionalProperties: false
+                                usage:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      commandId:
+                                        type: string
+                                      userId:
+                                        type: string
+                                      guildId:
+                                        type: string
+                                      channelId:
+                                        type: string
+                                      timestamp:
+                                        type: string
+                                        format: date-time
+                                      command: {}
+                                    additionalProperties: false
+                              additionalProperties: false
+                          events:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                name:
+                                  type: string
+                                action:
+                                  type: string
+                                enabled:
+                                  type: boolean
+                                botId:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                bot: {}
+                              additionalProperties: false
+                        additionalProperties: false
+                    owner:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        emailVerified:
+                          type: boolean
+                        image:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        sessions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              expiresAt:
+                                type: string
+                                format: date-time
+                              token:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              ipAddress:
+                                type: string
+                                nullable: true
+                              userAgent:
+                                type: string
+                                nullable: true
+                              userId:
+                                type: string
+                              user: {}
+                            additionalProperties: false
+                        accounts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              accountId:
+                                type: string
+                              providerId:
+                                type: string
+                              userId:
+                                type: string
+                              accessToken:
+                                type: string
+                                nullable: true
+                              refreshToken:
+                                type: string
+                                nullable: true
+                              idToken:
+                                type: string
+                                nullable: true
+                              accessTokenExpiresAt:
+                                type: string
+                                format: date-time
+                                nullable: true
+                              refreshTokenExpiresAt:
+                                type: string
+                                format: date-time
+                                nullable: true
+                              scope:
+                                type: string
+                                nullable: true
+                              password:
+                                type: string
+                                nullable: true
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              user: {}
+                            additionalProperties: false
+                        Bot:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              token:
+                                type: string
+                              active:
+                                type: boolean
+                              ownerId:
+                                type: string
+                              prefix:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              description:
+                                type: string
+                              tags:
+                                type: array
+                                items:
+                                  type: string
+                              icon:
+                                type: string
+                                nullable: true
+                              serverId:
+                                type: string
+                              analytics:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    botId:
+                                      type: string
+                                    eventType:
+                                      type: string
+                                    data:
+                                      type: string
+                                    timestamp:
+                                      type: string
+                                      format: date-time
+                                    bot: {}
+                                  additionalProperties: false
+                              owner: {}
+                              server:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  description:
+                                    type: string
+                                    nullable: true
+                                  ownerId:
+                                    type: string
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  serverid:
+                                    type: string
+                                    nullable: true
+                                  bots:
+                                    type: array
+                                    items: {}
+                                  owner: {}
+                                additionalProperties: false
+                              configurations:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                    botId:
+                                      type: string
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    bot: {}
+                                  additionalProperties: false
+                              commands:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    name:
+                                      type: string
+                                    description:
+                                      type: string
+                                    response:
+                                      type: string
+                                    enabled:
+                                      type: boolean
+                                    botId:
+                                      type: string
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    bot: {}
+                                    permissions:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                          commandId:
+                                            type: string
+                                          roleId:
+                                            type: string
+                                          allow:
+                                            type: boolean
+                                          createdAt:
+                                            type: string
+                                            format: date-time
+                                          command: {}
+                                        additionalProperties: false
+                                    usage:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                          commandId:
+                                            type: string
+                                          userId:
+                                            type: string
+                                          guildId:
+                                            type: string
+                                          channelId:
+                                            type: string
+                                          timestamp:
+                                            type: string
+                                            format: date-time
+                                          command: {}
+                                        additionalProperties: false
+                                  additionalProperties: false
+                              events:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    name:
+                                      type: string
+                                    action:
+                                      type: string
+                                    enabled:
+                                      type: boolean
+                                    botId:
+                                      type: string
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    bot: {}
+                                  additionalProperties: false
+                            additionalProperties: false
+                        Server:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                                nullable: true
+                              ownerId:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              serverid:
+                                type: string
+                                nullable: true
+                              bots:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    name:
+                                      type: string
+                                    token:
+                                      type: string
+                                    active:
+                                      type: boolean
+                                    ownerId:
+                                      type: string
+                                    prefix:
+                                      type: string
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    updatedAt:
+                                      type: string
+                                      format: date-time
+                                    description:
+                                      type: string
+                                    tags:
+                                      type: array
+                                      items:
+                                        type: string
+                                    icon:
+                                      type: string
+                                      nullable: true
+                                    serverId:
+                                      type: string
+                                    analytics:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                          botId:
+                                            type: string
+                                          eventType:
+                                            type: string
+                                          data:
+                                            type: string
+                                          timestamp:
+                                            type: string
+                                            format: date-time
+                                          bot: {}
+                                        additionalProperties: false
+                                    owner: {}
+                                    server: {}
+                                    configurations:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                          key:
+                                            type: string
+                                          value:
+                                            type: string
+                                          botId:
+                                            type: string
+                                          createdAt:
+                                            type: string
+                                            format: date-time
+                                          updatedAt:
+                                            type: string
+                                            format: date-time
+                                          bot: {}
+                                        additionalProperties: false
+                                    commands:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                          name:
+                                            type: string
+                                          description:
+                                            type: string
+                                          response:
+                                            type: string
+                                          enabled:
+                                            type: boolean
+                                          botId:
+                                            type: string
+                                          createdAt:
+                                            type: string
+                                            format: date-time
+                                          updatedAt:
+                                            type: string
+                                            format: date-time
+                                          bot: {}
+                                          permissions:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                id:
+                                                  type: string
+                                                commandId:
+                                                  type: string
+                                                roleId:
+                                                  type: string
+                                                allow:
+                                                  type: boolean
+                                                createdAt:
+                                                  type: string
+                                                  format: date-time
+                                                command: {}
+                                              additionalProperties: false
+                                          usage:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                id:
+                                                  type: string
+                                                commandId:
+                                                  type: string
+                                                userId:
+                                                  type: string
+                                                guildId:
+                                                  type: string
+                                                channelId:
+                                                  type: string
+                                                timestamp:
+                                                  type: string
+                                                  format: date-time
+                                                command: {}
+                                              additionalProperties: false
+                                        additionalProperties: false
+                                    events:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          id:
+                                            type: string
+                                          name:
+                                            type: string
+                                          action:
+                                            type: string
+                                          enabled:
+                                            type: boolean
+                                          botId:
+                                            type: string
+                                          createdAt:
+                                            type: string
+                                            format: date-time
+                                          updatedAt:
+                                            type: string
+                                            format: date-time
+                                          bot: {}
+                                        additionalProperties: false
+                                  additionalProperties: false
+                              owner: {}
+                            additionalProperties: false
+                      additionalProperties: false
+                  required:
+                    - id
+                    - name
+                    - description
+                    - ownerId
+                    - createdAt
+                    - updatedAt
+                    - serverid
+                  additionalProperties: false
+    post:
+      tags:
+        - Servers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                ownerId:
+                  type: string
+                createdAt:
+                  type: string
+                  format: date-time
+                updatedAt:
+                  type: string
+                  format: date-time
+                serverid:
+                  type: string
+                  nullable: true
+              additionalProperties: false
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  ownerId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  serverid:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - name
+                  - description
+                  - ownerId
+                  - createdAt
+                  - updatedAt
+                  - serverid
+                additionalProperties: false
+        "409":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - error
+                  - message
+                additionalProperties: false
+  /v1/servers/{serverId}:
+    get:
+      tags:
+        - Servers
+      description: Get server by id
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: serverId
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  ownerId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  serverid:
+                    type: string
+                    nullable: true
+                  bots:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        token:
+                          type: string
+                        active:
+                          type: boolean
+                        ownerId:
+                          type: string
+                        prefix:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        description:
+                          type: string
+                        tags:
+                          type: array
+                          items:
+                            type: string
+                        icon:
+                          type: string
+                          nullable: true
+                        serverId:
+                          type: string
+                        analytics:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              botId:
+                                type: string
+                              eventType:
+                                type: string
+                              data:
+                                type: string
+                              timestamp:
+                                type: string
+                                format: date-time
+                              bot: {}
+                            additionalProperties: false
+                        owner:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            email:
+                              type: string
+                            emailVerified:
+                              type: boolean
+                            image:
+                              type: string
+                              nullable: true
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            sessions:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  expiresAt:
+                                    type: string
+                                    format: date-time
+                                  token:
+                                    type: string
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  ipAddress:
+                                    type: string
+                                    nullable: true
+                                  userAgent:
+                                    type: string
+                                    nullable: true
+                                  userId:
+                                    type: string
+                                  user: {}
+                                additionalProperties: false
+                            accounts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  accountId:
+                                    type: string
+                                  providerId:
+                                    type: string
+                                  userId:
+                                    type: string
+                                  accessToken:
+                                    type: string
+                                    nullable: true
+                                  refreshToken:
+                                    type: string
+                                    nullable: true
+                                  idToken:
+                                    type: string
+                                    nullable: true
+                                  accessTokenExpiresAt:
+                                    type: string
+                                    format: date-time
+                                    nullable: true
+                                  refreshTokenExpiresAt:
+                                    type: string
+                                    format: date-time
+                                    nullable: true
+                                  scope:
+                                    type: string
+                                    nullable: true
+                                  password:
+                                    type: string
+                                    nullable: true
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  user: {}
+                                additionalProperties: false
+                            Bot:
+                              type: array
+                              items: {}
+                            Server:
+                              type: array
+                              items: {}
+                          additionalProperties: false
+                        server: {}
+                        configurations:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              key:
+                                type: string
+                              value:
+                                type: string
+                              botId:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              bot: {}
+                            additionalProperties: false
+                        commands:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                              response:
+                                type: string
+                              enabled:
+                                type: boolean
+                              botId:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              bot: {}
+                              permissions:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    commandId:
+                                      type: string
+                                    roleId:
+                                      type: string
+                                    allow:
+                                      type: boolean
+                                    createdAt:
+                                      type: string
+                                      format: date-time
+                                    command: {}
+                                  additionalProperties: false
+                              usage:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    commandId:
+                                      type: string
+                                    userId:
+                                      type: string
+                                    guildId:
+                                      type: string
+                                    channelId:
+                                      type: string
+                                    timestamp:
+                                      type: string
+                                      format: date-time
+                                    command: {}
+                                  additionalProperties: false
+                            additionalProperties: false
+                        events:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              action:
+                                type: string
+                              enabled:
+                                type: boolean
+                              botId:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              bot: {}
+                            additionalProperties: false
+                      additionalProperties: false
+                  owner:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      emailVerified:
+                        type: boolean
+                      image:
+                        type: string
+                        nullable: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      sessions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            expiresAt:
+                              type: string
+                              format: date-time
+                            token:
+                              type: string
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            ipAddress:
+                              type: string
+                              nullable: true
+                            userAgent:
+                              type: string
+                              nullable: true
+                            userId:
+                              type: string
+                            user: {}
+                          additionalProperties: false
+                      accounts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            accountId:
+                              type: string
+                            providerId:
+                              type: string
+                            userId:
+                              type: string
+                            accessToken:
+                              type: string
+                              nullable: true
+                            refreshToken:
+                              type: string
+                              nullable: true
+                            idToken:
+                              type: string
+                              nullable: true
+                            accessTokenExpiresAt:
+                              type: string
+                              format: date-time
+                              nullable: true
+                            refreshTokenExpiresAt:
+                              type: string
+                              format: date-time
+                              nullable: true
+                            scope:
+                              type: string
+                              nullable: true
+                            password:
+                              type: string
+                              nullable: true
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            user: {}
+                          additionalProperties: false
+                      Bot:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            token:
+                              type: string
+                            active:
+                              type: boolean
+                            ownerId:
+                              type: string
+                            prefix:
+                              type: string
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            description:
+                              type: string
+                            tags:
+                              type: array
+                              items:
+                                type: string
+                            icon:
+                              type: string
+                              nullable: true
+                            serverId:
+                              type: string
+                            analytics:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  botId:
+                                    type: string
+                                  eventType:
+                                    type: string
+                                  data:
+                                    type: string
+                                  timestamp:
+                                    type: string
+                                    format: date-time
+                                  bot: {}
+                                additionalProperties: false
+                            owner: {}
+                            server: {}
+                            configurations:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  key:
+                                    type: string
+                                  value:
+                                    type: string
+                                  botId:
+                                    type: string
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  bot: {}
+                                additionalProperties: false
+                            commands:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  description:
+                                    type: string
+                                  response:
+                                    type: string
+                                  enabled:
+                                    type: boolean
+                                  botId:
+                                    type: string
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  bot: {}
+                                  permissions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id:
+                                          type: string
+                                        commandId:
+                                          type: string
+                                        roleId:
+                                          type: string
+                                        allow:
+                                          type: boolean
+                                        createdAt:
+                                          type: string
+                                          format: date-time
+                                        command: {}
+                                      additionalProperties: false
+                                  usage:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id:
+                                          type: string
+                                        commandId:
+                                          type: string
+                                        userId:
+                                          type: string
+                                        guildId:
+                                          type: string
+                                        channelId:
+                                          type: string
+                                        timestamp:
+                                          type: string
+                                          format: date-time
+                                        command: {}
+                                      additionalProperties: false
+                                additionalProperties: false
+                            events:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  action:
+                                    type: string
+                                  enabled:
+                                    type: boolean
+                                  botId:
+                                    type: string
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  bot: {}
+                                additionalProperties: false
+                          additionalProperties: false
+                      Server:
+                        type: array
+                        items: {}
+                    additionalProperties: false
+                additionalProperties: false
+        "404":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+                  - error
+                additionalProperties: false
+    put:
+      tags:
+        - Servers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+              required:
+                - name
+              additionalProperties: false
+        required: true
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: serverId
+          required: true
+      responses:
+        "200":
+          description: Default Response
+    delete:
+      tags:
+        - Servers
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: serverId
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messsage:
+                    type: string
+                required:
+                  - messsage
+                additionalProperties: false
+  /v1/bots/:
+    get:
+      tags:
+        - Bots
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    token:
+                      type: string
+                    active:
+                      type: boolean
+                    ownerId:
+                      type: string
+                    prefix:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    description:
+                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                    icon:
+                      type: string
+                      nullable: true
+                    serverId:
+                      type: string
+                    analytics:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          botId:
+                            type: string
+                          eventType:
+                            type: string
+                          data:
+                            type: string
+                          timestamp:
+                            type: string
+                            format: date-time
+                          bot: {}
+                        additionalProperties: false
+                    owner:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        emailVerified:
+                          type: boolean
+                        image:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        sessions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              expiresAt:
+                                type: string
+                                format: date-time
+                              token:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              ipAddress:
+                                type: string
+                                nullable: true
+                              userAgent:
+                                type: string
+                                nullable: true
+                              userId:
+                                type: string
+                              user: {}
+                            additionalProperties: false
+                        accounts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              accountId:
+                                type: string
+                              providerId:
+                                type: string
+                              userId:
+                                type: string
+                              accessToken:
+                                type: string
+                                nullable: true
+                              refreshToken:
+                                type: string
+                                nullable: true
+                              idToken:
+                                type: string
+                                nullable: true
+                              accessTokenExpiresAt:
+                                type: string
+                                format: date-time
+                                nullable: true
+                              refreshTokenExpiresAt:
+                                type: string
+                                format: date-time
+                                nullable: true
+                              scope:
+                                type: string
+                                nullable: true
+                              password:
+                                type: string
+                                nullable: true
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              user: {}
+                            additionalProperties: false
+                        Bot:
+                          type: array
+                          items: {}
+                        Server:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                                nullable: true
+                              ownerId:
+                                type: string
+                              createdAt:
+                                type: string
+                                format: date-time
+                              updatedAt:
+                                type: string
+                                format: date-time
+                              serverid:
+                                type: string
+                                nullable: true
+                              bots:
+                                type: array
+                                items: {}
+                              owner: {}
+                            additionalProperties: false
+                      additionalProperties: false
+                    server:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                          nullable: true
+                        ownerId:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        serverid:
+                          type: string
+                          nullable: true
+                        bots:
+                          type: array
+                          items: {}
+                        owner:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            email:
+                              type: string
+                            emailVerified:
+                              type: boolean
+                            image:
+                              type: string
+                              nullable: true
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            sessions:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  expiresAt:
+                                    type: string
+                                    format: date-time
+                                  token:
+                                    type: string
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  ipAddress:
+                                    type: string
+                                    nullable: true
+                                  userAgent:
+                                    type: string
+                                    nullable: true
+                                  userId:
+                                    type: string
+                                  user: {}
+                                additionalProperties: false
+                            accounts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  accountId:
+                                    type: string
+                                  providerId:
+                                    type: string
+                                  userId:
+                                    type: string
+                                  accessToken:
+                                    type: string
+                                    nullable: true
+                                  refreshToken:
+                                    type: string
+                                    nullable: true
+                                  idToken:
+                                    type: string
+                                    nullable: true
+                                  accessTokenExpiresAt:
+                                    type: string
+                                    format: date-time
+                                    nullable: true
+                                  refreshTokenExpiresAt:
+                                    type: string
+                                    format: date-time
+                                    nullable: true
+                                  scope:
+                                    type: string
+                                    nullable: true
+                                  password:
+                                    type: string
+                                    nullable: true
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                  user: {}
+                                additionalProperties: false
+                            Bot:
+                              type: array
+                              items: {}
+                            Server:
+                              type: array
+                              items: {}
+                          additionalProperties: false
+                      additionalProperties: false
+                    configurations:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          key:
+                            type: string
+                          value:
+                            type: string
+                          botId:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          bot: {}
+                        additionalProperties: false
+                    commands:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          description:
+                            type: string
+                          response:
+                            type: string
+                          enabled:
+                            type: boolean
+                          botId:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          bot: {}
+                          permissions:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                commandId:
+                                  type: string
+                                roleId:
+                                  type: string
+                                allow:
+                                  type: boolean
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                command: {}
+                              additionalProperties: false
+                          usage:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                commandId:
+                                  type: string
+                                userId:
+                                  type: string
+                                guildId:
+                                  type: string
+                                channelId:
+                                  type: string
+                                timestamp:
+                                  type: string
+                                  format: date-time
+                                command: {}
+                              additionalProperties: false
+                        additionalProperties: false
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          action:
+                            type: string
+                          enabled:
+                            type: boolean
+                          botId:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          bot: {}
+                        additionalProperties: false
+                  additionalProperties: false
+    post:
+      tags:
+        - Bots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                token:
+                  type: string
+                active:
+                  type: boolean
+                ownerId:
+                  type: string
+                prefix:
+                  type: string
+                createdAt:
+                  type: string
+                  format: date-time
+                updatedAt:
+                  type: string
+                  format: date-time
+                description:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                icon:
+                  type: string
+                  nullable: true
+                serverId:
+                  type: string
+              additionalProperties: false
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+  /v1/bots/start:
+    post:
+      tags:
+        - Bots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                botId:
+                  type: string
+              required:
+                - botId
+              additionalProperties: false
+        required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+  /v1/bots/stop:
+    post:
+      tags:
+        - Bots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                botId:
+                  type: string
+              required:
+                - botId
+              additionalProperties: false
+        required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+  /v1/bots/{botId}:
+    get:
+      tags:
+        - Bots
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: botId
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+    put:
+      tags:
+        - Bots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - not: {}
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    token:
+                      type: string
+                    active:
+                      type: boolean
+                    ownerId:
+                      type: string
+                    prefix:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+                    description:
+                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                    icon:
+                      type: string
+                      nullable: true
+                    serverId:
+                      type: string
+                  required:
+                    - id
+                    - name
+                    - token
+                    - active
+                    - ownerId
+                    - prefix
+                    - createdAt
+                    - updatedAt
+                    - description
+                    - tags
+                    - icon
+                    - serverId
+                  additionalProperties: false
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: botId
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+    delete:
+      tags:
+        - Bots
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: botId
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+  /v1/bots/{botId}/sync:
+    put:
+      tags:
+        - Bots
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: botId
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Default Response
+servers:
+  - url: http://localhost:3000
+    description: Development server

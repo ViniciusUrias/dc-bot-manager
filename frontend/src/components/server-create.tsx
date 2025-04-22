@@ -2,12 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import axiosInstance from "@/api/services/axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@tanstack/react-router";
+import { usePostV1Servers } from "@/gen";
 
 const formSchema = z.object({
 	id: z.string().min(2, {
@@ -32,12 +32,11 @@ export default function ServerCreate() {
 			description: "",
 		},
 	});
+	const { mutateAsync } = usePostV1Servers();
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
-		const response = await axiosInstance.post("/servers", {
-			name: values.name,
-			serverid: values.id,
-			description: values.description,
+		const response = await mutateAsync({
+			data: { name: values.name, serverid: values.id, description: values.description },
 		});
 
 		router.history.back();

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import axiosInstance from "@/api/services/axios";
 import { useBot } from "@/hooks/useBots";
 import { Button } from "@/components/ui/button";
@@ -7,23 +7,22 @@ import { LucidePlus, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { getV1ServersServeridQueryOptions } from "@/gen";
 
-const getQueryOptions = (serverId: string) =>
-	queryOptions({
-		queryKey: ["servers", serverId],
-		queryFn: async () => (await axiosInstance.get(`/servers/${serverId}`)).data,
-	});
 export const Route = createFileRoute("/app/servers/$serverId/")({
 	component: RouteComponent,
 	loader: async ({ context: { queryClient }, params }) => {
-		return queryClient.ensureQueryData(getQueryOptions(params.serverId));
+		return queryClient.ensureQueryData(getV1ServersServeridQueryOptions(params.serverId));
 	},
 });
 
 function RouteComponent() {
 	const serverId = Route.useParams().serverId;
-	const { data, refetch } = useSuspenseQuery(getQueryOptions(serverId));
-	const { startBot, stopBot } = useBot({});
+	const {
+		data: { data },
+		refetch,
+	} = useSuspenseQuery(getV1ServersServeridQueryOptions(serverId));
+	const { startBot, stopBot } = useBot({ serverId });
 	console.log(data);
 
 	return (
@@ -42,7 +41,7 @@ function RouteComponent() {
 					</Button>
 				</Link>
 			</div>
-			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col p-2 gap-4 rounded-md border">
+			<ScrollArea className="w-full min-h-[100px] max-h-[75vh] flex flex-col gap-4 rounded-md ">
 				{data?.bots?.map((bot) => {
 					return (
 						<Card className={cn(`transition-transform`, bot.isRemoving ? "animate-fadeOut" : "animate-fadeIn", "my-2")}>

@@ -1,7 +1,9 @@
 import * as botManager from "@/discord/botManager";
+import { BotSchema } from "@/types";
 import { createRouteConfig2 } from "@/utils/route-config";
 import { type Bot } from "@prisma/client";
 import { FastifyInstance } from "fastify";
+import { z } from "zod";
 
 export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 	// GET /bots/:id - Get bot details
@@ -9,12 +11,9 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		"/start",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Initiate bot",
-			body: {
-				type: "object",
-				required: ["botId"],
-				properties: {
-					serverid: { type: "string" },
-				},
+			schema: {
+				tags: ["Bots"],
+				body: z.object({ botId: z.string() }),
 			},
 		}),
 		async (request, reply) => {
@@ -38,16 +37,13 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		"/stop",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "stop bot",
-			body: {
-				type: "object",
-				required: ["botId"],
-				properties: {
-					serverid: { type: "string" },
-				},
+			schema: {
+				tags: ["Bots"],
+				body: z.object({ botId: z.string() }),
 			},
 		}),
 		async (request, reply) => {
-			const { name, serverId, botId } = request.body;
+			const { botId } = request.body;
 			const { id } = request.user;
 
 			// const { client, rest } = await initiateBotConnection({ serverId, userId: id, botInfo: bot });
@@ -62,15 +58,9 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		"/:botId",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Get by id",
-
-			params: {
-				type: "object",
-				properties: {
-					botId: {
-						type: "string",
-						description: "bot id",
-					},
-				},
+			schema: {
+				tags: ["Bots"],
+				params: z.object({ botId: z.string() }),
 			},
 		}),
 		async (request, reply) => {
@@ -89,13 +79,10 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		"/:botId",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Update bot",
-			params: {
-				type: "object",
-				properties: {
-					botId: {
-						type: "string",
-					},
-				},
+			schema: {
+				tags: ["Bots"],
+				body: BotSchema.optional(),
+				params: z.object({ botId: z.string() }),
 			},
 		}),
 		async (request, reply) => {
@@ -129,13 +116,9 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		"/:botId/sync",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Sync bot info with discord api",
-			params: {
-				type: "object",
-				properties: {
-					botId: {
-						type: "string",
-					},
-				},
+			schema: {
+				tags: ["Bots"],
+				params: z.object({ botId: z.string() }),
 			},
 		}),
 		async (request, reply) => {
@@ -172,13 +155,9 @@ export default async function (app: FastifyInstance, { defaultRouteConfig }) {
 		"/:botId",
 		createRouteConfig2(defaultRouteConfig, {
 			summary: "Delete bot",
-			params: {
-				type: "object",
-				properties: {
-					botId: {
-						type: "string",
-					},
-				},
+			schema: {
+				tags: ["Bots"],
+				params: z.object({ botId: z.string() }),
 			},
 		}),
 		async (request, reply) => {

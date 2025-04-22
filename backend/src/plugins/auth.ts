@@ -3,6 +3,9 @@ import fp from "fastify-plugin";
 import { fromNodeHeaders } from "better-auth/node";
 import { type Session } from "better-auth";
 declare module "fastify" {
+	interface FastifyInstance {
+		prisma: import("@prisma/client").PrismaClient;
+	}
 	interface FastifyRequest {
 		user: Partial<Session>;
 	}
